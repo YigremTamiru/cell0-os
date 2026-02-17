@@ -1,0 +1,48 @@
+[package]
+name = "cell0-kernel"
+version = "1.1.5"
+edition = "2021"
+authors = ["Cell0 Team"]
+description = "Cell0 Operating System Kernel with 12-Cryptographic System"
+license = "GPL-3.0"
+rust-version = "1.75"
+
+[features]
+default = ["std"]
+std = ["alloc"]
+alloc = []
+bare_metal = ["alloc", "dep:volatile", "dep:lazy_static", "dep:spin"]
+bootloader = ["dep:bootloader"]
+
+[dependencies]
+# Bare metal dependencies - only used in no_std environments
+volatile = { version = "0.5", optional = true }
+lazy_static = { version = "1.4", features = ["spin_no_std"], optional = true }
+spin = { version = "0.9", default-features = false, features = ["mutex", "spin_mutex"], optional = true }
+
+# Bootloader support for x86_64
+bootloader = { version = "0.9", optional = true }
+
+[dev-dependencies]
+# Testing utilities - use std
+
+[lib]
+name = "cell0_kernel"
+path = "src/lib.rs"
+crate-type = ["rlib"]
+
+[[bin]]
+name = "cell0"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+opt-level = 0
+debug = true
+panic = "abort"
