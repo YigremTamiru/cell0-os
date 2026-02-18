@@ -1,5 +1,10 @@
 //! Cell0 Cryptographic System
 //!
+//! ⚠️  SECURITY WARNING: THIS MODULE CONTAINS PLACEHOLDER/STUB IMPLEMENTATIONS
+//!     Ed25519, Kyber, and Dilithium modules use simplified XOR-based stubs
+//!     that DO NOT provide actual cryptographic security. DO NOT USE for
+//!     production security operations until real crypto libraries are integrated.
+//!
 //! A comprehensive cryptographic primitive system providing:
 //! - Classical: AES-GCM, ChaCha20-Poly1305, SHA-3, HMAC, ECDSA
 //! - Modern: Ed25519, X25519, BLS12-381
@@ -18,6 +23,12 @@
 //! │  SHA-3      │  BLS12-381  │   SPHINCS+     │   QKD Manager  │
 //! └─────────────────────────────────────────────────────────────┘
 //! ```
+//!
+//! # TODO: Integrate Real Crypto Libraries
+//! - [ ] ed25519-dalek for Ed25519 signatures
+//! - [ ] pqc-kyber for Kyber KEM
+//! - [ ] pqc-dilithium for Dilithium signatures
+//! - [ ] sha2 for SHA-256/SHA-512
 
 // Import alloc for no_std environments
 #[cfg(not(feature = "std"))]
@@ -43,6 +54,13 @@ pub mod alloc_prelude {
     pub use std::format;
     pub use std::borrow::ToOwned;
 }
+
+// Compile-time guard: Prevent production builds with stub crypto
+// To build with real crypto, define the 'production-crypto' feature
+#[cfg(all(feature = "production", not(feature = "production-crypto")))]
+compile_error!("Production builds require real cryptographic implementations. \
+    Either enable 'production-crypto' feature or build without 'production' feature. \
+    See kernel/src/crypto/mod.rs for integration instructions.");
 
 // Re-export individual crypto modules
 pub mod aes_gcm;
