@@ -57,6 +57,7 @@ WORKDIR /app
 
 # Copy application code
 COPY cell0/ ./cell0/
+COPY cell0d.py ./
 COPY pyproject.toml ./
 
 # Create necessary directories
@@ -85,4 +86,4 @@ USER cell0
 EXPOSE 18800 18801 18802
 
 # Run the daemon
-CMD ["python", "-m", "cell0.cell0d"]
+CMD ["python", "cell0d.py"]
