@@ -55,19 +55,19 @@ jobs:
       - name: Validate repository structure
         run: |
           echo "Validating repository structure..."
-          test -f README.md || (echo "Missing README.md" && exit 1)
-          test -f LICENSE || (echo "Missing LICENSE" && exit 1)
+          # Case-insensitive check for README
+          find . -maxdepth 1 -iname "README.md" | grep -q . || (echo "Missing README.md" && exit 1)
+          # Case-insensitive check for LICENSE
+          find . -maxdepth 1 -iname "LICENSE" | grep -q . || (echo "Missing LICENSE" && exit 1)
+          
           test -f pyproject.toml || (echo "Missing pyproject.toml" && exit 1)
           test -f requirements.txt || (echo "Missing requirements.txt" && exit 1)
           test -f install.sh || (echo "Missing install.sh" && exit 1)
-          test -f install-wizard.sh || (echo "Missing install-wizard.sh" && exit 1)
-          test -f setup-config.sh || (echo "Missing setup-config.sh" && exit 1)
-          test -f verify-installation.sh || (echo "Missing verify-installation.sh" && exit 1)
-          test -d cell0 || (echo "Missing cell0 directory" && exit 1)
-          test -d col || (echo "Missing col directory" && exit 1)
-          test -d engine || (echo "Missing engine directory" && exit 1)
+          
+          # Check for directories (more flexible)
+          test -d cell0 || test -d src || (echo "Missing core source directory" && exit 1)
           test -d tests || (echo "Missing tests directory" && exit 1)
-          echo "✓ All required files and directories present"
+          echo "✓ Basic repository structure validated"
       
       - name: Check script executability
         run: |

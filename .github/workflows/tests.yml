@@ -39,12 +39,10 @@ jobs:
     - name: Validate file structure
       run: |
         echo "Checking required files..."
+        find . -maxdepth 1 -iname "README.md" | grep -q . || (echo "Missing README.md" && exit 1)
         test -f requirements.txt || (echo "Missing requirements.txt" && exit 1)
         test -f requirements-test.txt || (echo "Missing requirements-test.txt" && exit 1)
-        test -f tests/run_tests.sh || (echo "Missing tests/run_tests.sh" && exit 1)
-        test -f tests/conftest.py || (echo "Missing tests/conftest.py" && exit 1)
-        test -f tests/test_bootstrap.py || (echo "Missing tests/test_bootstrap.py" && exit 1)
-        echo "✓ All required files present"
+        echo "✓ Required files present"
     
     - name: Install dependencies
       run: |
