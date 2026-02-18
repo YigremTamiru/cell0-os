@@ -2,11 +2,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cell0-config
-  namespace: cell0
+  namespace: cell0-os
 data:
   CELL0_ENV: "production"
-  CELL0_LOG_LEVEL: "INFO"
   CELL0_PORT: "18800"
   CELL0_WS_PORT: "18801"
   CELL0_METRICS_PORT: "18802"
-  PYTHONUNBUFFERED: "1"
+  CELL0_LOG_LEVEL: "INFO"

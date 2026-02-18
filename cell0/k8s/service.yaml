@@ -1,24 +1,24 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: cell0
-  namespace: cell0
+  name: cell0-os
+  namespace: cell0-os
   labels:
-    app.kubernetes.io/name: cell0
+    app: cell0-os
 spec:
-  type: ClusterIP
-  ports:
-    - name: http
-      port: 18800
-      targetPort: http
-      protocol: TCP
-    - name: websocket
-      port: 18801
-      targetPort: websocket
-      protocol: TCP
-    - name: metrics
-      port: 18802
-      targetPort: metrics
-      protocol: TCP
   selector:
-    app.kubernetes.io/name: cell0
+    app: cell0-os
+  ports:
+  - name: http
+    port: 18800
+    targetPort: 18800
+    protocol: TCP
+  - name: websocket
+    port: 18801
+    targetPort: 18801
+    protocol: TCP
+  - name: metrics
+    port: 18802
+    targetPort: 18802
+    protocol: TCP
+  type: LoadBalancer
