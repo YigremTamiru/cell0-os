@@ -7,6 +7,8 @@ Production-grade security features:
 - Secrets management (1Password, encrypted storage)
 - Tool security profiles and sandboxing
 - Audit logging
+- Sovereign JWT handler with hybrid policy
+- RBAC (Role-Based Access Control)
 """
 
 # Tool security (existing)
@@ -140,6 +142,58 @@ from .secrets import (
     delete_secret,
 )
 
+# Sovereign JWT Handler (new)
+from .jwt_handler import (
+    # Enums
+    Environment,
+    # Exceptions
+    JWTError,
+    InvalidTokenError,
+    ExpiredTokenError,
+    InvalidSignatureError,
+    InvalidKeyError,
+    ProductionKeyError,
+    KeyRotationError,
+    # Classes
+    KeyPair,
+    KeyManager,
+    TokenPayload,
+    JWTHandler,
+    TokenManager,
+    # Functions
+    get_key_manager,
+    create_token,
+    validate_token,
+    decode_token,
+    verify_production_readiness,
+)
+
+# RBAC (new)
+from .rbac import (
+    # Enums
+    PermissionAction,
+    # Classes
+    Permission,
+    Role,
+    RoleAssignment,
+    ResourceContext,
+    # Exceptions
+    RBACError,
+    RoleNotFoundError,
+    PermissionDeniedError,
+    CircularRoleError,
+    # Engine
+    RBACEngine,
+    get_rbac_engine,
+    set_rbac_engine,
+    # Convenience Functions
+    has_permission,
+    require_permission,
+    assign_role,
+    # Decorator
+    permission_required,
+)
+
 __all__ = [
     # Tool Profiles
     'ToolProfile',
@@ -242,4 +296,42 @@ __all__ = [
     'require_secret',
     'set_secret',
     'delete_secret',
+    
+    # Sovereign JWT Handler
+    'Environment',
+    'JWTError',
+    'InvalidTokenError',
+    'ExpiredTokenError',
+    'InvalidSignatureError',
+    'InvalidKeyError',
+    'ProductionKeyError',
+    'KeyRotationError',
+    'KeyPair',
+    'KeyManager',
+    'TokenPayload',
+    'JWTHandler',
+    'TokenManager',
+    'get_key_manager',
+    'create_token',
+    'validate_token',
+    'decode_token',
+    'verify_production_readiness',
+    
+    # RBAC
+    'PermissionAction',
+    'Permission',
+    'Role',
+    'RoleAssignment',
+    'ResourceContext',
+    'RBACError',
+    'RoleNotFoundError',
+    'PermissionDeniedError',
+    'CircularRoleError',
+    'RBACEngine',
+    'get_rbac_engine',
+    'set_rbac_engine',
+    'has_permission',
+    'require_permission',
+    'assign_role',
+    'permission_required',
 ]
