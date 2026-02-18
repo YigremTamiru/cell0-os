@@ -57,8 +57,8 @@ jobs:
           echo "Validating repository structure..."
           # Case-insensitive check for README
           find . -maxdepth 1 -iname "README.md" | grep -q . || (echo "Missing README.md" && exit 1)
-          # Case-insensitive check for LICENSE
-          find . -maxdepth 1 -iname "LICENSE" | grep -q . || (echo "Missing LICENSE" && exit 1)
+          # Case-insensitive check for LICENSE (any extension)
+          find . -maxdepth 1 -iname "LICENSE*" | grep -q . || (echo "Missing LICENSE" && exit 1)
           
           test -f pyproject.toml || (echo "Missing pyproject.toml" && exit 1)
           test -f requirements.txt || (echo "Missing requirements.txt" && exit 1)

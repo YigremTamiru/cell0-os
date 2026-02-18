@@ -39,7 +39,6 @@ jobs:
     - name: Validate file structure
       run: |
         echo "Checking required files..."
-        find . -maxdepth 1 -iname "README.md" | grep -q . || (echo "Missing README.md" && exit 1)
         test -f requirements.txt || (echo "Missing requirements.txt" && exit 1)
         test -f requirements-test.txt || (echo "Missing requirements-test.txt" && exit 1)
         echo "✓ Required files present"
