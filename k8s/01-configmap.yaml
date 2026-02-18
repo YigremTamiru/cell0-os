@@ -1,0 +1,30 @@
+# Cell 0 OS Kubernetes Manifests
+# ConfigMap for application configuration
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cell0-config
+  namespace: cell0
+  labels:
+    app.kubernetes.io/name: cell0
+    app.kubernetes.io/component: config
+    app.kubernetes.io/part-of: cell0-os
+data:
+  CELL0_ENV: "production"
+  CELL0_LOG_LEVEL: "INFO"
+  CELL0_LOG_FORMAT: "json"
+  CELL0_HOST: "0.0.0.0"
+  CELL0_PORT: "18800"
+  CELL0_WS_PORT: "18801"
+  CELL0_METRICS_PORT: "18802"
+  CELL0_WORKERS: "4"
+  CELL0_MAX_CONNECTIONS: "1000"
+  CELL0_REQUEST_TIMEOUT: "300"
+  CELL0_WEBSOCKET_TIMEOUT: "3600"
+  CELL0_FEATURES_SWARM: "true"
+  CELL0_FEATURES_CANVAS: "true"
+  CELL0_FEATURES_SIGNAL: "true"
+  CELL0_SECURITY_RATE_LIMIT_ENABLED: "true"
+  CELL0_SECURITY_RATE_LIMIT_REQUESTS: "100"
+  CELL0_SECURITY_RATE_LIMIT_WINDOW: "60"

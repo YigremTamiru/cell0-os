@@ -1,0 +1,202 @@
+# Cell 0 OS Kubernetes Manifests
+# Deployment for Cell 0 OS
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cell0
+  namespace: cell0
+  labels:
+    app.kubernetes.io/name: cell0
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: cell0-os
+    app.kubernetes.io/version: "1.2.0"
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cell0
+      app.kubernetes.io/component: api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: cell0
+        app.kubernetes.io/component: api
+        app.kubernetes.io/part-of: cell0-os
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "18802"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: cell0
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: cell0
+          image: ghcr.io/yigremtamiru/cell0-os:main
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 18800
+              protocol: TCP
+            - name: websocket
+              containerPort: 18801
+              protocol: TCP
+            - name: metrics
+              containerPort: 18802
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: cell0-config
+            - secretRef:
+                name: cell0-secrets
+          env:
+            - name: CELL0_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: CELL0_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: CELL0_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            limits:
+              cpu: 4000m
+              memory: 8Gi
+            requests:
+              cpu: 500m
+              memory: 2Gi
+          livenessProbe:
+            httpGet:
+              path: /api/health/live
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /api/health/ready
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1
+          startupProbe:
+            httpGet:
+              path: /api/health/startup
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 30
+            successThreshold: 1
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: data
+              mountPath: /app/data
+            - name: logs
+              mountPath: /app/logs
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: data
+          emptyDir: {}
+        - name: logs
+          emptyDir: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - cell0
+                topologyKey: kubernetes.io/hostname
+---
+# Horizontal Pod Autoscaler
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: cell0
+  namespace: cell0
+  labels:
+    app.kubernetes.io/name: cell0
+    app.kubernetes.io/component: hpa
+    app.kubernetes.io/part-of: cell0-os
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: cell0
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Percent
+          value: 10
+          periodSeconds: 60
+---
+# Pod Disruption Budget
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: cell0
+  namespace: cell0
+  labels:
+    app.kubernetes.io/name: cell0
+    app.kubernetes.io/component: pdb
+    app.kubernetes.io/part-of: cell0-os
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cell0
+      app.kubernetes.io/component: api

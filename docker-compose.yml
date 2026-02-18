@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  cell0:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cell0-os:latest
+    container_name: cell0
+    restart: unless-stopped
+    ports:
+      - "18800:18800"  # HTTP API
+      - "18801:18801"  # WebSocket
+      - "18802:18802"  # Metrics
+    environment:
+      - CELL0_ENV=production
+      - CELL0_LOG_LEVEL=INFO
+      - CELL0_PORT=18800
+      - CELL0_WS_PORT=18801
+      - CELL0_METRICS_PORT=18802
+      - CELL0_SECRET_KEY=${CELL0_SECRET_KEY:-change-me-in-production}
+    volumes:
+      - cell0-data:/app/data
+      - cell0-logs:/app/logs
+      - cell0-config:/app/config
+    networks:
+      - cell0-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18800/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: cell0-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    networks:
+      - cell0-network
+    command: redis-server --appendonly yes
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  cell0-data:
+  cell0-logs:
+  cell0-config:
+  redis-data:
+
+networks:
+  cell0-network:
+    driver: bridge

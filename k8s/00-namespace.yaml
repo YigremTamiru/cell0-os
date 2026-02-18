@@ -1,0 +1,11 @@
+# Cell 0 OS Kubernetes Manifests
+# Namespace for Cell 0 OS deployment
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cell0
+  labels:
+    app.kubernetes.io/name: cell0
+    app.kubernetes.io/component: namespace
+    app.kubernetes.io/part-of: cell0-os

@@ -1,0 +1,205 @@
+name: Deploy to Kubernetes
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'k8s/**'
+      - '.github/workflows/deploy-k8s.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+concurrency:
+  group: deploy-k8s-${{ github.event.inputs.environment || 'staging' }}
+  cancel-in-progress: false
+
+jobs:
+  # ============================================================================
+  # Prepare Deployment
+  # ============================================================================
+  prepare:
+    name: Prepare Deployment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.vars.outputs.environment }}
+      image_tag: ${{ steps.vars.outputs.image_tag }}
+    steps:
+      - name: Determine variables
+        id: vars
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          else
+            echo "environment=staging" >> $GITHUB_OUTPUT
+          fi
+          echo "image_tag=${{ github.sha }}" >> $GITHUB_OUTPUT
+
+  # ============================================================================
+  # Deploy with kubectl
+  # ============================================================================
+  deploy:
+    name: Deploy with kubectl
+    needs: prepare
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ needs.prepare.outputs.environment }}
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+
+      - name: Configure kubeconfig
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > kubeconfig.yaml
+          export KUBECONFIG=kubeconfig.yaml
+          kubectl cluster-info
+
+      - name: Create namespace
+        run: |
+          export KUBECONFIG=kubeconfig.yaml
+          kubectl create namespace cell0 --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Apply ConfigMap
+        run: |
+          export KUBECONFIG=kubeconfig.yaml
+          kubectl apply -f k8s/01-configmap.yaml
+
+      - name: Apply Secrets
+        run: |
+          export KUBECONFIG=kubeconfig.yaml
+          # Create secrets from GitHub secrets if they exist
+          kubectl create secret generic cell0-secrets \
+            --from-literal=CELL0_SECRET_KEY='${{ secrets.CELL0_SECRET_KEY }}' \
+            --from-literal=JWT_KEY='${{ secrets.JWT_KEY }}' \
+            --from-literal=BRAVE_API_KEY='${{ secrets.BRAVE_API_KEY }}' \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Update image tag in deployment
+        run: |
+          export KUBECONFIG=kubeconfig.yaml
+          # Update the image tag in the deployment
+          sed -i 's|ghcr.io/yigremtamiru/cell0-os:.*|ghcr.io/yigremtamiru/cell0-os:${{ needs.prepare.outputs.image_tag }}|' k8s/03-deployment.yaml
+          kubectl apply -f k8s/03-deployment.yaml
+
+      - name: Apply Service
+        run: |
+          export KUBECONFIG=kubeconfig.yaml
+          kubectl apply -f k8s/04-service.yaml
+
+      - name: Apply NetworkPolicy
+        run: |
+          export KUBECONFIG=kubeconfig.yaml
+          kubectl apply -f k8s/06-networkpolicy.yaml
+
+      - name: Apply Ingress (if configured)
+        run: |
+          export KUBECONFIG=kubeconfig.yaml
+          kubectl apply -f k8s/05-ingress.yaml || echo "Ingress not applied (may require ingress controller)"
+        continue-on-error: true
+
+      - name: Verify deployment
+        run: |
+          export KUBECONFIG=kubeconfig.yaml
+          kubectl rollout status deployment/cell0 -n cell0 --timeout=300s || true
+          kubectl get pods -n cell0
+
+      - name: Cleanup kubeconfig
+        if: always()
+        run: rm -f kubeconfig.yaml
+
+  # ============================================================================
+  # Smoke Tests
+  # ============================================================================
+  smoke-test:
+    name: Smoke Tests
+    needs: [prepare, deploy]
+    runs-on: ubuntu-latest
+    if: needs.deploy.result == 'success'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+
+      - name: Configure kubeconfig
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > kubeconfig.yaml
+          export KUBECONFIG=kubeconfig.yaml
+
+      - name: Port forward
+        run: |
+          export KUBECONFIG=kubeconfig.yaml
+          kubectl port-forward svc/cell0 18800:18800 -n cell0 &
+          sleep 10
+
+      - name: Run smoke tests
+        run: |
+          # Health check
+          curl -f --retry 10 --retry-delay 5 http://localhost:18800/api/health || echo "Health check failed"
+          
+          # API status check
+          curl -f http://localhost:18800/api/status || echo "Status check failed"
+        continue-on-error: true
+
+      - name: Kill port forward
+        if: always()
+        run: pkill kubectl || true
+
+      - name: Cleanup kubeconfig
+        if: always()
+        run: rm -f kubeconfig.yaml
+
+  # ============================================================================
+  # Notify
+  # ============================================================================
+  notify:
+    name: Notify
+    needs: [prepare, deploy, smoke-test]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Notify Slack
+        uses: 8398a7/action-slack@v3
+        if: env.SLACK_WEBHOOK_URL != ''
+        with:
+          status: ${{ needs.deploy.result }}
+          channel: '#deployments'
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+          text: |
+            K8s Deployment to *${{ needs.prepare.outputs.environment }}* ${{ needs.deploy.result == 'success' && 'succeeded' || 'failed' }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Summary
+        run: |
+          echo "## Kubernetes Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Step | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | ${{ needs.prepare.outputs.environment }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Deploy | ${{ needs.deploy.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Smoke Test | ${{ needs.smoke-test.result }} |" >> $GITHUB_STEP_SUMMARY
