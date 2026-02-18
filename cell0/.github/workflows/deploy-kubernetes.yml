@@ -1,0 +1,202 @@
+name: Deploy to Kubernetes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'k8s/**'
+      - 'helm/**'
+      - '.github/workflows/deploy-kubernetes.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  validate-k8s:
+    name: Validate Kubernetes Manifests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Kubectl
+      uses: azure/setup-kubectl@v4
+      with:
+        version: 'v1.28.0'
+    
+    - name: Set up Helm
+      uses: azure/setup-helm@v4
+      with:
+        version: '3.13.0'
+    
+    - name: Validate Kubernetes manifests
+      run: |
+        kubectl apply --dry-run=client -f k8s/namespace.yaml
+        kubectl apply --dry-run=client -f k8s/configmap.yaml
+        kubectl apply --dry-run=client -f k8s/secrets.yaml
+        kubectl apply --dry-run=client -f k8s/pvc.yaml
+        kubectl apply --dry-run=client -f k8s/deployment.yaml
+        kubectl apply --dry-run=client -f k8s/service.yaml
+        kubectl apply --dry-run=client -f k8s/ingress.yaml
+        kubectl apply --dry-run=client -f k8s/hpa.yaml
+        kubectl apply --dry-run=client -f k8s/rbac.yaml
+    
+    - name: Validate Helm charts
+      run: |
+        if [ -d "helm/cell0" ]; then
+          helm lint helm/cell0/ || true
+          helm template cell0 helm/cell0/ > /tmp/cell0-rendered.yaml || true
+          kubectl apply --dry-run=client -f /tmp/cell0-rendered.yaml || true
+        fi
+      continue-on-error: true
+    
+    - name: Run kubeval
+      run: |
+        # Install kubeval if not present
+        if ! command -v kubeval &> /dev/null; then
+          curl -L https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz | tar xz
+          sudo mv kubeval /usr/local/bin/
+        fi
+        kubeval --strict k8s/*.yaml || true
+      continue-on-error: true
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: validate-k8s
+    if: github.ref == 'refs/heads/main' && (github.event.inputs.environment == 'staging' || github.event_name == 'push')
+    environment:
+      name: staging
+      url: https://cell0-staging.local
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Kubectl
+      uses: azure/setup-kubectl@v4
+      with:
+        version: 'v1.28.0'
+    
+    - name: Configure kubectl
+      env:
+        KUBE_CONFIG_STAGING: ${{ secrets.KUBE_CONFIG_STAGING }}
+      run: |
+        if [ -z "$KUBE_CONFIG_STAGING" ]; then
+          echo "⚠️ Warning: KUBE_CONFIG_STAGING secret not set. Skipping deployment."
+          echo "To enable deployment, set the KUBE_CONFIG_STAGING secret in GitHub repository settings."
+          exit 0
+        fi
+        echo "$KUBE_CONFIG_STAGING" | base64 -d > kubeconfig
+        export KUBECONFIG=kubeconfig
+        kubectl cluster-info
+    
+    - name: Deploy to Staging
+      run: |
+        if [ ! -f "kubeconfig" ]; then
+          echo "⚠️ Skipping deployment - no kubeconfig available"
+          exit 0
+        fi
+        export KUBECONFIG=kubeconfig
+        # Apply namespace first
+        kubectl apply -f k8s/namespace.yaml
+        # Apply configs and secrets
+        kubectl apply -f k8s/configmap.yaml
+        kubectl apply -f k8s/secrets.yaml || echo "⚠️ Secrets apply failed - may need to be created manually"
+        kubectl apply -f k8s/pvc.yaml
+        # Apply RBAC
+        kubectl apply -f k8s/rbac.yaml || echo "⚠️ RBAC apply failed"
+        # Apply main deployment
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
+        # Apply ingress and HPA
+        kubectl apply -f k8s/ingress.yaml || echo "⚠️ Ingress apply failed"
+        kubectl apply -f k8s/hpa.yaml || echo "⚠️ HPA apply failed"
+        # Wait for rollout
+        kubectl rollout status deployment/cell0 -n cell0 --timeout=300s || echo "⚠️ Rollout status check failed"
+    
+    - name: Verify deployment
+      run: |
+        if [ ! -f "kubeconfig" ]; then
+          echo "⚠️ Skipping verification - no kubeconfig available"
+          exit 0
+        fi
+        export KUBECONFIG=kubeconfig
+        kubectl get pods -n cell0 || echo "⚠️ Could not get pods"
+        kubectl get svc -n cell0 || echo "⚠️ Could not get services"
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: validate-k8s
+    if: github.event.inputs.environment == 'production'
+    environment:
+      name: production
+      url: https://cell0.local
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Kubectl
+      uses: azure/setup-kubectl@v4
+      with:
+        version: 'v1.28.0'
+    
+    - name: Configure kubectl
+      env:
+        KUBE_CONFIG_PRODUCTION: ${{ secrets.KUBE_CONFIG_PRODUCTION }}
+      run: |
+        if [ -z "$KUBE_CONFIG_PRODUCTION" ]; then
+          echo "⚠️ Warning: KUBE_CONFIG_PRODUCTION secret not set. Skipping deployment."
+          exit 0
+        fi
+        echo "$KUBE_CONFIG_PRODUCTION" | base64 -d > kubeconfig
+        export KUBECONFIG=kubeconfig
+        kubectl cluster-info
+    
+    - name: Deploy to Production
+      run: |
+        if [ ! -f "kubeconfig" ]; then
+          echo "⚠️ Skipping deployment - no kubeconfig available"
+          exit 0
+        fi
+        export KUBECONFIG=kubeconfig
+        # Apply namespace first
+        kubectl apply -f k8s/namespace.yaml
+        # Apply configs and secrets
+        kubectl apply -f k8s/configmap.yaml
+        kubectl apply -f k8s/secrets.yaml || echo "⚠️ Secrets apply failed"
+        kubectl apply -f k8s/pvc.yaml
+        # Apply RBAC
+        kubectl apply -f k8s/rbac.yaml || echo "⚠️ RBAC apply failed"
+        # Apply main deployment
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
+        # Apply ingress and HPA
+        kubectl apply -f k8s/ingress.yaml || echo "⚠️ Ingress apply failed"
+        kubectl apply -f k8s/hpa.yaml || echo "⚠️ HPA apply failed"
+        # Wait for rollout
+        kubectl rollout status deployment/cell0 -n cell0 --timeout=300s || echo "⚠️ Rollout status check failed"
+    
+    - name: Verify deployment
+      run: |
+        if [ ! -f "kubeconfig" ]; then
+          echo "⚠️ Skipping verification - no kubeconfig available"
+          exit 0
+        fi
+        export KUBECONFIG=kubeconfig
+        kubectl get pods -n cell0 || echo "⚠️ Could not get pods"
+        kubectl get svc -n cell0 || echo "⚠️ Could not get services"

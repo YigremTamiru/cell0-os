@@ -37,7 +37,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     
     - name: Cache pip packages
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
@@ -58,14 +58,15 @@ jobs:
           --junitxml=test-reports/unit-tests.xml
     
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./coverage.xml
         flags: unit
         name: unit-tests-py${{ matrix.python-version }}
+        fail_ci_if_error: false
     
     - name: Upload test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: unit-test-results-py${{ matrix.python-version }}
@@ -103,7 +104,7 @@ jobs:
         bandit -r cell0/ -ll
     
     - name: Upload security results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: security-test-results
@@ -145,8 +146,8 @@ jobs:
         python cell0d.py &
         echo $! > daemon.pid
         sleep 5
-        # Check if daemon is running
-        curl -s http://localhost:18800/api/health || echo "Daemon not responding"
+        # Check if daemon is running - try both endpoints
+        curl -s http://localhost:18800/api/health || curl -s http://localhost:18800/health || echo "Daemon not responding"
     
     - name: Run integration tests
       run: |
@@ -161,7 +162,7 @@ jobs:
         fi
     
     - name: Upload integration results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: integration-test-results
@@ -196,11 +197,11 @@ jobs:
     
     - name: Run performance tests
       run: |
-        cd tests/performance
+        cd tests/load
         python locustfile.py benchmark || true
     
     - name: Upload performance results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: performance-test-results
@@ -262,7 +263,7 @@ jobs:
         python-version: '3.11'
     
     - name: Download all artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
     
     - name: Generate coverage report
       run: |
@@ -272,7 +273,7 @@ jobs:
         coverage report || true
     
     - name: Upload coverage report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-report
         path: test-reports/coverage-html/
