@@ -1,0 +1,14 @@
+{
+  "gateway_port": {
+    "status": "closed",
+    "code": 61
+  },
+  "cache_ops": {
+    "time_ms": 14.462542021647096,
+    "ops": 200
+  },
+  "db_ops": {
+    "time_ms": 2.5013750419020653,
+    "ops": 2000
+  }
+}

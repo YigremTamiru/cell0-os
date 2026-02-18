@@ -1,0 +1,22 @@
+{
+  "thread_create_1000": {
+    "time_ms": 42.80795808881521
+  },
+  "threadpool_100tasks": {
+    "time_ms": 22.585458122193813
+  },
+  "async_1000tasks": {
+    "time_ms": 2.710792003199458
+  },
+  "lock_contention_10k": {
+    "time_ms": 1.4031250029802322,
+    "final_count": 10000
+  },
+  "queue_10k": {
+    "time_ms": 6.0359579510986805
+  },
+  "context_switch_10k": {
+    "time_ms": 5.413000006228685
+  },
+  "timestamp": 1771400401.0486531
+}

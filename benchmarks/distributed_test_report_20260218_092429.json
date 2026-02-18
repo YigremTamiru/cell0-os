@@ -1,0 +1,50 @@
+{
+  "timestamp": "2026-02-18T09:24:29.560513",
+  "gateway_metrics": {},
+  "distributed_tests": [
+    {
+      "test_name": "local_connectivity",
+      "success": true,
+      "latency_ms": 0.17595291137695312,
+      "error": null,
+      "timestamp": "2026-02-18T09:24:29.539917"
+    },
+    {
+      "test_name": "gateway_api",
+      "success": true,
+      "latency_ms": 14.915227890014648,
+      "error": null,
+      "timestamp": "2026-02-18T09:24:29.554871"
+    },
+    {
+      "test_name": "network_latency",
+      "success": true,
+      "latency_ms": 2.972841262817383,
+      "error": null,
+      "timestamp": "2026-02-18T09:24:29.557878"
+    },
+    {
+      "test_name": "tailscale_mode",
+      "success": false,
+      "latency_ms": 2.5861263275146484,
+      "error": "Tailscale not installed",
+      "timestamp": "2026-02-18T09:24:29.560476"
+    }
+  ],
+  "bottlenecks": [
+    {
+      "severity": "LOW",
+      "component": "Distributed Mode",
+      "issue": "Tailscale not configured for distributed mode",
+      "recommendation": "Install and configure Tailscale for multi-node support"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "MEDIUM",
+      "action": "Enable distributed mode",
+      "details": "Install Tailscale for multi-node cluster support",
+      "command": "brew install tailscale && tailscale up"
+    }
+  ]
+}

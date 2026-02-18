@@ -1,0 +1,33 @@
+{
+  "timestamp": 1771400379.694869,
+  "results": {
+    "dict_ops_100k": {
+      "time_ms": 67.34954193234444,
+      "ops_per_sec": 2969582.186630293
+    },
+    "list_comp_100x100k": {
+      "time_ms": 174.41466613672674
+    },
+    "json_roundtrip_1000": {
+      "time_ms": 12.47120788320899,
+      "per_op_ms": 0.01247120788320899
+    },
+    "string_ops_10k": {
+      "time_ms": 174.22641604207456
+    },
+    "file_io_1000": {
+      "time_ms": 95.63825000077486
+    },
+    "coro_create_10k": {
+      "time_ms": 13.404750032350421
+    },
+    "import_core": {
+      "time_ms": 40.41699995286763,
+      "modules": 57
+    },
+    "memory_pattern": {
+      "time_ms": 6.9821670185774565
+    }
+  },
+  "total_ms": 584.9039989989251
+}

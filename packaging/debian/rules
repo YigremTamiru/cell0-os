@@ -1,0 +1,35 @@
+#!/usr/bin/make -f
+
+export PYBUILD_NAME=cell0-os
+export PYBUILD_SYSTEM=distutils
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_auto_install:
+	dh_auto_install
+	
+	# Create directories
+	mkdir -p debian/cell0-os/var/lib/cell0/data
+	mkdir -p debian/cell0-os/var/log/cell0
+	mkdir -p debian/cell0-os/etc/cell0
+	mkdir -p debian/cell0-os/usr/share/cell0
+	mkdir -p debian/cell0-os/lib/systemd/system
+	
+	# Install systemd service
+	cp debian/cell0d.service debian/cell0-os/lib/systemd/system/
+	
+	# Install default config
+	cp config/production/app_config.yaml debian/cell0-os/etc/cell0/config.yaml
+	
+	# Set permissions
+	chmod 755 debian/cell0-os/var/lib/cell0
+	chmod 755 debian/cell0-os/var/log/cell0
+	chmod 755 debian/cell0-os/etc/cell0
+
+override_dh_installinit:
+	dh_installinit --name=cell0d
+
+override_dh_clean:
+	dh_clean
+	rm -rf build/ dist/ *.egg-info/

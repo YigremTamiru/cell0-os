@@ -1,0 +1,11 @@
+# Cell 0 OS Debian Packaging
+
+cell0-os (1.2.0-1) unstable; urgency=medium
+
+  * Initial release
+  * Sovereign Edge Model Operating System
+  * Multi-agent coordination
+  * TPV profile support
+  * Web UI, CLI, and API interfaces
+
+ -- Vael Zaru'Tahl Xeth (Yige) <yige@cell0.io>  Wed, 18 Feb 2026 09:52:00 +0200

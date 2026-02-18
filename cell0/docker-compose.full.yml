@@ -1,0 +1,199 @@
+# Multi-platform Docker Compose for Cell 0 OS
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # Cell 0 Core Services
+  # ============================================================================
+  
+  cell0-kernel:
+    build:
+      context: ./kernel
+      dockerfile: Dockerfile
+    container_name: cell0-kernel
+    privileged: true
+    volumes:
+      - kernel-logs:/var/log/cell0
+      - /dev:/dev
+      - /sys:/sys:ro
+      - /proc:/proc:ro
+    networks:
+      - cell0-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "cell0", "health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  cell0-daemon:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: cell0-daemon
+    ports:
+      - "18800:18800"  # HTTP API
+      - "18801:18801"  # WebSocket
+      - "18802:18802"  # Metrics
+    environment:
+      - CELL0_ENV=production
+      - CELL0_PORT=18800
+      - CELL0_WS_PORT=18801
+      - CELL0_METRICS_PORT=18802
+      - CELL0_LOG_LEVEL=INFO
+      - CELL0_STATE_DIR=/data/cell0
+      - CELL0_KERNEL_SOCKET=tcp://cell0-kernel:9000
+    volumes:
+      - cell0-data:/data/cell0
+      - kernel-logs:/var/log/cell0:ro
+      - ./config:/app/config:ro
+    networks:
+      - cell0-net
+    depends_on:
+      cell0-kernel:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18800/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ============================================================================
+  # AI/LLM Services
+  # ============================================================================
+  
+  ollama:
+    image: ollama/ollama:latest
+    container_name: cell0-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - cell0-net
+    restart: unless-stopped
+    # GPU support - uncomment for NVIDIA
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================================================
+  # Data & Caching Services
+  # ============================================================================
+  
+  redis:
+    image: redis:7-alpine
+    container_name: cell0-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - cell0-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # ============================================================================
+  # Monitoring Stack
+  # ============================================================================
+  
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: cell0-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - cell0-net
+    restart: unless-stopped
+    depends_on:
+      - cell0-daemon
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: cell0-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./docker/grafana:/etc/grafana/provisioning:ro
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-cell0-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    networks:
+      - cell0-net
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  # ============================================================================
+  # Optional: Signal Integration
+  # ============================================================================
+  
+  # signal-cli:
+  #   build:
+  #     context: ./docker/signal-cli
+  #     dockerfile: Dockerfile
+  #   container_name: cell0-signal
+  #   environment:
+  #     - SIGNAL_PHONE_NUMBER=${SIGNAL_PHONE_NUMBER}
+  #   volumes:
+  #     - signal-data:/var/lib/signal-cli
+  #   networks:
+  #     - cell0-net
+  #   restart: unless-stopped
+
+# ============================================================================
+# Networks & Volumes
+# ============================================================================
+
+networks:
+  cell0-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+volumes:
+  cell0-data:
+    driver: local
+  kernel-logs:
+    driver: local
+  ollama-data:
+    driver: local
+  redis-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  # signal-data:
+  #   driver: local

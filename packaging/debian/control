@@ -1,0 +1,37 @@
+Source: cell0-os
+Section: science
+Priority: optional
+Maintainer: Vael Zaru'Tahl Xeth (Yige) <yige@cell0.io>
+Build-Depends: debhelper (>= 12),
+               python3 (>= 3.9),
+               python3-setuptools,
+               python3-pip,
+               python3-venv,
+               dh-python
+Standards-Version: 4.5.1
+Homepage: https://cell0.io
+Vcs-Browser: https://github.com/cell0-os/cell0
+Vcs-Git: https://github.com/cell0-os/cell0.git
+Rules-Requires-Root: no
+
+Package: cell0-os
+Architecture: all
+Depends: ${python3:Depends},
+         ${misc:Depends},
+         python3 (>= 3.9),
+         python3-venv,
+         adduser
+Recommends: ollama
+Suggests: redis-server
+Description: Sovereign Edge Model Operating System
+ Cell 0 OS is a multi-layer computational substrate that combines
+ a bare-metal kernel, AI inference engine, and user interface layers
+ into a unified sovereign operating system.
+ .
+ Features:
+  - Edge-optimized AI inference (Ollama, MLX)
+  - Multi-agent coordination system
+  - Sovereign TPV (Thought-Preference-Value) profiles
+  - Web UI, CLI, and REST API interfaces
+  - Prometheus metrics and Grafana dashboards
+  - Kubernetes and Docker deployment ready
