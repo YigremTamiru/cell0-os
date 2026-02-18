@@ -9,7 +9,7 @@ set -euo pipefail
 # ============================================================================
 CELL0_VERSION="1.2.0"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PROJECT_ROOT="$SCRIPT_DIR"
 TEST_ROOT="$(mktemp -d)"
 INSTALL_DIR="$TEST_ROOT/.cell0"
 TEST_LOG="$TEST_ROOT/test.log"
@@ -891,8 +891,10 @@ main() {
     fi
     
     # Run tests
+    local start_time=$(date +%s)
     run_all_tests
-    local duration=$?
+    local end_time=$(date +%s)
+    local duration=$((end_time - start_time))
     
     # Print summary
     print_summary $duration
