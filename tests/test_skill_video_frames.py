@@ -16,8 +16,9 @@ from unittest.mock import Mock, patch, MagicMock
 import pytest
 
 # Add paths for imports - use relative paths
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'skills', 'video_frames'))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'skills'))
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, os.path.join(PROJECT_ROOT, 'skills', 'video-frames'))
+sys.path.insert(0, PROJECT_ROOT)
 
 from tools import (
     VideoProcessor,
