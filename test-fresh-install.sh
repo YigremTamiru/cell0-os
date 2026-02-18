@@ -36,6 +36,8 @@ log_info() { echo -e "${BLUE}[INFO]${NC} $1" | tee -a "$TEST_LOG"; }
 log_pass() { echo -e "${GREEN}[✓ PASS]${NC} $1" | tee -a "$TEST_LOG"; TESTS_PASSED=$((TESTS_PASSED + 1)); }
 log_fail() { echo -e "${RED}[✗ FAIL]${NC} $1" | tee -a "$TEST_LOG"; TESTS_FAILED=$((TESTS_FAILED + 1)); }
 log_skip() { echo -e "${YELLOW}[⊘ SKIP]${NC} $1" | tee -a "$TEST_LOG"; TESTS_SKIPPED=$((TESTS_SKIPPED + 1)); }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $1" | tee -a "$TEST_LOG"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1" | tee -a "$TEST_LOG"; }
 log_section() { echo -e "\n${CYAN}${BOLD}▶ $1${NC}" | tee -a "$TEST_LOG"; }
 log_test() { echo -e "${BOLD}Test $1:${NC} $2" | tee -a "$TEST_LOG"; }
 
@@ -108,7 +110,11 @@ test_03_required_tools() {
 test_04_disk_space() {
     log_test 4 "Available disk space"
     
-    local available=$(df -m "$TEST_ROOT" | awk 'NR==2 {print $4}')
+    # Use parent directory if TEST_ROOT doesn't exist yet
+    local check_dir="$TEST_ROOT"
+    [ -d "$check_dir" ] || check_dir=$(dirname "$TEST_ROOT")
+    
+    local available=$(df -m "$check_dir" | awk 'NR==2 {print $4}')
     if [ -n "$available" ] && [ "$available" -gt 500 ]; then
         log_pass "${available}MB available"
     else
