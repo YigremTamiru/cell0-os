@@ -1,0 +1,116 @@
+# Video Frames Skill Manifest
+# Cell 0 OS - Video Analysis via FFmpeg
+
+name: video-frames
+version: 1.0.0
+description: Advanced video processing and analysis using FFmpeg with GPU acceleration support
+author: Cell 0 OS
+license: MIT
+
+category: media
+keywords:
+  - video
+  - ffmpeg
+  - frames
+  - audio
+  - scene-detection
+  - thumbnails
+  - transcoding
+  - gpu
+  - cuda
+
+dependencies:
+  system:
+    - ffmpeg (>=4.4)
+    - ffprobe (>=4.4)
+  optional:
+    - nvidia-cuda-toolkit (for GPU acceleration)
+    - intel-qsv (for Intel Quick Sync)
+    - vaapi (for AMD/Intel VAAPI)
+  python:
+    - numpy>=1.20.0
+    - pillow>=9.0.0
+    - opencv-python>=4.5.0
+
+capabilities:
+  - video_frame_extraction
+  - audio_extraction
+  - scene_detection
+  - video_summarization
+  - thumbnail_generation
+  - format_conversion
+  - clip_extraction
+  - metadata_extraction
+  - batch_processing
+  - gpu_acceleration
+
+configuration:
+  default_output_format: "jpg"
+  default_frame_rate: 1
+  default_quality: 95
+  gpu_enabled: true
+  gpu_device: "auto"  # auto, cuda, qsv, vaapi, or specific device index
+  temp_directory: "/tmp/video-frames"
+  max_concurrent_jobs: 4
+  docker:
+    enabled: true
+    image: "jrottenberg/ffmpeg:latest"
+    gpu_image: "jrottenberg/ffmpeg:nvidia"
+    runtime: "nvidia"  # nvidia, or none
+
+endpoints:
+  - name: extract_frames
+    description: Extract frames from a video file
+    input: VideoFrameExtractionRequest
+    output: FrameExtractionResult
+    
+  - name: extract_audio
+    description: Extract audio from a video file
+    input: AudioExtractionRequest
+    output: AudioExtractionResult
+    
+  - name: detect_scenes
+    description: Detect scene changes in a video
+    input: SceneDetectionRequest
+    output: SceneDetectionResult
+    
+  - name: summarize_video
+    description: Generate video summary with key frames
+    input: VideoSummarizationRequest
+    output: VideoSummaryResult
+    
+  - name: generate_thumbnail
+    description: Generate video thumbnails
+    input: ThumbnailRequest
+    output: ThumbnailResult
+    
+  - name: convert_format
+    description: Convert video to different format
+    input: FormatConversionRequest
+    output: ConversionResult
+    
+  - name: extract_clip
+    description: Extract a clip from a video
+    input: ClipExtractionRequest
+    output: ClipExtractionResult
+    
+  - name: get_metadata
+    description: Extract video metadata
+    input: MetadataRequest
+    output: MetadataResult
+    
+  - name: batch_process
+    description: Process multiple videos in batch
+    input: BatchProcessingRequest
+    output: BatchProcessingResult
+
+health_check:
+  command: "ffmpeg -version"
+  interval: 60
+  timeout: 10
+
+resources:
+  cpu: "2 cores"
+  memory: "4GB"
+  disk: "10GB"
+  gpu: "optional - NVIDIA/Intel/AMD"

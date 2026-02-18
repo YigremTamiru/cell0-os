@@ -1,0 +1,396 @@
+name: gemini
+description: Google's Gemini API integration for Cell 0 OS. Supports Gemini 1.5 Pro, 1.5 Flash, and Ultra models. Features text generation, multimodal inputs (text + images), streaming responses, function calling, context caching, and code execution. Secure API key storage via 1Password with built-in rate limiting and token counting.
+homepage: https://ai.google.dev
+docs: https://ai.google.dev/gemini-api/docs
+metadata:
+  clawdbot:
+    emoji: ✨
+    requires:
+      bins:
+        - op
+      python:
+        - google-generativeai>=0.8.0
+        - pillow>=10.0.0
+    os:
+      - darwin
+      - linux
+      - win32
+    install:
+      - id: 1password-cli
+        kind: brew
+        formula: 1password-cli
+        bins:
+          - op
+        label: Install 1Password CLI for secure API key storage
+      - id: pip
+        kind: pip
+        packages:
+          - google-generativeai>=0.8.0
+          - pillow>=10.0.0
+        label: Install Python dependencies
+    capabilities:
+      - text_generation
+      - multimodal_generation
+      - streaming_generation
+      - function_calling
+      - context_caching
+      - code_execution
+      - token_counting
+      - rate_limiting
+    permissions:
+      - network
+      - filesystem
+    notes: Requires Gemini API key stored in 1Password. Supports rate limiting to prevent quota overuse.
+
+version: 1.0.0
+author: Cell 0 OS
+license: MIT
+platforms:
+  - darwin
+  - linux
+  - win32
+
+entry_point:
+  python: gemini_skill.py
+
+tools:
+  # Text Generation
+  - name: generate_text
+    description: Generate text using Gemini models
+    parameters:
+      prompt:
+        type: string
+        description: Text prompt for generation
+        required: true
+      model:
+        type: string
+        description: Model to use (gemini-1.5-pro, gemini-1.5-flash, gemini-ultra)
+        required: false
+        default: gemini-1.5-flash
+      temperature:
+        type: number
+        description: Sampling temperature (0.0 to 2.0)
+        required: false
+        default: 0.7
+      max_tokens:
+        type: integer
+        description: Maximum tokens to generate
+        required: false
+      top_p:
+        type: number
+        description: Nucleus sampling parameter (0.0 to 1.0)
+        required: false
+        default: 0.95
+      top_k:
+        type: integer
+        description: Top-k sampling parameter
+        required: false
+        default: 40
+      system_instruction:
+        type: string
+        description: System instruction to guide model behavior
+        required: false
+
+  # Multimodal Generation
+  - name: generate_multimodal
+    description: Generate text from text and image inputs
+    parameters:
+      prompt:
+        type: string
+        description: Text prompt to accompany the image(s)
+        required: true
+      images:
+        type: array
+        items:
+          type: string
+        description: List of image file paths or URLs
+        required: true
+      model:
+        type: string
+        description: Model to use (gemini-1.5-pro, gemini-1.5-flash, gemini-ultra)
+        required: false
+        default: gemini-1.5-pro
+      temperature:
+        type: number
+        description: Sampling temperature (0.0 to 2.0)
+        required: false
+        default: 0.7
+      max_tokens:
+        type: integer
+        description: Maximum tokens to generate
+        required: false
+
+  # Streaming Generation
+  - name: generate_streaming
+    description: Generate text with streaming response
+    parameters:
+      prompt:
+        type: string
+        description: Text prompt for generation
+        required: true
+      model:
+        type: string
+        description: Model to use
+        required: false
+        default: gemini-1.5-flash
+      temperature:
+        type: number
+        description: Sampling temperature
+        required: false
+        default: 0.7
+      max_tokens:
+        type: integer
+        description: Maximum tokens to generate
+        required: false
+
+  # Function Calling
+  - name: generate_with_functions
+    description: Generate text with function calling capabilities
+    parameters:
+      prompt:
+        type: string
+        description: Text prompt for generation
+        required: true
+      functions:
+        type: array
+        items:
+          type: object
+        description: List of function definitions
+        required: true
+      model:
+        type: string
+        description: Model to use
+        required: false
+        default: gemini-1.5-pro
+      temperature:
+        type: number
+        description: Sampling temperature
+        required: false
+        default: 0.7
+
+  # Context Caching
+  - name: create_cached_context
+    description: Create a cached context for efficient repeated queries
+    parameters:
+      contents:
+        type: array
+        items:
+          type: object
+        description: Content to cache (text and/or images)
+        required: true
+      model:
+        type: string
+        description: Model to use for cached context
+        required: false
+        default: gemini-1.5-pro
+      ttl_hours:
+        type: number
+        description: Time-to-live for cache in hours
+        required: false
+        default: 1
+      display_name:
+        type: string
+        description: Human-readable name for the cache
+        required: false
+
+  - name: query_cached_context
+    description: Query using a previously cached context
+    parameters:
+      cache_name:
+        type: string
+        description: Name of the cached context
+        required: true
+      prompt:
+        type: string
+        description: Query prompt
+        required: true
+      model:
+        type: string
+        description: Model to use
+        required: false
+        default: gemini-1.5-pro
+
+  - name: list_cached_contexts
+    description: List all active cached contexts
+    parameters:
+      model:
+        type: string
+        description: Filter by model (optional)
+        required: false
+
+  - name: delete_cached_context
+    description: Delete a cached context
+    parameters:
+      cache_name:
+        type: string
+        description: Name of the cache to delete
+        required: true
+
+  # Code Execution
+  - name: execute_code
+    description: Generate and execute Python code (sandboxed)
+    parameters:
+      prompt:
+        type: string
+        description: Request describing what code to generate and execute
+        required: true
+      model:
+        type: string
+        description: Model to use
+        required: false
+        default: gemini-1.5-pro
+      timeout:
+        type: integer
+        description: Execution timeout in seconds
+        required: false
+        default: 30
+
+  # Token Counting
+  - name: count_tokens
+    description: Count tokens for a given input without generating
+    parameters:
+      contents:
+        type: array
+        items:
+          type: object
+        description: Content to count (text and/or images)
+        required: true
+      model:
+        type: string
+        description: Model to use for token counting
+        required: false
+        default: gemini-1.5-flash
+
+  # Utility
+  - name: list_models
+    description: List available Gemini models and their capabilities
+    parameters: {}
+
+  - name: get_model_info
+    description: Get detailed information about a specific model
+    parameters:
+      model:
+        type: string
+        description: Model name (e.g., gemini-1.5-pro)
+        required: true
+
+dependencies:
+  python:
+    - google-generativeai>=0.8.0
+    - pillow>=10.0.0
+    - subprocess
+    - json
+    - os
+    - re
+    - typing
+    - dataclasses
+    - time
+    - hashlib
+    - base64
+    - io
+    - pathlib
+    - threading
+    - datetime
+
+setup:
+  instructions: |
+    ## Setup Instructions for Gemini Skill
+
+    ### Prerequisites
+    - 1Password CLI (op) installed
+    - Google AI Studio account with API key
+    - Python 3.9+
+
+    ### Installation
+
+    #### Install 1Password CLI
+    ```bash
+    # macOS
+    brew install 1password-cli
+
+    # Linux
+    curl -sS https://downloads.1password.com/linux/keys/1password.asc | \
+      sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$(dpkg --print-architecture) stable main" | \
+      sudo tee /etc/apt/sources.list.d/1password.list
+    sudo apt update && sudo apt install 1password-cli
+    ```
+
+    #### Install Python Dependencies
+    ```bash
+    pip install google-generativeai>=0.8.0 pillow>=10.0.0
+    ```
+
+    ### Getting a Gemini API Key
+
+    1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+    2. Sign in with your Google account
+    3. Click "Create API Key"
+    4. Copy the generated key
+
+    ### Store API Key in 1Password
+
+    ```bash
+    # Sign in to 1Password
+    op signin
+
+    # Store your Gemini API key
+    op item create --category="API Credential" \
+      --title="Gemini API Key" \
+      --credential-type="token" \
+      --credential="YOUR_API_KEY_HERE"
+    ```
+
+    ### Environment Configuration
+
+    Set the following environment variables in your shell profile:
+    ```bash
+    # ~/.zshrc or ~/.bashrc
+    export OP_VAULT="Private"           # Your 1Password vault name
+    export OP_GEMINI_ITEM="Gemini API Key"  # Item name containing your API key
+    ```
+
+    ### Model Information
+
+    | Model | Description | Best For |
+    |-------|-------------|----------|
+    | gemini-1.5-pro | Most capable model | Complex reasoning, coding, multimodal |
+    | gemini-1.5-flash | Fast and efficient | Quick responses, high volume tasks |
+    | gemini-ultra | Ultra-capable | Most complex tasks (limited availability) |
+
+    ### Rate Limits
+
+    The skill includes built-in rate limiting to prevent quota overuse:
+    - Requests per minute: 60 (default)
+    - Requests per day: 1500 (default)
+    - Tokens per minute: 1,000,000 (default)
+
+    These can be configured via environment variables or skill configuration.
+
+    ### Verification
+
+    ```bash
+    # Test the skill
+    python skills/gemini/gemini_skill.py generate-text --prompt "Hello, world!"
+
+    # List available models
+    python skills/gemini/gemini_skill.py list-models
+
+    # Count tokens
+    python skills/gemini/gemini_skill.py count-tokens --contents "Hello, world!"
+    ```
+
+    ### Troubleshooting
+
+    - **"API key not found"**: Ensure API key is stored in 1Password and environment variables are set
+    - **"429 Too Many Requests"**: You've hit rate limits; wait before retrying
+    - **"Model not found"**: Check available models with list-models command
+    - **"Invalid image format"**: Ensure images are JPG, PNG, WEBP, or HEIC format
+    - **"Context cache full"**: Delete unused caches with delete-cached-context command
+
+    ### Security Notes
+
+    - API keys are never stored in plain text
+    - All API calls use HTTPS
+    - Rate limiting prevents accidental quota overuse
+    - Code execution runs in a sandboxed environment

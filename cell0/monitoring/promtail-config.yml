@@ -1,0 +1,84 @@
+# Cell 0 OS - Promtail Configuration
+# Log shipper configuration for Loki
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  # ============================================================================
+  # Cell 0 Application Logs
+  # ============================================================================
+  - job_name: cell0-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: cell0
+          app: cell0-os
+          __path__: /var/log/cell0/*.json
+    
+    pipeline_stages:
+      # Parse JSON logs
+      - json:
+          expressions:
+            timestamp: timestamp
+            level: level
+            logger: logger
+            message: message
+            trace_id: trace_id
+            component: cell0.version
+      
+      # Set timestamp from log
+      - timestamp:
+          source: timestamp
+          format: RFC3339Nano
+      
+      # Set level label
+      - labels:
+          level:
+          logger:
+          trace_id:
+
+  # ============================================================================
+  # Cell 0 Error Logs
+  # ============================================================================
+  - job_name: cell0-errors
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: cell0-errors
+          app: cell0-os
+          level: error
+          __path__: /var/log/cell0/cell0-error.json
+
+  # ============================================================================
+  # Cell 0 Audit Logs
+  # ============================================================================
+  - job_name: cell0-audit
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: cell0-audit
+          app: cell0-os
+          type: audit
+          __path__: /var/log/cell0/cell0-audit.json
+
+  # ============================================================================
+  # System Logs (macOS/Linux)
+  # ============================================================================
+  - job_name: system
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: system
+          __path__: /var/log/*.log

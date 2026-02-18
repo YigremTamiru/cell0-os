@@ -1,0 +1,19 @@
+{
+  "agent_id": "kernel-smith",
+  "agent_type": "specialist",
+  "role": "kernel-developer",
+  "status": "active",
+  "current_task": "rust-kernel-hardening",
+  "focus_area": "kernel/rust",
+  "started_at": "2026-02-18T05:45:00Z",
+  "last_heartbeat": "2026-02-18T05:45:00Z",
+  "version": "1.0.0",
+  "capabilities": ["rust", "systems-programming", "kernel-development"],
+  "metrics": {
+    "tasks_completed": 0,
+    "tasks_in_progress": 1,
+    "blockers": []
+  },
+  "dependencies": [],
+  "priority": "high"
+}

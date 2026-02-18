@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cell0d - Event Stream Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --text-primary: #e0e0ff;
+            --text-secondary: #9090b0;
+            --accent-primary: #00d4aa;
+            --accent-secondary: #7c3aed;
+            --accent-warning: #f59e0b;
+            --accent-error: #ef4444;
+            --accent-info: #3b82f6;
+            --border-color: #2a2a3e;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-error);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected {
+            background: var(--accent-primary);
+        }
+
+        .status-dot.connecting {
+            background: var(--accent-warning);
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Layout */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 1px;
+            background: var(--border-color);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            overflow-y: auto;
+        }
+
+        .panel {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .panel h3 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        /* Event Filters */
+        .event-filters {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .filter-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .filter-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent-primary);
+        }
+
+        .filter-item label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 0.875rem;
+        }
+
+        .filter-badge {
+            font-size: 0.75rem;
+            padding: 0.125rem 0.375rem;
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+        }
+
+        /* Connection Controls */
+        .connection-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            background: #00b894;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Stats Panel */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Event Stream */
+        .event-stream-container {
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stream-header {
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stream-header h2 {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .stream-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .event-stream {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* Event Items */
+        .event-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            transition: all 0.2s;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .event-item:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .event-timestamp {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-family: monospace;
+            min-width: 80px;
+        }
+
+        .event-type {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+            text-transform: uppercase;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .event-type.system_status {
+            background: rgba(0, 212, 170, 0.2);
+            color: var(--accent-primary);
+        }
+
+        .event-type.chat_message {
+            background: rgba(124, 58, 237, 0.2);
+            color: var(--accent-secondary);
+        }
+
+        .event-type.model_activity {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--accent-info);
+        }
+
+        .event-type.mcic_event {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-warning);
+        }
+
+        .event-type.log_stream {
+            background: rgba(144, 144, 176, 0.2);
+            color: var(--text-secondary);
+        }
+
+        .event-type.heartbeat {
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--accent-primary);
+            opacity: 0.7;
+        }
+
+        .event-content {
+            flex: 1;
+            font-size: 0.875rem;
+            overflow-wrap: break-word;
+        }
+
+        .event-data {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-primary);
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                max-height: 300px;
+            }
+        }
+
+        /* Pulse animation for live indicator */
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--accent-primary);
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            animation: livePulse 1s infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* Reconnection overlay */
+        .reconnect-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 15, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .reconnect-content {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .reconnect-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="14" stroke="url(#gradient)" stroke-width="2"/>
+                <circle cx="16" cy="16" r="6" fill="url(#gradient)"/>
+                <defs>
+                    <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                        <stop stop-color="#00d4aa"/>
+                        <stop offset="1" stop-color="#7c3aed"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <h1>cell0d</h1>
+        </div>
+        <div class="status-indicator" id="connectionStatus">
+            <span class="status-dot" id="statusDot"></span>
+            <span id="statusText">Disconnected</span>
+        </div>
+    </header>
+
+    <main>
+        <aside class="sidebar">
+            <div class="panel">
+                <h3>Connection</h3>
+                <div class="connection-controls">
+                    <input type="text" id="wsUrl" placeholder="ws://localhost:8765" 
+                           value="ws://localhost:8765"
+                           style="width: 100%; padding: 0.5rem; background: var(--bg-secondary); 
+                                  border: 1px solid var(--border-color); border-radius: 4px; 
+                                  color: var(--text-primary); font-size: 0.875rem;">
+                    <button class="btn btn-primary" id="connectBtn" onclick="toggleConnection()">
+                        <span>Connect</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearEvents()">
+                        Clear Events
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Event Filters</h3>
+                <div class="event-filters" id="eventFilters">
+                    <div class="filter-item">
+                        <input type="checkbox" id="filter-system_status" checked onchange="updateFilters()">
+                        <label for="filter-system_status">System Status</label>
+                        <span class="filter-badge" id="count-system_status">0</span>
+                    </div>
+                    <div class="filter-item">
+                        <input type="checkbox" id="filter-chat_message" checked onchange="updateFilters()">
+                        <label for="filter-chat_message">Chat Messages</label>
+                        <span class="filter-badge" id="count-chat_message">0</span>
+                    </div>
+                    <div class="filter-item">
+                        <input type="checkbox" id="filter-model_activity" checked onchange="updateFilters()">
+                        <label for="filter-model_activity">Model Activity</label>
+                        <span class="filter-badge" id="count-model_activity">0</span>
+                    </div>
+                    <div class="filter-item">
+                        <input type="checkbox" id="filter-mcic_event" checked onchange="updateFilters()">
+                        <label for="filter-mcic_event">MCIC Events</label>
+                        <span class="filter-badge" id="count-mcic_event">0</span>
+                    </div>
+                    <div class="filter-item">
+                        <input type="checkbox" id="filter-log_stream" checked onchange="updateFilters()">
+                        <label for="filter-log_stream">Log Stream</label>
+                        <span class="filter-badge" id="count-log_stream">0</span>
+                    </div>
+                    <div class="filter-item">
+                        <input type="checkbox" id="filter-heartbeat" onchange="updateFilters()">
+                        <label for="filter-heartbeat">Heartbeat</label>
+                        <span class="filter-badge" id="count-heartbeat">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="statTotalEvents">0</div>
+                        <div class="stat-label">Total Events</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statConnected">0</div>
+                        <div class="stat-label">Clients</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statUptime">0s</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statLatency">-</div>
+                        <div class="stat-label">Latency</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="event-stream-container">
+            <div class="stream-header">
+                <div>
+                    <h2>Event Stream</h2>
+                    <span class="live-indicator" id="liveIndicator" style="display: none;">
+                        <span class="live-dot"></span>
+                        LIVE
+                    </span>
+                </div>
+                <div class="stream-controls">
+                    <button class="btn btn-secondary" onclick="toggleAutoScroll()">
+                        Auto-scroll: <span id="autoScrollStatus">ON</span>
+                    </button>
+                </div>
+            </div>
+            <div class="event-stream" id="eventStream">
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    <p>No events yet. Connect to start streaming.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="reconnect-overlay hidden" id="reconnectOverlay">
+        <div class="reconnect-content">
+            <div class="reconnect-spinner"></div>
+            <p>Reconnecting...</p>
+            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                Attempt <span id="reconnectAttempt">1</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Connection state
+        let ws = null;
+        let isConnected = false;
+        let isConnecting = false;
+        let reconnectAttempts = 0;
+        let reconnectDelay = 1000;
+        let maxReconnectDelay = 30000;
+        let pingInterval = null;
+        let pingSequence = 0;
+        let lastPingTime = null;
+        let autoScroll = true;
+        let eventCounts = {};
+        let filteredTypes = new Set();
+        let clientId = null;
+
+        // DOM elements
+        const connectBtn = document.getElementById('connectBtn');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const wsUrlInput = document.getElementById('wsUrl');
+        const eventStream = document.getElementById('eventStream');
+        const reconnectOverlay = document.getElementById('reconnectOverlay');
+        const liveIndicator = document.getElementById('liveIndicator');
+
+        function updateConnectionStatus(status) {
+            statusDot.className = 'status-dot';
+            
+            switch(status) {
+                case 'connected':
+                    statusDot.classList.add('connected');
+                    statusText.textContent = 'Connected';
+                    connectBtn.innerHTML = '<span>Disconnect</span>';
+                    liveIndicator.style.display = 'inline-flex';
+                    reconnectOverlay.classList.add('hidden');
+                    wsUrlInput.disabled = true;
+                    break;
+                case 'connecting':
+                    statusDot.classList.add('connecting');
+                    statusText.textContent = 'Connecting...';
+                    connectBtn.innerHTML = '<span>Cancel</span>';
+                    connectBtn.disabled = false;
+                    break;
+                case 'disconnected':
+                    statusText.textContent = 'Disconnected';
+                    connectBtn.innerHTML = '<span>Connect</span>';
+                    connectBtn.disabled = false;
+                    liveIndicator.style.display = 'none';
+                    wsUrlInput.disabled = false;
+                    break;
+            }
+        }
+
+        function connect() {
+            if (isConnected || isConnecting) return;
+            
+            isConnecting = true;
+            updateConnectionStatus('connecting');
+            
+            const url = wsUrlInput.value || 'ws://localhost:8765';
+            
+            try {
+                ws = new WebSocket(url);
+                
+                ws.onopen = () => {
+                    console.log('WebSocket connected');
+                    isConnected = true;
+                    isConnecting = false;
+                    reconnectAttempts = 0;
+                    reconnectDelay = 1000;
+                    updateConnectionStatus('connected');
+                    
+                    // Subscribe to events based on filters
+                    updateFilters();
+                    
+                    // Start ping interval
+                    startPingInterval();
+                    
+                    // Clear empty state if present
+                    if (eventStream.querySelector('.empty-state')) {
+                        eventStream.innerHTML = '';
+                    }
+                };
+                
+                ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        handleMessage(data);
+                    } catch (e) {
+                        console.error('Error parsing message:', e);
+                    }
+                };
+                
+                ws.onclose = () => {
+                    console.log('WebSocket closed');
+                    handleDisconnect();
+                };
+                
+                ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    handleDisconnect();
+                };
+                
+            } catch (error) {
+                console.error('Connection error:', error);
+                handleDisconnect();
+            }
+        }
+
+        function handleDisconnect() {
+            isConnected = false;
+            isConnecting = false;
+            stopPingInterval();
+            updateConnectionStatus('disconnected');
+            
+            // Attempt reconnection if not manually disconnected
+            if (reconnectAttempts < 10) {
+                reconnectAttempts++;
+                document.getElementById('reconnectAttempt').textContent = reconnectAttempts;
+                reconnectOverlay.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    reconnectDelay = Math.min(reconnectDelay * 1.5, maxReconnectDelay);
+                    connect();
+                }, reconnectDelay);
+            } else {
+                reconnectOverlay.classList.add('hidden');
+                addEvent({
+                    type: 'system_status',
+                    timestamp: new Date().toISOString(),
+                    data: { message: 'Max reconnection attempts reached' }
+                });
+            }
+        }
+
+        function disconnect() {
+            reconnectAttempts = 999; // Prevent auto-reconnect
+            if (ws) {
+                ws.close();
+            }
+            isConnected = false;
+            isConnecting = false;
+            updateConnectionStatus('disconnected');
+            stopPingInterval();
+        }
+
+        function toggleConnection() {
+            if (isConnected || isConnecting) {
+                disconnect();
+            } else {
+                reconnectAttempts = 0;
+                connect();
+            }
+        }
+
+        function startPingInterval() {
+            pingInterval = setInterval(() => {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    pingSequence++;
+                    lastPingTime = Date.now();
+                    ws.send(JSON.stringify({
+                        type: 'ping',
+                        sequence: pingSequence
+                    }));
+                }
+            }, 30000); // Ping every 30 seconds
+        }
+
+        function stopPingInterval() {
+            if (pingInterval) {
+                clearInterval(pingInterval);
+                pingInterval = null;
+            }
+        }
+
+        function handleMessage(data) {
+            switch(data.type) {
+                case 'connection_established':
+                    clientId = data.client_id;
+                    console.log('Connected with client ID:', clientId);
+                    break;
+                    
+                case 'pong':
+                    if (lastPingTime) {
+                        const latency = Date.now() - lastPingTime;
+                        document.getElementById('statLatency').textContent = latency + 'ms';
+                    }
+                    break;
+                    
+                case 'event':
+                    addEvent(data.event);
+                    break;
+                    
+                case 'event_history':
+                    // Handle event history
+                    if (data.events) {
+                        data.events.forEach(event => addEvent(event));
+                    }
+                    break;
+                    
+                case 'server_stats':
+                    if (data.stats) {
+                        document.getElementById('statConnected').textContent = 
+                            data.stats.connected_clients || 0;
+                    }
+                    break;
+                    
+                case 'subscription_updated':
+                    console.log('Subscription updated:', data.subscribed_events);
+                    break;
+                    
+                case 'error':
+                    console.error('Server error:', data.error);
+                    break;
+            }
+        }
+
+        function addEvent(event) {
+            const eventType = event.type;
+            
+            // Update count
+            eventCounts[eventType] = (eventCounts[eventType] || 0) + 1;
+            const badge = document.getElementById('count-' + eventType);
+            if (badge) {
+                badge.textContent = eventCounts[eventType];
+            }
+            
+            // Update total
+            const total = Object.values(eventCounts).reduce((a, b) => a + b, 0);
+            document.getElementById('statTotalEvents').textContent = total;
+            
+            // Check if filtered
+            if (filteredTypes.has(eventType)) {
+                return;
+            }
+            
+            // Remove empty state if present
+            const emptyState = eventStream.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+            
+            // Create event element
+            const eventEl = document.createElement('div');
+            eventEl.className = 'event-item';
+            
+            const timestamp = new Date(event.timestamp).toLocaleTimeString();
+            const typeClass = eventType.toLowerCase().replace('_', '-');
+            
+            let content = '';
+            if (event.data) {
+                if (event.data.message) {
+                    content = event.data.message;
+                } else if (event.data.status) {
+                    content = event.data.status;
+                } else {
+                    content = JSON.stringify(event.data).slice(0, 100) + '...';
+                }
+            }
+            
+            eventEl.innerHTML = `
+                <div class="event-timestamp">${timestamp}</div>
+                <div class="event-type ${typeClass}">${eventType}</div>
+                <div class="event-content">
+                    <div>${content}</div>
+                    ${event.data ? `<div class="event-data">${JSON.stringify(event.data, null, 2)}</div>` : ''}
+                </div>
+            `;
+            
+            eventStream.appendChild(eventEl);
+            
+            // Auto-scroll
+            if (autoScroll) {
+                eventStream.scrollTop = eventStream.scrollHeight;
+            }
+            
+            // Limit number of displayed events
+            while (eventStream.children.length > 500) {
+                eventStream.removeChild(eventStream.firstChild);
+            }
+        }
+
+        function updateFilters() {
+            filteredTypes.clear();
+            
+            const eventTypes = ['system_status', 'chat_message', 'model_activity', 
+                              'mcic_event', 'log_stream', 'heartbeat'];
+            
+            eventTypes.forEach(type => {
+                const checkbox = document.getElementById('filter-' + type);
+                if (!checkbox.checked) {
+                    filteredTypes.add(type);
+                }
+            });
+            
+            // Send subscription update to server
+            if (isConnected && ws) {
+                const subscribedEvents = eventTypes.filter(t => !filteredTypes.has(t));
+                ws.send(JSON.stringify({
+                    type: 'subscribe',
+                    event_types: subscribedEvents,
+                    replace: true
+                }));
+            }
+        }
+
+        function clearEvents() {
+            eventStream.innerHTML = `
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    <p>Events cleared. Waiting for new events...</p>
+                </div>
+            `;
+            eventCounts = {};
+            document.getElementById('statTotalEvents').textContent = '0';
+            document.querySelectorAll('.filter-badge').forEach(badge => {
+                badge.textContent = '0';
+            });
+        }
+
+        function toggleAutoScroll() {
+            autoScroll = !autoScroll;
+            document.getElementById('autoScrollStatus').textContent = autoScroll ? 'ON' : 'OFF';
+        }
+
+        // Update uptime display
+        let uptimeSeconds = 0;
+        setInterval(() => {
+            if (isConnected) {
+                uptimeSeconds++;
+                const hours = Math.floor(uptimeSeconds / 3600);
+                const minutes = Math.floor((uptimeSeconds % 3600) / 60);
+                const seconds = uptimeSeconds % 60;
+                
+                let display = '';
+                if (hours > 0) display += hours + 'h ';
+                if (minutes > 0) display += minutes + 'm ';
+                display += seconds + 's';
+                
+                document.getElementById('statUptime').textContent = display;
+            }
+        }, 1000);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'c':
+                        if (!isConnecting) {
+                            e.preventDefault();
+                            toggleConnection();
+                        }
+                        break;
+                    case 'k':
+                        e.preventDefault();
+                        clearEvents();
+                        break;
+                }
+            }
+        });
+
+        // Initial state
+        updateConnectionStatus('disconnected');
+    </script>
+</body>
+</html>

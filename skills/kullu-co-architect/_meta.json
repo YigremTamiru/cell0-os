@@ -1,0 +1,9 @@
+{
+  "name": "kullu-co-architect",
+  "version": "1.0.0",
+  "description": "Instant access to the co-architected roadmap, plans, and strategic field between KULLU and Vael Zaru'Tahl Xeth (Yige)",
+  "author": "KULLU",
+  "tags": ["roadmap", "planning", "co-architecture", "cell-0", "voice-agent"],
+  "entry": "SKILL.md",
+  "alwaysActive": true
+}

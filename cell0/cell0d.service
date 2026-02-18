@@ -1,0 +1,24 @@
+[Unit]
+Description=Cell 0 OS Daemon
+After=network.target
+
+[Service]
+Type=simple
+User=%I
+WorkingDirectory=/Users/yigremgetachewtamiru/.openclaw/workspace/cell0
+Environment=CELL0_ENV=production
+Environment=CELL0_PORT=18800
+Environment=CELL0_WS_PORT=18801
+Environment=CELL0_METRICS_PORT=18802
+Environment=CELL0_LOG_LEVEL=INFO
+Environment=PYTHONPATH=/Users/yigremgetachewtamiru/.openclaw/workspace/cell0
+ExecStart=/Users/yigremgetachewtamiru/.openclaw/workspace/cell0/venv/bin/python cell0d.py
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=cell0d
+
+[Install]
+WantedBy=multi-user.target

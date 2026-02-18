@@ -1,0 +1,21 @@
+{{- if .Values.podDisruptionBudget.enabled }}
+apiVersion: {{ include "cell0.pdb.apiVersion" . }}
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "cell0.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "cell0.labels" . | nindent 4 }}
+    app.kubernetes.io/component: pdb
+spec:
+  {{- if .Values.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  {{- end }}
+  {{- if .Values.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "cell0.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: api
+{{- end }}

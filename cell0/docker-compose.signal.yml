@@ -1,0 +1,131 @@
+# Docker Compose configuration for Signal CLI integration with Cell 0 OS
+#
+# Usage:
+#   docker-compose up -d
+#
+# To register a new number:
+#   1. Set SIGNAL_CLI_PHONE_NUMBER in .env file
+#   2. Run: docker-compose exec signal-cli-register
+#
+# To use existing registration:
+#   Mount your signal-cli config directory to /home/.local/share/signal-cli
+
+version: '3.8'
+
+services:
+  signal-cli:
+    build:
+      context: ./docker/signal-cli
+      dockerfile: Dockerfile
+    container_name: cell0-signal-cli
+    hostname: signal-cli
+    
+    ports:
+      - "${SIGNAL_CLI_PORT:-8080}:8080"
+    
+    environment:
+      - SIGNAL_CLI_PHONE_NUMBER=${SIGNAL_CLI_PHONE_NUMBER:-}
+      - SIGNAL_CLI_MODE=${SIGNAL_CLI_MODE:-normal}
+      - SIGNAL_CLI_LOG_LEVEL=${SIGNAL_CLI_LOG_LEVEL:-INFO}
+      # Native mode settings (optional, for ARM64 performance)
+      - SIGNAL_CLI_NATIVE_MODE=${SIGNAL_CLI_NATIVE_MODE:-false}
+    
+    volumes:
+      # Persist signal-cli configuration
+      - signal-cli-data:/home/.local/share/signal-cli
+      # Cell 0 data directory
+      - ./data/signal:/data/cell0-signal
+      # Optional: Mount existing config
+      - ${SIGNAL_CLI_CONFIG_PATH:-signal-cli-data}:/home/.local/share/signal-cli
+    
+    networks:
+      - cell0-network
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Optional: Registration helper service
+  signal-cli-register:
+    build:
+      context: ./docker/signal-cli
+      dockerfile: Dockerfile
+    container_name: cell0-signal-register
+    profiles:
+      - register  # Only runs when explicitly requested
+    
+    environment:
+      - SIGNAL_CLI_PHONE_NUMBER=${SIGNAL_CLI_PHONE_NUMBER:-}
+    
+    volumes:
+      - signal-cli-data:/home/.local/share/signal-cli
+    
+    networks:
+      - cell0-network
+    
+    command: >
+      sh -c "
+        echo 'Signal CLI Registration Helper' &&
+        echo '' &&
+        echo 'To register a new number:' &&
+        echo '1. Run: docker-compose run --rm signal-cli-register register' &&
+        echo '2. Wait for verification code via SMS or voice call' &&
+        echo '3. Run: docker-compose run --rm signal-cli-register verify CODE' &&
+        echo '' &&
+        echo 'To link to existing device:' &&
+        echo '1. Run: docker-compose run --rm signal-cli-register link' &&
+        echo '2. Scan QR code with your Signal app' &&
+        echo ''
+      "
+
+  # Optional: Signal CLI backup service
+  signal-cli-backup:
+    image: alpine:latest
+    container_name: cell0-signal-backup
+    profiles:
+      - backup
+    
+    volumes:
+      - signal-cli-data:/data/source:ro
+      - ./backups/signal:/data/backup
+    
+    command: >
+      sh -c "
+        apk add --no-cache tar gzip &&
+        BACKUP_FILE=\"/data/backup/signal-cli-\$$(date +%Y%m%d-%H%M%S).tar.gz\" &&
+        tar -czf \"\$$BACKUP_FILE\" -C /data/source . &&
+        echo \"Backup created: \$$BACKUP_FILE\"
+      "
+
+volumes:
+  signal-cli-data:
+    driver: local
+
+networks:
+  cell0-network:
+    name: cell0-network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

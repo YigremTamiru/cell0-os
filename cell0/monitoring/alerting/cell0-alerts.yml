@@ -1,0 +1,245 @@
+# Cell 0 OS - Prometheus Alert Rules
+# Alert definitions for Cell 0 monitoring
+
+groups:
+  # ============================================================================
+  # Critical Alerts
+  # ============================================================================
+  - name: cell0-critical
+    interval: 30s
+    rules:
+      # Cell 0 Down
+      - alert: Cell0Down
+        expr: up{job=~"cell0.*"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: cell0
+        annotations:
+          summary: "Cell 0 instance {{ $labels.instance }} is down"
+          description: "Cell 0 {{ $labels.job }} has been down for more than 1 minute."
+          runbook_url: "https://wiki.internal/runbooks/cell0-down"
+
+      # Ollama Unavailable
+      - alert: OllamaUnavailable
+        expr: cell0_ollama_connection_status{state="connected"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: ollama
+        annotations:
+          summary: "Ollama service is unavailable"
+          description: "Ollama connection has been down for more than 2 minutes."
+          runbook_url: "https://wiki.internal/runbooks/ollama-down"
+
+      # High Error Rate
+      - alert: HighErrorRate
+        expr: |
+          (
+            sum(rate(cell0_api_requests_total{status=~"5.."}[5m]))
+            /
+            sum(rate(cell0_api_requests_total[5m]))
+          ) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+          service: api
+        annotations:
+          summary: "High error rate on API"
+          description: "Error rate is above 10% for more than 5 minutes."
+          runbook_url: "https://wiki.internal/runbooks/high-error-rate"
+
+      # Disk Space Critical
+      - alert: DiskSpaceCritical
+        expr: cell0_disk_usage_bytes / (cell0_disk_usage_bytes + cell0_disk_free_bytes) > 0.95
+        for: 5m
+        labels:
+          severity: critical
+          service: system
+        annotations:
+          summary: "Disk space critical on {{ $labels.instance }}"
+          description: "Disk usage is above 95% for more than 5 minutes."
+          runbook_url: "https://wiki.internal/runbooks/disk-space"
+
+      # Memory Critical
+      - alert: MemoryCritical
+        expr: cell0_memory_usage_bytes / cell0_memory_total_bytes > 0.95
+        for: 5m
+        labels:
+          severity: critical
+          service: system
+        annotations:
+          summary: "Memory usage critical on {{ $labels.instance }}"
+          description: "Memory usage is above 95% for more than 5 minutes."
+          runbook_url: "https://wiki.internal/runbooks/memory-pressure"
+
+  # ============================================================================
+  # Warning Alerts
+  # ============================================================================
+  - name: cell0-warnings
+    interval: 1m
+    rules:
+      # High Inference Latency
+      - alert: HighInferenceLatency
+        expr: |
+          histogram_quantile(0.99,
+            rate(cell0_inference_latency_seconds_bucket[5m])
+          ) > 10
+        for: 5m
+        labels:
+          severity: warning
+          service: inference
+        annotations:
+          summary: "High inference latency"
+          description: "99th percentile inference latency is above 10 seconds."
+          runbook_url: "https://wiki.internal/runbooks/inference-latency"
+
+      # High API Latency
+      - alert: HighAPILatency
+        expr: |
+          histogram_quantile(0.99,
+            rate(cell0_api_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: "High API latency"
+          description: "99th percentile API latency is above 2 seconds."
+          runbook_url: "https://wiki.internal/runbooks/api-latency"
+
+      # Disk Space Warning
+      - alert: DiskSpaceWarning
+        expr: cell0_disk_usage_bytes / (cell0_disk_usage_bytes + cell0_disk_free_bytes) > 0.8
+        for: 10m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "Disk space warning on {{ $labels.instance }}"
+          description: "Disk usage is above 80%."
+          runbook_url: "https://wiki.internal/runbooks/disk-space"
+
+      # Memory Warning
+      - alert: MemoryWarning
+        expr: cell0_memory_usage_bytes / cell0_memory_total_bytes > 0.8
+        for: 10m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 80%."
+          runbook_url: "https://wiki.internal/runbooks/memory-pressure"
+
+      # High CPU Usage
+      - alert: HighCPUUsage
+        expr: cell0_cpu_usage_percent > 80
+        for: 10m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage has been above 80% for more than 10 minutes."
+          runbook_url: "https://wiki.internal/runbooks/cpu-usage"
+
+      # WebSocket Connection Issues
+      - alert: WebSocketConnectionIssues
+        expr: |
+          rate(cell0_websocket_errors_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: websocket
+        annotations:
+          summary: "WebSocket connection issues"
+          description: "High rate of WebSocket errors detected."
+          runbook_url: "https://wiki.internal/runbooks/websocket-issues"
+
+      # Agent Health Issues
+      - alert: AgentHealthIssues
+        expr: |
+          (
+            cell0_agents_healthy / cell0_agents_active
+          ) < 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: agents
+        annotations:
+          summary: "Agent health degraded"
+          description: "Less than 80% of agents are healthy."
+          runbook_url: "https://wiki.internal/runbooks/agent-health"
+
+      # Signal Integration Issues
+      - alert: SignalIntegrationIssues
+        expr: cell0_signal_connection_status{state="connected"} == 0
+        for: 5m
+        labels:
+          severity: warning
+          service: signal
+        annotations:
+          summary: "Signal integration issues"
+          description: "Signal connection has been down for more than 5 minutes."
+          runbook_url: "https://wiki.internal/runbooks/signal-issues"
+
+  # ============================================================================
+  # Info Alerts
+  # ============================================================================
+  - name: cell0-info
+    interval: 5m
+    rules:
+      # Model Load Time High
+      - alert: ModelLoadTimeHigh
+        expr: cell0_model_load_duration_seconds > 60
+        for: 0m
+        labels:
+          severity: info
+          service: inference
+        annotations:
+          summary: "Model load time is high"
+          description: "Model {{ $labels.model }} took more than 60 seconds to load."
+
+      # High Queue Size
+      - alert: InferenceQueueHigh
+        expr: cell0_inference_queue_size > 10
+        for: 5m
+        labels:
+          severity: info
+          service: inference
+        annotations:
+          summary: "Inference queue size is high"
+          description: "Queue size has been above 10 for more than 5 minutes."
+
+  # ============================================================================
+  # Capacity Planning Alerts
+  # ============================================================================
+  - name: cell0-capacity
+    interval: 5m
+    rules:
+      # Predicted Disk Full (7 days)
+      - alert: DiskWillFillIn7Days
+        expr: |
+          predict_linear(
+            cell0_disk_usage_bytes[6h], 7 * 24 * 3600
+          ) > (cell0_disk_usage_bytes + cell0_disk_free_bytes)
+        for: 1h
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "Disk will fill in 7 days"
+          description: "Based on current usage, disk will be full in 7 days."
+
+      # High Connection Count
+      - alert: HighWebSocketConnections
+        expr: cell0_websocket_connections_active > 500
+        for: 10m
+        labels:
+          severity: info
+          service: websocket
+        annotations:
+          summary: "High WebSocket connection count"
+          description: "More than 500 active WebSocket connections."

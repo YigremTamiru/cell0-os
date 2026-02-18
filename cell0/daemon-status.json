@@ -1,0 +1,35 @@
+{
+  "daemon": "cell0d",
+  "version": "1.2.0",
+  "status": "operational",
+  "timestamp": "2026-02-18T07:50:00Z",
+  "features": {
+    "mlx_bridge": true,
+    "websocket_gateway": true,
+    "prometheus_metrics": true,
+    "agent_coordinator": true,
+    "security": true,
+    "health_checks": true
+  },
+  "ports": {
+    "http": 18800,
+    "websocket": 18801,
+    "metrics": 18802
+  },
+  "endpoints": {
+    "health": "http://localhost:18800/health",
+    "ready": "http://localhost:18800/ready",
+    "live": "http://localhost:18800/live",
+    "status": "http://localhost:18800/api/status",
+    "mlx_status": "http://localhost:18800/api/mlx/status",
+    "websocket": "ws://localhost:18800/ws/agents/{agent_id}",
+    "metrics": "http://localhost:18802/metrics"
+  },
+  "last_update": "2026-02-18T07:50:00Z",
+  "notes": [
+    "MLX GPU acceleration enabled for Apple Silicon",
+    "WebSocket gateway ready for real-time agent communication",
+    "Prometheus metrics exposed on port 18802",
+    "K8s health probes available at /health, /ready, /live"
+  ]
+}

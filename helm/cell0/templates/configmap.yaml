@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cell0.configMapName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "cell0.labels" . | nindent 4 }}
+data:
+  CELL0_ENV: {{ .Values.config.env | quote }}
+  CELL0_LOG_LEVEL: {{ .Values.config.logLevel | quote }}
+  CELL0_LOG_FORMAT: {{ .Values.config.logFormat | quote }}
+  CELL0_HOST: {{ .Values.config.host | quote }}
+  CELL0_PORT: {{ .Values.config.port | quote }}
+  CELL0_METRICS_ENABLED: {{ .Values.config.metricsEnabled | quote }}
+  CELL0_METRICS_PORT: {{ .Values.config.metricsPort | quote }}
+  CELL0_WORKERS: {{ .Values.config.workers | quote }}
+  CELL0_MAX_CONNECTIONS: {{ .Values.config.maxConnections | quote }}
+  CELL0_REQUEST_TIMEOUT: {{ .Values.config.requestTimeout | quote }}
+  CELL0_WEBSOCKET_TIMEOUT: {{ .Values.config.websocketTimeout | quote }}
+  CELL0_ENABLE_SWARM: {{ .Values.config.features.swarm | quote }}
+  CELL0_ENABLE_CANVAS: {{ .Values.config.features.canvas | quote }}
+  CELL0_ENABLE_SIGNAL: {{ .Values.config.features.signal | quote }}
+  CELL0_ENABLE_TTS: {{ .Values.config.features.tts | quote }}
+  CELL0_OLLAMA_URL: {{ .Values.config.ollamaUrl | quote }}
+  CELL0_REDIS_URL: {{ .Values.config.redisUrl | quote }}
+  CELL0_CORS_ORIGINS: {{ .Values.config.security.corsOrigins | quote }}
+  CELL0_RATE_LIMIT_ENABLED: {{ .Values.config.security.rateLimitEnabled | quote }}
+  CELL0_RATE_LIMIT_REQUESTS: {{ .Values.config.security.rateLimitRequests | quote }}
+  CELL0_RATE_LIMIT_WINDOW: {{ .Values.config.security.rateLimitWindow | quote }}
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONUNBUFFERED: "1"
+  PYTHONFAULTHANDLER: "1"

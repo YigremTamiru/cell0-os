@@ -1,0 +1,210 @@
+name: weather
+description: Weather information service using wttr.in - current weather, forecasts, air quality, sunrise/sunset times, and historical data for any location worldwide. No API key required.
+homepage: https://wttr.in
+metadata:
+  clawdbot:
+    emoji: 🌤️
+    requires:
+      bins:
+        - curl
+      network: true
+    capabilities:
+      - get_current_weather
+      - get_forecast
+      - get_weather_alerts
+      - get_air_quality
+      - get_sunrise_sunset
+      - get_historical_weather
+      - format_location
+    permissions:
+      - network
+    notes: Uses wttr.in free weather service. No API key required. Requires internet connection.
+
+version: 1.0.0
+author: Cell 0 OS
+license: MIT
+platforms:
+  - darwin
+  - linux
+
+entry_point:
+  python: weather_skill.py
+  
+tools:
+  - name: get_current_weather
+    description: Get current weather conditions for a location
+    parameters:
+      location:
+        type: string
+        description: Location (city name, coordinates, airport code, domain name, etc.)
+        required: true
+      units:
+        type: string
+        description: Temperature units - metric (C) or imperial (F)
+        required: false
+        default: metric
+      
+  - name: get_forecast
+    description: Get weather forecast for a location
+    parameters:
+      location:
+        type: string
+        description: Location (city name, coordinates, airport code, etc.)
+        required: true
+      days:
+        type: integer
+        description: Number of days to forecast (1-3)
+        required: false
+        default: 3
+      units:
+        type: string
+        description: Temperature units - metric (C) or imperial (F)
+        required: false
+        default: metric
+      
+  - name: get_weather_alerts
+    description: Get weather alerts and warnings for a location
+    parameters:
+      location:
+        type: string
+        description: Location (city name, coordinates, etc.)
+        required: true
+      
+  - name: get_air_quality
+    description: Get air quality information for a location
+    parameters:
+      location:
+        type: string
+        description: Location (city name, coordinates, etc.)
+        required: true
+      
+  - name: get_sunrise_sunset
+    description: Get sunrise and sunset times for a location
+    parameters:
+      location:
+        type: string
+        description: Location (city name, coordinates, etc.)
+        required: true
+      
+  - name: get_historical_weather
+    description: Get historical weather data for a location and date
+    parameters:
+      location:
+        type: string
+        description: Location (city name, coordinates, etc.)
+        required: true
+      date:
+        type: string
+        description: Date in YYYY-MM-DD format (up to ~1 year in the past)
+        required: true
+
+dependencies:
+  python:
+    - requests
+    - json
+    - re
+    - typing
+    - datetime
+    - html
+    
+setup:
+  instructions: |
+    ## Setup Instructions for Weather Skill
+
+    ### Prerequisites
+    - Python 3.7+
+    - requests library (will be auto-installed if missing)
+    - Internet connection
+
+    ### No API Key Required!
+    This skill uses wttr.in, a free weather service that requires no API key.
+
+    ### Installation
+    ```bash
+    # The skill is ready to use - no additional installation needed!
+    # Just ensure you have an internet connection.
+    ```
+
+    ### Location Formats Supported
+    
+    wttr.in accepts various location formats:
+    
+    1. **City Names**:
+       - `London`
+       - `New York`
+       - `Tokyo`
+       - `Addis Ababa`
+    
+    2. **Airport Codes (IATA)**:
+       - `JFK` - New York JFK
+       - `LHR` - London Heathrow
+       - `CDG` - Paris Charles de Gaulle
+       - `NRT` - Tokyo Narita
+    
+    3. **Coordinates**:
+       - `51.5074,-0.1278` - London
+       - `40.7128,-74.0060` - New York
+    
+    4. **Domain Names**:
+       - `@github.com` - Weather at GitHub's location
+       - `@google.com` - Weather at Google's location
+    
+    5. **Special Locations**:
+       - `moon` - Moon phase
+       - `:ip` - Weather at your IP location
+    
+    6. **Unicode/Emoji**:
+       - Many Unicode characters are supported
+
+    ### Usage Examples
+
+    ```python
+    from skills.weather.weather_skill import WeatherSkill
+    
+    weather = WeatherSkill()
+    
+    # Current weather
+    current = weather.get_current_weather("London")
+    print(current)
+    
+    # 3-day forecast
+    forecast = weather.get_forecast("New York", days=3)
+    print(forecast)
+    
+    # Air quality
+    aqi = weather.get_air_quality("Beijing")
+    print(aqi)
+    
+    # Sunrise/sunset
+    sun = weather.get_sunrise_sunset("Tokyo")
+    print(sun)
+    ```
+
+    ### Output Formats
+
+    The skill provides structured data that can be formatted as:
+    - Human-readable text
+    - JSON for programmatic use
+    - Markdown for documentation
+
+    ### Rate Limiting
+
+    wttr.in has generous rate limits, but please be respectful:
+    - Don't hammer the service with requests
+    - Cache results when appropriate
+    - For heavy use, consider caching for 15-30 minutes
+
+    ### Troubleshooting
+
+    - **Connection errors**: Check internet connection
+    - **Location not found**: Try different location format
+    - **Slow responses**: wttr.in can be slow at times; be patient
+    - **Data unavailable**: Some features may not be available for all locations
+
+    ### Data Sources
+
+    wttr.in aggregates data from multiple sources:
+    - World Weather Online
+    - OpenWeatherMap
+    - MET Norway
+    - And others...

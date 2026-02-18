@@ -1,0 +1,44 @@
+apiVersion: v2
+name: cell0
+description: Cell 0 OS - Sovereign Edge Model Operating System
+type: application
+version: 1.1.5
+appVersion: "1.1.5"
+kubeVersion: ">=1.24.0-0"
+keywords:
+  - ai
+  - llm
+  - edge-computing
+  - ollama
+  - sovereign
+  - privacy
+home: https://cell0.io
+sources:
+  - https://github.com/cell0-os/cell0
+maintainers:
+  - name: Cell 0 OS Team
+    email: team@cell0.io
+    url: https://cell0.io
+dependencies:
+  - name: redis
+    version: 18.x.x
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
+  - name: postgresql
+    version: 13.x.x
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+annotations:
+  artifacthub.io/license: GPL-3.0
+  artifacthub.io/prerelease: "false"
+  artifacthub.io/changes: |
+    - kind: added
+      description: Initial production-ready Helm chart
+  artifacthub.io/links: |
+    - name: Documentation
+      url: https://docs.cell0.io
+    - name: Source
+      url: https://github.com/cell0-os/cell0
+  artifacthub.io/images: |
+    - name: cell0
+      image: ghcr.io/cell0-os/cell0:1.1.5

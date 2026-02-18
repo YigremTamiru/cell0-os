@@ -1,0 +1,306 @@
+name: apple-reminders
+description: Manage Apple Reminders via the remindctl CLI tool. List, create, edit, complete, and delete reminders and reminder lists on macOS.
+homepage: https://github.com/steipete/remindctl
+metadata:
+  clawdbot:
+    emoji: ✅
+    requires:
+      bins:
+        - remindctl
+      os:
+        - macos
+    install:
+      - id: brew
+        kind: brew
+        tap: steipete/tap
+        formula: steipete/tap/remindctl
+        bins:
+          - remindctl
+        label: Install remindctl CLI via Homebrew
+    capabilities:
+      - list_reminders
+      - list_reminder_lists
+      - create_reminder
+      - complete_reminder
+      - edit_reminder
+      - delete_reminder
+      - create_list
+      - rename_list
+      - delete_list
+      - get_reminder_by_date
+      - get_overdue_reminders
+      - get_upcoming_reminders
+    permissions:
+      - apple-events
+      - reminders
+    notes: Requires macOS 14+ (Sonoma) with Reminders app. Grant Reminders permission in System Settings.
+
+version: 1.0.0
+author: Cell 0 OS
+license: MIT
+platforms:
+  - darwin
+
+entry_point:
+  python: apple_reminders.py
+  
+tools:
+  - name: list_reminders
+    description: List reminders from a specific list or all reminders
+    parameters:
+      list_name:
+        type: string
+        description: Name of the reminder list to filter (optional)
+        required: false
+      filter:
+        type: string
+        description: Filter by status - today, tomorrow, week, overdue, upcoming, completed, all (optional)
+        required: false
+        default: today
+        
+  - name: list_reminder_lists
+    description: List all reminder lists
+    parameters: {}
+    
+  - name: create_reminder
+    description: Create a new reminder
+    parameters:
+      title:
+        type: string
+        description: Title of the reminder
+        required: true
+      list_name:
+        type: string
+        description: List to add reminder to (optional, defaults to default list)
+        required: false
+      due_date:
+        type: string
+        description: Due date/time - formats accepted today, tomorrow, YYYY-MM-DD, YYYY-MM-DD HH:mm, or ISO 8601 (optional)
+        required: false
+      notes:
+        type: string
+        description: Additional notes for the reminder (optional)
+        required: false
+      priority:
+        type: string
+        description: Priority level - low, medium, high (optional)
+        required: false
+        
+  - name: complete_reminder
+    description: Mark one or more reminders as complete
+    parameters:
+      reminder_ids:
+        type: array
+        items:
+          type: string
+        description: IDs of reminders to complete (can be found via list_reminders)
+        required: true
+        
+  - name: edit_reminder
+    description: Edit an existing reminder
+    parameters:
+      reminder_id:
+        type: string
+        description: ID of the reminder to edit
+        required: true
+      title:
+        type: string
+        description: New title for the reminder (optional)
+        required: false
+      due_date:
+        type: string
+        description: New due date/time (optional)
+        required: false
+      list_name:
+        type: string
+        description: Move to a different list (optional)
+        required: false
+      notes:
+        type: string
+        description: New notes for the reminder (optional)
+        required: false
+      priority:
+        type: string
+        description: New priority level - low, medium, high (optional)
+        required: false
+        
+  - name: delete_reminder
+    description: Delete a reminder
+    parameters:
+      reminder_id:
+        type: string
+        description: ID of the reminder to delete
+        required: true
+      force:
+        type: boolean
+        description: Force deletion without confirmation
+        required: false
+        default: false
+        
+  - name: create_list
+    description: Create a new reminder list
+    parameters:
+      name:
+        type: string
+        description: Name of the new list
+        required: true
+        
+  - name: rename_list
+    description: Rename an existing reminder list
+    parameters:
+      old_name:
+        type: string
+        description: Current name of the list
+        required: true
+      new_name:
+        type: string
+        description: New name for the list
+        required: true
+        
+  - name: delete_list
+    description: Delete a reminder list and all its reminders
+    parameters:
+      name:
+        type: string
+        description: Name of the list to delete
+        required: true
+      force:
+        type: boolean
+        description: Force deletion without confirmation
+        required: false
+        default: false
+        
+  - name: get_reminder_by_date
+    description: Get reminders for a specific date
+    parameters:
+      date:
+        type: string
+        description: Date in YYYY-MM-DD format
+        required: true
+        
+  - name: get_overdue_reminders
+    description: Get all overdue reminders
+    parameters: {}
+    
+  - name: get_upcoming_reminders
+    description: Get upcoming reminders
+    parameters: {}
+
+dependencies:
+  python:
+    - subprocess
+    - json
+    - re
+    - typing
+    - datetime
+    - dateutil
+    
+setup:
+  instructions: |
+    ## Setup Instructions for remindctl CLI
+
+    ### Prerequisites
+    - macOS 14+ (Sonoma or later)
+    - Apple Reminders app
+    - Homebrew (recommended for installation)
+    - Reminders permission (System Settings → Privacy & Security → Reminders)
+
+    ### Installation
+
+    #### Homebrew (Recommended)
+    ```bash
+    # Add the tap and install
+    brew install steipete/tap/remindctl
+    ```
+
+    ### From Source (Alternative)
+    ```bash
+    # Clone the repository
+    git clone https://github.com/steipete/remindctl.git
+    cd remindctl
+
+    # Build with pnpm
+    pnpm install
+    pnpm build
+
+    # Binary will be at ./bin/remindctl
+    # Move to your PATH:
+    sudo mv ./bin/remindctl /usr/local/bin/
+    ```
+
+    ### Configuration
+
+    1. **Grant Reminders Permission**:
+       ```bash
+       # Trigger permission prompt
+       remindctl authorize
+       ```
+       Or manually enable in:
+       System Settings → Privacy & Security → Reminders → Terminal (or remindctl)
+
+    2. **Verify installation**:
+       ```bash
+       remindctl status
+       remindctl --help
+       ```
+
+    ### Usage Examples
+
+    ```bash
+    # Show today's reminders (default)
+    remindctl
+
+    # Show reminders for different time periods
+    remindctl today
+    remindctl tomorrow
+    remindctl week
+    remindctl overdue
+    remindctl upcoming
+    remindctl completed
+    remindctl all
+
+    # Show reminders for a specific date
+    remindctl 2026-01-03
+
+    # List management
+    remindctl list                    # Show all lists
+    remindctl list Work               # Show reminders in Work list
+    remindctl list Projects --create  # Create new list
+    remindctl list Work --rename Office
+    remindctl list OldList --delete
+
+    # Reminder operations
+    remindctl add "Buy milk"
+    remindctl add --title "Call mom" --list Personal --due tomorrow
+    remindctl edit 1 --title "New title" --due 2026-01-04
+    remindctl complete 1 2 3
+    remindctl delete 4A83 --force
+    ```
+
+    ### Output Formats
+
+    Use these flags for different output formats:
+    - `--json` - JSON arrays/objects (recommended for scripting)
+    - `--plain` - Tab-separated lines
+    - `--quiet` - Counts only
+
+    ### Date Formats
+
+    Accepted formats for dates:
+    - `today`, `tomorrow`, `yesterday`
+    - `YYYY-MM-DD` (e.g., 2026-01-03)
+    - `YYYY-MM-DD HH:mm` (e.g., 2026-01-03 14:30)
+    - ISO 8601 (e.g., 2026-01-03T12:34:56Z)
+
+    ### Troubleshooting
+
+    - **Permission Denied**: Run `remindctl authorize` or grant access in System Settings
+    - **Reminders not appearing**: Ensure Reminders app is accessible
+    - **SSH issues**: Grant permissions on the Mac running the command, not the SSH client
+    - **Command not found**: Ensure remindctl is in your PATH
+
+    ### Limitations
+
+    - Requires macOS 14+ (Sonoma)
+    - Some features require Reminders app to be accessible
+    - Location-based reminders cannot be created via CLI

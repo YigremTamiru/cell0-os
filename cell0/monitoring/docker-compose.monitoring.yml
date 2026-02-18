@@ -1,0 +1,192 @@
+# Cell 0 OS - Monitoring Stack
+# Prometheus + Grafana + Loki for production observability
+#
+# Usage:
+#   cd monitoring
+#   docker-compose -f docker-compose.monitoring.yml up -d
+#
+# Access:
+#   Prometheus: http://localhost:9090
+#   Grafana: http://localhost:3000 (admin/admin)
+#   Loki: http://localhost:3100
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # Prometheus - Metrics Collection
+  # ============================================================================
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: cell0-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--storage.tsdb.retention.size=50GB'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./alerting:/etc/prometheus/alerts:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - cell0-monitoring
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================================================
+  # Grafana - Visualization
+  # ============================================================================
+  grafana:
+    image: grafana/grafana:10.2.3
+    container_name: cell0-grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=${GRAFANA_ROOT_URL:-http://localhost:3000}
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - cell0-monitoring
+    depends_on:
+      - prometheus
+      - loki
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================================================
+  # Loki - Log Aggregation
+  # ============================================================================
+  loki:
+    image: grafana/loki:2.9.3
+    container_name: cell0-loki
+    restart: unless-stopped
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml:ro
+      - loki-data:/loki
+    ports:
+      - "3100:3100"
+    networks:
+      - cell0-monitoring
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --tries=1 --spider http://localhost:3100/ready || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================================================
+  # Promtail - Log Shipper
+  # ============================================================================
+  promtail:
+    image: grafana/promtail:2.9.3
+    container_name: cell0-promtail
+    restart: unless-stopped
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/log/cell0:/var/log/cell0:ro
+      - /var/log:/var/log:ro
+    networks:
+      - cell0-monitoring
+    depends_on:
+      - loki
+
+  # ============================================================================
+  # AlertManager - Alert Routing
+  # ============================================================================
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    container_name: cell0-alertmanager
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+      - '--web.external-url=${ALERTMANAGER_EXTERNAL_URL:-http://localhost:9093}'
+    volumes:
+      - ./alerting/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager-data:/alertmanager
+    ports:
+      - "9093:9093"
+    networks:
+      - cell0-monitoring
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:9093/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================================================
+  # Node Exporter - Host Metrics
+  # ============================================================================
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    container_name: cell0-node-exporter
+    restart: unless-stopped
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    ports:
+      - "9100:9100"
+    networks:
+      - cell0-monitoring
+
+  # ============================================================================
+  # cAdvisor - Container Metrics
+  # ============================================================================
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    container_name: cell0-cadvisor
+    restart: unless-stopped
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /cgroup:/cgroup:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - cell0-monitoring
+
+volumes:
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  loki-data:
+    driver: local
+  alertmanager-data:
+    driver: local
+
+networks:
+  cell0-monitoring:
+    driver: bridge

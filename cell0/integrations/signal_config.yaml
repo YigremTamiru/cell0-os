@@ -1,0 +1,109 @@
+# Signal Bot Configuration for Cell 0 OS
+# 
+# This configuration file controls the Signal integration settings.
+# Copy this file to signal_config.yaml and customize for your setup.
+
+# Signal CLI REST API Configuration
+signal_cli_url: "http://localhost:8080"  # URL of signal-cli-rest-api container
+api_version: "v1"  # API version to use
+
+# Account Configuration
+phone_number: "+1234567890"  # Your Signal phone number (with country code)
+
+# Bot Behavior
+auto_receive: true  # Automatically poll for incoming messages
+message_cache_size: 1000  # Number of messages to cache for quote/reply support
+link_previews: true  # Enable link preview generation
+
+# Receiving Settings
+receive_interval: 1.0  # Polling interval in seconds
+max_attachment_size: 104857600  # Maximum attachment size (100MB)
+
+# Group Settings
+auto_join_groups: false  # Automatically accept group invitations
+group_notifications: true  # Enable group message notifications
+
+# Security Settings
+verify_identities: true  # Verify contact identities
+block_unknown: false  # Block messages from unknown contacts
+
+# Logging
+log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+log_messages: false  # Log message content (privacy concern)
+
+# Webhook Settings (optional)
+# Configure external webhooks for message events
+webhooks:
+  enabled: false
+  url: "http://localhost:8000/webhooks/signal"
+  events:
+    - message_received
+    - message_sent
+    - reaction_received
+    - group_invite
+  secret: ""  # Webhook verification secret
+
+# Rate Limiting
+rate_limits:
+  messages_per_minute: 60
+  attachments_per_minute: 10
+  reactions_per_minute: 30
+
+# Link Preview Settings
+link_preview:
+  enabled: true
+  timeout: 5  # Seconds to wait for preview generation
+  max_title_length: 100
+  max_description_length: 300
+  
+# Storage Settings
+storage:
+  attachments_path: "./data/signal/attachments"  # Local path for attachments
+  cache_path: "./data/signal/cache"  # Cache directory
+  retention_days: 30  # Days to keep cached data
+
+# Integration with Cell 0 OS
+integrations:
+  cell0d:
+    enabled: true
+    websocket_url: "ws://localhost:8765"  # Connect to cell0d WebSocket
+    event_bus: true  # Publish events to Cell 0 event bus
+  
+  mcic:
+    enabled: true  # Enable MCIC (Multi-Channel Integration Controller)
+    agent_id: "signal_bot"  # Agent identifier in MCIC
+    capability_tokens:  # SYPAS capability tokens
+      - "messaging.send"
+      - "messaging.receive"
+      - "messaging.groups"
+      - "messaging.attachments"
+      - "messaging.reactions"
+
+# Default Response Settings
+responses:
+  welcome_message: "Hello! I'm a Cell 0 OS Signal bot."
+  unknown_command: "I don't understand that command. Type 'help' for available commands."
+  help_text: |
+    Available commands:
+    /help - Show this help message
+    /status - Check bot status
+    /groups - List joined groups
+
+# Advanced Settings
+advanced:
+  connection_timeout: 30
+  read_timeout: 30
+  max_retries: 3
+  retry_delay: 1.0
+  keepalive_interval: 60
+  
+# Feature Toggles
+features:
+  reactions: true
+  quotes: true
+  group_management: true
+  attachments: true
+  link_previews: true
+  typing_indicators: true
+  read_receipts: true
+  delivery_receipts: true

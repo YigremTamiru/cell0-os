@@ -1,0 +1,19 @@
+{
+  "agent_id": "test-harness",
+  "agent_type": "specialist",
+  "role": "qa-engineer",
+  "status": "active",
+  "current_task": "qa-and-validation",
+  "focus_area": "testing/comprehensive",
+  "started_at": "2026-02-18T05:45:00Z",
+  "last_heartbeat": "2026-02-18T05:45:00Z",
+  "version": "1.0.0",
+  "capabilities": ["testing", "pytest", "load-testing", "security-audit"],
+  "metrics": {
+    "tasks_completed": 0,
+    "tasks_in_progress": 1,
+    "blockers": ["waiting-for-kernel-daemon-synchronization"]
+  },
+  "dependencies": ["kernel-smith", "daemon-forge"],
+  "priority": "medium"
+}

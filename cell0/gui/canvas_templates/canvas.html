@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cell 0 Canvas - {{CANVAS_ID}}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #64748b;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        #canvas-root {
+            min-height: 100vh;
+        }
+
+        /* Connection Status */
+        .connection-status {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .connection-status.connected {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .connection-status.disconnected {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .connection-status.connecting {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .connected .status-dot {
+            background-color: var(--success-color);
+        }
+
+        .disconnected .status-dot {
+            background-color: var(--error-color);
+            animation: none;
+        }
+
+        .connecting .status-dot {
+            background-color: var(--warning-color);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Loading State */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            gap: 16px;
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Error State */
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            gap: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .error-icon {
+            width: 64px;
+            height: 64px;
+            background-color: #fee2e2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .error-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .error-message {
+            color: var(--text-secondary);
+            max-width: 400px;
+        }
+
+        .retry-button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .retry-button:hover {
+            background-color: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+    <div id="connection-status" class="connection-status connecting">
+        <span class="status-dot"></span>
+        <span class="status-text">Connecting...</span>
+    </div>
+
+    <div id="canvas-root">
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Connecting to Cell 0 Canvas...</p>
+        </div>
+    </div>
+
+    <script>
+        // =================================================================
+        // Cell 0 Canvas Client - A2UI Protocol Implementation
+        // =================================================================
+
+        class CanvasClient {
+            constructor(canvasId, wsUrl) {
+                this.canvasId = canvasId;
+                this.wsUrl = wsUrl;
+                this.ws = null;
+                this.reconnectAttempts = 0;
+                this.maxReconnectAttempts = 5;
+                this.reconnectDelay = 1000;
+                this.heartbeatInterval = null;
+                this.components = new Map();
+                this.charts = new Map();
+                this.eventHandlers = new Map();
+                this.root = document.getElementById('canvas-root');
+                this.statusEl = document.getElementById('connection-status');
+                
+                this.connect();
+            }
+
+            connect() {
+                this.updateStatus('connecting', 'Connecting...');
+                
+                try {
+                    this.ws = new WebSocket(this.wsUrl);
+                    
+                    this.ws.onopen = () => {
+                        console.log('Canvas connected');
+                        this.reconnectAttempts = 0;
+                        this.updateStatus('connected', 'Connected');
+                        this.startHeartbeat();
+                        this.sendUserAgent();
+                        this.sendViewport();
+                    };
+                    
+                    this.ws.onmessage = (event) => {
+                        this.handleMessage(JSON.parse(event.data));
+                    };
+                    
+                    this.ws.onclose = () => {
+                        console.log('Canvas disconnected');
+                        this.updateStatus('disconnected', 'Disconnected');
+                        this.stopHeartbeat();
+                        this.attemptReconnect();
+                    };
+                    
+                    this.ws.onerror = (error) => {
+                        console.error('WebSocket error:', error);
+                        this.updateStatus('disconnected', 'Error');
+                    };
+                    
+                } catch (error) {
+                    console.error('Failed to connect:', error);
+                    this.updateStatus('disconnected', 'Failed');
+                    this.attemptReconnect();
+                }
+            }
+
+            attemptReconnect() {
+                if (this.reconnectAttempts < this.maxReconnectAttempts) {
+                    this.reconnectAttempts++;
+                    console.log(`Reconnecting... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+                    setTimeout(() => this.connect(), this.reconnectDelay * this.reconnectAttempts);
+                } else {
+                    this.showError('Connection Failed', 'Unable to connect to Canvas server. Please refresh the page.');
+                }
+            }
+
+            updateStatus(status, text) {
+                this.statusEl.className = `connection-status ${status}`;
+                this.statusEl.querySelector('.status-text').textContent = text;
+            }
+
+            startHeartbeat() {
+                this.heartbeatInterval = setInterval(() => {
+                    this.send({ type: 'ping', timestamp: new Date().toISOString() });
+                }, 30000);
+            }
+
+            stopHeartbeat() {
+                if (this.heartbeatInterval) {
+                    clearInterval(this.heartbeatInterval);
+                    this.heartbeatInterval = null;
+                }
+            }
+
+            sendUserAgent() {
+                this.send({
+                    type: 'user_agent',
+                    payload: { userAgent: navigator.userAgent }
+                });
+            }
+
+            sendViewport() {
+                this.send({
+                    type: 'viewport',
+                    payload: {
+                        width: window.innerWidth,
+                        height: window.innerHeight,
+                        devicePixelRatio: window.devicePixelRatio
+                    }
+                });
+            }
+
+            send(message) {
+                if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                    this.ws.send(JSON.stringify(message));
+                }
+            }
+
+            handleMessage(message) {
+                const { type, payload } = message;
+                
+                switch (type) {
+                    case 'connection_established':
+                        console.log('Connected to canvas:', payload.canvasId);
+                        break;
+                        
+                    case 'render':
+                        this.render(payload);
+                        break;
+                        
+                    case 'update':
+                        this.updateComponent(payload.componentId, payload.props);
+                        break;
+                        
+                    case 'state_update':
+                        this.handleStateUpdate(payload);
+                        break;
+                        
+                    case 'capture_screenshot':
+                        this.captureScreenshot(payload);
+                        break;
+                        
+                    case 'ping':
+                        this.send({ type: 'pong', timestamp: new Date().toISOString() });
+                        break;
+                        
+                    case 'pong':
+                        break;
+                        
+                    case 'error':
+                        console.error('Server error:', payload);
+                        break;
+                        
+                    default:
+                        console.log('Unknown message type:', type);
+                }
+            }
+
+            render(componentData) {
+                // Clear existing content
+                this.root.innerHTML = '';
+                this.components.clear();
+                this.destroyCharts();
+                
+                // Build and render new component tree
+                const element = this.buildComponent(componentData);
+                if (element) {
+                    this.root.appendChild(element);
+                }
+            }
+
+            buildComponent(data) {
+                if (!data) return null;
+                
+                const { id, type, props, style, events, children } = data;
+                
+                // Store component reference
+                this.components.set(id, data);
+                
+                // Create element based on type
+                const element = this.createElement(type, props, style);
+                element.id = id;
+                element.dataset.componentType = type;
+                
+                // Attach events
+                if (events && events.length > 0) {
+                    events.forEach(event => {
+                        this.attachEvent(element, event);
+                    });
+                }
+                
+                // Render children
+                if (children && children.length > 0) {
+                    children.forEach(child => {
+                        const childElement = this.buildComponent(child);
+                        if (childElement) {
+                            element.appendChild(childElement);
+                        }
+                    });
+                }
+                
+                // Special handling for specific component types
+                if (type === 'chart') {
+                    this.initChart(element, props);
+                }
+                
+                return element;
+            }
+
+            createElement(type, props, style) {
+                let element;
+                
+                switch (type) {
+                    case 'text':
+                        element = document.createElement('span');
+                        element.textContent = props.content || '';
+                        break;
+                        
+                    case 'image':
+                        element = document.createElement('img');
+                        element.src = props.src || '';
+                        element.alt = props.alt || '';
+                        break;
+                        
+                    case 'button':
+                        element = document.createElement('button');
+                        element.textContent = props.label || '';
+                        element.className = `btn btn-${props.variant || 'primary'}`;
+                        break;
+                        
+                    case 'input':
+                        element = document.createElement('input');
+                        element.type = props.type || 'text';
+                        element.name = props.name || '';
+                        element.placeholder = props.placeholder || '';
+                        element.value = props.value || '';
+                        break;
+                        
+                    case 'textarea':
+                        element = document.createElement('textarea');
+                        element.name = props.name || '';
+                        element.placeholder = props.placeholder || '';
+                        element.value = props.value || '';
+                        element.rows = props.rows || 4;
+                        break;
+                        
+                    case 'select':
+                        element = document.createElement('select');
+                        element.name = props.name || '';
+                        if (props.options) {
+                            props.options.forEach(opt => {
+                                const option = document.createElement('option');
+                                option.value = opt.value;
+                                option.textContent = opt.label;
+                                if (opt.value === props.value) {
+                                    option.selected = true;
+                                }
+                                element.appendChild(option);
+                            });
+                        }
+                        break;
+                        
+                    case 'checkbox':
+                        element = document.createElement('label');
+                        element.className = 'checkbox-wrapper';
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.name = props.name || '';
+                        checkbox.checked = props.checked || false;
+                        const label = document.createElement('span');
+                        label.textContent = props.label || '';
+                        element.appendChild(checkbox);
+                        element.appendChild(label);
+                        break;
+                        
+                    case 'radio':
+                        element = document.createElement('div');
+                        element.className = 'radio-group';
+                        if (props.options) {
+                            props.options.forEach(opt => {
+                                const label = document.createElement('label');
+                                label.className = 'radio-wrapper';
+                                const radio = document.createElement('input');
+                                radio.type = 'radio';
+                                radio.name = props.name || '';
+                                radio.value = opt.value;
+                                radio.checked = opt.value === props.value;
+                                const span = document.createElement('span');
+                                span.textContent = opt.label;
+                                label.appendChild(radio);
+                                label.appendChild(span);
+                                element.appendChild(label);
+                            });
+                        }
+                        break;
+                        
+                    case 'form':
+                        element = document.createElement('form');
+                        element.name = props.name || '';
+                        break;
+                        
+                    case 'chart':
+                        element = document.createElement('div');
+                        element.className = 'chart-container';
+                        const canvas = document.createElement('canvas');
+                        element.appendChild(canvas);
+                        break;
+                        
+                    case 'container':
+                        element = document.createElement('div');
+                        break;
+                        
+                    case 'grid':
+                        element = document.createElement('div');
+                        element.className = 'grid';
+                        break;
+                        
+                    case 'card':
+                        element = document.createElement('div');
+                        element.className = 'card';
+                        if (props.title) {
+                            const header = document.createElement('div');
+                            header.className = 'card-header';
+                            header.textContent = props.title;
+                            element.appendChild(header);
+                        }
+                        break;
+                        
+                    case 'modal':
+                        element = document.createElement('div');
+                        element.className = 'modal' + (props.isOpen ? ' open' : '');
+                        const modalContent = document.createElement('div');
+                        modalContent.className = 'modal-content';
+                        if (props.title) {
+                            const modalHeader = document.createElement('div');
+                            modalHeader.className = 'modal-header';
+                            modalHeader.textContent = props.title;
+                            modalContent.appendChild(modalHeader);
+                        }
+                        element.appendChild(modalContent);
+                        break;
+                        
+                    case 'progress':
+                        element = document.createElement('div');
+                        element.className = 'progress';
+                        const bar = document.createElement('div');
+                        bar.className = 'progress-bar';
+                        const value = (props.value / props.max) * 100;
+                        bar.style.width = `${value}%`;
+                        element.appendChild(bar);
+                        if (props.showLabel) {
+                            const label = document.createElement('span');
+                            label.className = 'progress-label';
+                            label.textContent = `${Math.round(value)}%`;
+                            element.appendChild(label);
+                        }
+                        break;
+                        
+                    case 'badge':
+                        element = document.createElement('span');
+                        element.className = `badge badge-${props.variant || 'default'}`;
+                        element.textContent = props.content || '';
+                        break;
+                        
+                    case 'divider':
+                        element = document.createElement('hr');
+                        break;
+                        
+                    case 'header':
+                        element = document.createElement('header');
+                        if (props.title) {
+                            const h1 = document.createElement('h1');
+                            h1.textContent = props.title;
+                            element.appendChild(h1);
+                        }
+                        if (props.subtitle) {
+                            const p = document.createElement('p');
+                            p.className = 'subtitle';
+                            p.textContent = props.subtitle;
+                            element.appendChild(p);
+                        }
+                        break;
+                        
+                    case 'footer':
+                        element = document.createElement('footer');
+                        element.textContent = props.content || '';
+                        break;
+                        
+                    case 'navbar':
+                        element = document.createElement('nav');
+                        element.className = 'navbar';
+                        if (props.brand) {
+                            const brand = document.createElement('div');
+                            brand.className = 'navbar-brand';
+                            brand.textContent = props.brand;
+                            element.appendChild(brand);
+                        }
+                        if (props.items) {
+                            const navItems = document.createElement('div');
+                            navItems.className = 'navbar-items';
+                            props.items.forEach(item => {
+                                const navItem = document.createElement('a');
+                                navItem.className = 'navbar-item';
+                                navItem.textContent = item.label;
+                                navItem.href = item.href || '#';
+                                navItems.appendChild(navItem);
+                            });
+                            element.appendChild(navItems);
+                        }
+                        break;
+                        
+                    default:
+                        element = document.createElement('div');
+                }
+                
+                // Apply styles
+                if (style) {
+                    this.applyStyles(element, style);
+                }
+                
+                return element;
+            }
+
+            applyStyles(element, styles) {
+                Object.entries(styles).forEach(([key, value]) => {
+                    // Convert camelCase to kebab-case
+                    const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+                    element.style[cssKey] = value;
+                });
+            }
+
+            attachEvent(element, eventConfig) {
+                const { type, handler, debounce, throttle, preventDefault, stopPropagation } = eventConfig;
+                
+                let callback = (e) => {
+                    if (preventDefault) e.preventDefault();
+                    if (stopPropagation) e.stopPropagation();
+                    
+                    const eventData = {
+                        type: type,
+                        target: e.target.name || e.target.id,
+                        value: e.target.value,
+                        checked: e.target.checked,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    this.send({
+                        type: 'event',
+                        payload: { handlerId: handler, data: eventData }
+                    });
+                };
+                
+                // Apply debounce
+                if (debounce) {
+                    callback = this.debounce(callback, debounce);
+                }
+                
+                // Apply throttle
+                if (throttle) {
+                    callback = this.throttle(callback, throttle);
+                }
+                
+                element.addEventListener(type, callback);
+            }
+
+            debounce(fn, ms) {
+                let timeout;
+                return (...args) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => fn(...args), ms);
+                };
+            }
+
+            throttle(fn, ms) {
+                let lastTime = 0;
+                return (...args) => {
+                    const now = Date.now();
+                    if (now - lastTime >= ms) {
+                        lastTime = now;
+                        fn(...args);
+                    }
+                };
+            }
+
+            initChart(container, props) {
+                const canvas = container.querySelector('canvas');
+                if (!canvas || !window.Chart) return;
+                
+                const ctx = canvas.getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: props.chartType || 'line',
+                    data: props.data || { labels: [], datasets: [] },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        ...props.options
+                    }
+                });
+                
+                this.charts.set(container.id, chart);
+            }
+
+            destroyCharts() {
+                this.charts.forEach(chart => chart.destroy());
+                this.charts.clear();
+            }
+
+            updateComponent(componentId, props) {
+                const element = document.getElementById(componentId);
+                if (!element) return;
+                
+                // Update properties
+                Object.entries(props).forEach(([key, value]) => {
+                    if (key === 'value') {
+                        element.value = value;
+                    } else if (key === 'textContent' || key === 'content') {
+                        element.textContent = value;
+                    } else if (key.startsWith('style_')) {
+                        const styleKey = key.replace('style_', '');
+                        element.style[styleKey] = value;
+                    } else {
+                        element[key] = value;
+                    }
+                });
+            }
+
+            handleStateUpdate(payload) {
+                // Handle state updates from server
+                console.log('State update:', payload);
+            }
+
+            async captureScreenshot(config) {
+                const { format = 'png', quality = 0.9 } = config;
+                
+                try {
+                    // Use html2canvas or similar if available
+                    // For now, use native canvas capture
+                    const canvas = await this.htmlToCanvas(this.root);
+                    const dataUrl = canvas.toDataURL(`image/${format}`, quality);
+                    
+                    this.send({
+                        type: 'screenshot',
+                        payload: { data: dataUrl, format }
+                    });
+                } catch (error) {
+                    console.error('Screenshot failed:', error);
+                    this.send({
+                        type: 'error',
+                        payload: { message: 'Screenshot failed', error: error.message }
+                    });
+                }
+            }
+
+            async htmlToCanvas(element) {
+                // Simple implementation - in production, use html2canvas library
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const rect = element.getBoundingClientRect();
+                
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+                
+                // Fill background
+                ctx.fillStyle = getComputedStyle(element).backgroundColor || '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Note: Full implementation would traverse DOM and render each element
+                // This is a simplified placeholder
+                
+                return canvas;
+            }
+
+            showError(title, message) {
+                this.root.innerHTML = `
+                    <div class="error-container">
+                        <div class="error-icon">⚠️</div>
+                        <h2 class="error-title">${title}</h2>
+                        <p class="error-message">${message}</p>
+                        <button class="retry-button" onclick="location.reload()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvasId = '{{CANVAS_ID}}';
+            const wsUrl = '{{WS_URL}}';
+            
+            window.canvasClient = new CanvasClient(canvasId, wsUrl);
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                window.canvasClient.sendViewport();
+            });
+        });
+    </script>
+
+    <style>
+        /* Component Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-color);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card > *:not(.card-header) {
+            padding: 20px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .checkbox-wrapper,
+        .radio-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper input,
+        .radio-wrapper input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .progress {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border-color);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .progress-label {
+            position: absolute;
+            right: 0;
+            top: -20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+        }
+
+        .badge-default {
+            background-color: var(--bg-color);
+            color: var(--text-secondary);
+        }
+
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--surface-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            max-width: 90%;
+            max-height: 90%;
+            overflow: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar {
+            background-color: var(--surface-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .navbar-items {
+            display: flex;
+            gap: 24px;
+        }
+
+        .navbar-item {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .navbar-item:hover {
+            color: var(--primary-color);
+        }
+
+        header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        header .subtitle {
+            color: var(--text-secondary);
+        }
+
+        footer {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            :root {
+                --radius-lg: 8px;
+            }
+
+            .card > *:not(.card-header) {
+                padding: 16px;
+            }
+
+            header h1 {
+                font-size: 24px;
+            }
+
+            .navbar {
+                padding: 0 16px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</body>
+</html>

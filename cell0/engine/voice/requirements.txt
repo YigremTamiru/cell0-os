@@ -1,0 +1,27 @@
+# Cell 0 OS Voice Integration Requirements
+# Core dependencies (required)
+aiohttp>=3.8.0
+aiofiles>=23.0.0
+websockets>=12.0
+numpy>=1.24.0
+
+# Optional dependencies for enhanced functionality
+
+# Audio playback (recommended)
+# pyaudio>=0.2.13
+
+# WebRTC VAD for better voice detection
+# webrtcvad>=2.0.10
+
+# Wake word detection options (pick one or both)
+# pvporcupine>=3.0.0  # Commercial, requires access key
+# openwakeword>=0.5.0  # Open source
+
+# STT options (pick one or more)
+# openai-whisper>=20231117  # Local whisper
+# pywhispercpp>=1.2.0  # whisper.cpp bindings
+
+# Development dependencies
+# pytest>=7.0.0
+# pytest-asyncio>=0.21.0
+# pytest-cov>=4.0.0

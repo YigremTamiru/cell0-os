@@ -1,0 +1,146 @@
+# Production Environment Configuration Overrides
+#
+# WARNING: This is for PRODUCTION use only.
+# Any changes should be thoroughly tested in staging first.
+
+debug: false
+
+logging:
+  level: WARNING  # Only warnings and errors in production
+  format: json
+  output: file
+  file_path: logs/cell0.log
+  rotation: daily
+  max_file_size: 100MB
+  retention_days: 90
+  
+  # Security: redact sensitive data
+  redact_patterns:
+    - "password"
+    - "secret"
+    - "token"
+    - "api_key"
+    - "private_key"
+
+tool_profiles:
+  default_profile: minimal  # Conservative by default
+  allow_dangerous_tools: false
+  require_approval_for:
+    - exec
+    - delete
+    - write
+    
+performance:
+  max_workers: 16
+  request_timeout: 30
+  enable_caching: true
+  cache_ttl: 600
+  max_request_size: 10MB
+  
+  # Resource limits
+  resource_limits:
+    max_memory_mb: 8192
+    max_cpu_percent: 80
+    
+security:
+  require_auth: true
+  jwt_secret: ${JWT_SECRET}  # From environment variable
+  token_expiry_hours: 24
+  
+  allow_cors: false  # Strict CORS in production
+  cors_origins:
+    - "https://cell0.io"
+    - "https://app.cell0.io"
+    
+  rate_limiting:
+    requests_per_minute: 60
+    burst_size: 10
+    block_duration_minutes: 15
+    
+  # TLS/SSL
+  tls:
+    enabled: true
+    cert_file: /etc/cell0/certs/server.crt
+    key_file: /etc/cell0/certs/server.key
+    min_version: "1.2"
+    
+integrations:
+  ollama:
+    url: "http://ollama-internal:11434"
+    default_model: "llama3.1:70b"
+    timeout: 30
+    max_concurrent_requests: 10
+    retry_attempts: 3
+    
+  signal:
+    enabled: true
+    phone_number: "${SIGNAL_PHONE_NUMBER}"  # From env
+    webhook_url: "https://cell0.io/webhooks/signal"
+    webhook_secret: "${SIGNAL_WEBHOOK_SECRET}"
+    rate_limits:
+      messages_per_minute: 30
+      attachments_per_minute: 5
+      
+  brave_search:
+    enabled: true
+    api_key: "${BRAVE_API_KEY}"  # From env
+    rate_limit: 1000  # requests per day
+    timeout: 10
+    
+features:
+  enable_metrics: true
+  enable_profiling: false
+  enable_swagger: false  # Disable in production
+  enable_websocket_debug: false
+  
+# High availability
+ha:
+  enabled: true
+  health_check_interval: 10
+  failover_timeout: 30
+  
+# Monitoring and alerting
+monitoring:
+  prometheus:
+    enabled: true
+    port: 9090
+    path: /metrics
+    
+  health_check:
+    enabled: true
+    interval: 10
+    timeout: 5
+    
+  alerting:
+    enabled: true
+    channels:
+      - type: pagerduty
+        service_key: "${PAGERDUTY_KEY}"
+      - type: slack
+        webhook_url: "${SLACK_WEBHOOK_URL}"
+    
+# Backup and disaster recovery
+backup:
+  enabled: true
+  schedule: "0 */4 * * *"  # Every 4 hours
+  retention_days: 30
+  encrypt: true
+  verify: true
+  
+  # Offsite backup
+  replication:
+    enabled: true
+    destinations:
+      - type: s3
+        bucket: cell0-backups-prod
+        region: us-east-1
+        
+# Compliance
+compliance:
+  audit_logging: true
+  data_retention_days: 365
+  gdpr_compliant: true
+  
+  # Data handling
+  pii_detection: true
+  pii_redaction: true

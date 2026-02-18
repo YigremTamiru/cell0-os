@@ -1,0 +1,7 @@
+# Load Testing Requirements
+locust>=2.20.0
+websocket-client>=1.6.0
+gevent>=23.9.0
+
+# For distributed testing
+pyzmq>=25.0.0

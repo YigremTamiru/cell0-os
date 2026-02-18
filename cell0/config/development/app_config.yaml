@@ -1,0 +1,51 @@
+# Development Environment Configuration Overrides
+# 
+# This file contains configuration overrides for the development environment.
+# Settings here take precedence over the base config files.
+
+# Debug mode - enables detailed logging and hot reload
+debug: true
+
+# Logging configuration
+logging:
+  level: DEBUG
+  format: detailed
+  output: console
+  
+# Development-specific tool profiles
+tool_profiles:
+  # Allow all tools in development
+  default_profile: coding
+  allow_dangerous_tools: true
+  
+# Performance settings (relaxed for development)
+performance:
+  max_workers: 4
+  request_timeout: 300
+  enable_caching: false
+  
+# Security (relaxed for local development)
+security:
+  require_auth: false
+  allow_cors: true
+  cors_origins:
+    - "http://localhost:3000"
+    - "http://localhost:8080"
+    - "http://127.0.0.1:3000"
+    
+# Integration settings
+integrations:
+  ollama:
+    url: "http://localhost:11434"
+    default_model: "qwen2.5:7b"
+    timeout: 120
+    
+  signal:
+    enabled: false  # Usually disabled in dev
+    
+# Feature flags
+features:
+  enable_metrics: false
+  enable_profiling: true
+  enable_swagger: true
+  enable_websocket_debug: true

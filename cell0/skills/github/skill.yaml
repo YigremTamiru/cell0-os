@@ -1,0 +1,597 @@
+name: github
+description: Integration with GitHub via gh CLI. List repos, issues, PRs; create issues and PRs; view and merge PRs; view workflow runs; clone and fork repos; manage releases; search code. Secure token storage via 1Password.
+homepage: https://cli.github.com
+metadata:
+  clawdbot:
+    emoji: 🐙
+    requires:
+      bins:
+        - gh
+        - op
+      os:
+        - darwin
+        - linux
+    install:
+      - id: brew
+        kind: brew
+        tap: gh
+        formula: gh
+        bins:
+          - gh
+        label: Install GitHub CLI via Homebrew
+      - id: 1password-cli
+        kind: brew
+        formula: 1password-cli
+        bins:
+          - op
+        label: Install 1Password CLI
+    capabilities:
+      - list_repos
+      - list_issues
+      - list_pull_requests
+      - create_issue
+      - create_pull_request
+      - view_pull_request
+      - merge_pull_request
+      - list_workflow_runs
+      - clone_repo
+      - fork_repo
+      - list_releases
+      - create_release
+      - search_code
+    permissions:
+      - network
+      - filesystem
+    notes: Requires GitHub CLI (gh) and 1Password CLI (op) for secure token management.
+
+version: 1.0.0
+author: Cell 0 OS
+license: MIT
+platforms:
+  - darwin
+  - linux
+
+entry_point:
+  python: github_skill.py
+  
+tools:
+  # Repository Operations
+  - name: list_repos
+    description: List repositories for a user or organization
+    parameters:
+      owner:
+        type: string
+        description: GitHub username or organization name (optional, defaults to authenticated user)
+        required: false
+      limit:
+        type: integer
+        description: Maximum number of repos to return (optional, default 30)
+        required: false
+        default: 30
+      visibility:
+        type: string
+        description: Filter by visibility - all, public, private (optional)
+        required: false
+        
+  - name: view_repo
+    description: View details of a specific repository
+    parameters:
+      owner:
+        type: string
+        description: Repository owner (username or org)
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+        
+  - name: clone_repo
+    description: Clone a repository to local filesystem
+    parameters:
+      owner:
+        type: string
+        description: Repository owner
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+      directory:
+        type: string
+        description: Local directory to clone into (optional)
+        required: false
+      branch:
+        type: string
+        description: Branch to checkout (optional)
+        required: false
+        
+  - name: fork_repo
+    description: Fork a repository to your account or an organization
+    parameters:
+      owner:
+        type: string
+        description: Source repository owner
+        required: true
+      repo:
+        type: string
+        description: Source repository name
+        required: true
+      org:
+        type: string
+        description: Organization to fork to (optional, defaults to your account)
+        required: false
+      default_branch_only:
+        type: boolean
+        description: Fork only the default branch (optional)
+        required: false
+        default: false
+
+  # Issue Operations
+  - name: list_issues
+    description: List issues in a repository
+    parameters:
+      owner:
+        type: string
+        description: Repository owner
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+      state:
+        type: string
+        description: Filter by state - open, closed, all (optional, default open)
+        required: false
+        default: open
+      limit:
+        type: integer
+        description: Maximum number of issues to return (optional, default 30)
+        required: false
+        default: 30
+      assignee:
+        type: string
+        description: Filter by assignee username (optional)
+        required: false
+      label:
+        type: string
+        description: Filter by label (optional)
+        required: false
+        
+  - name: view_issue
+    description: View details of a specific issue
+    parameters:
+      owner:
+        type: string
+        description: Repository owner
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+      number:
+        type: integer
+        description: Issue number
+        required: true
+        
+  - name: create_issue
+    description: Create a new issue in a repository
+    parameters:
+      owner:
+        type: string
+        description: Repository owner
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+      title:
+        type: string
+        description: Issue title
+        required: true
+      body:
+        type: string
+        description: Issue body/description (optional)
+        required: false
+      labels:
+        type: array
+        items:
+          type: string
+        description: Labels to add (optional)
+        required: false
+      assignees:
+        type: array
+        items:
+          type: string
+        description: Usernames to assign (optional)
+        required: false
+
+  # Pull Request Operations
+  - name: list_pull_requests
+    description: List pull requests in a repository
+    parameters:
+      owner:
+        type: string
+        description: Repository owner
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+      state:
+        type: string
+        description: Filter by state - open, closed, merged, all (optional, default open)
+        required: false
+        default: open
+      limit:
+        type: integer
+        description: Maximum number of PRs to return (optional, default 30)
+        required: false
+        default: 30
+      base:
+        type: string
+        description: Filter by base branch (optional)
+        required: false
+      head:
+        type: string
+        description: Filter by head branch (optional)
+        required: false
+        
+  - name: view_pull_request
+    description: View details of a specific pull request
+    parameters:
+      owner:
+        type: string
+        description: Repository owner
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+      number:
+        type: integer
+        description: PR number
+        required: true
+      comments:
+        type: boolean
+        description: Include PR comments (optional, default false)
+        required: false
+        default: false
+        
+  - name: create_pull_request
+    description: Create a new pull request
+    parameters:
+      owner:
+        type: string
+        description: Repository owner
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+      title:
+        type: string
+        description: PR title
+        required: true
+      body:
+        type: string
+        description: PR body/description (optional)
+        required: false
+      head:
+        type: string
+        description: Branch containing changes
+        required: true
+      base:
+        type: string
+        description: Branch to merge into (optional, default repo default branch)
+        required: false
+      draft:
+        type: boolean
+        description: Create as draft PR (optional)
+        required: false
+        default: false
+        
+  - name: merge_pull_request
+    description: Merge a pull request
+    parameters:
+      owner:
+        type: string
+        description: Repository owner
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+      number:
+        type: integer
+        description: PR number
+        required: true
+      method:
+        type: string
+        description: Merge method - merge, squash, rebase (optional, default merge)
+        required: false
+        default: merge
+      delete_branch:
+        type: boolean
+        description: Delete head branch after merge (optional, default false)
+        required: false
+        default: false
+
+  # Workflow Operations
+  - name: list_workflow_runs
+    description: List workflow runs in a repository
+    parameters:
+      owner:
+        type: string
+        description: Repository owner
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+      workflow:
+        type: string
+        description: Workflow filename or ID (optional, lists all workflows if not specified)
+        required: false
+      limit:
+        type: integer
+        description: Maximum number of runs to return (optional, default 20)
+        required: false
+        default: 20
+      status:
+        type: string
+        description: Filter by status - queued, completed, in_progress, waiting, pending, requested, waiting (optional)
+        required: false
+      conclusion:
+        type: string
+        description: Filter by conclusion - success, failure, neutral, cancelled, skipped, timed_out, action_required (optional)
+        required: false
+        
+  - name: view_workflow_run
+    description: View details of a specific workflow run
+    parameters:
+      owner:
+        type: string
+        description: Repository owner
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+      run_id:
+        type: string
+        description: Workflow run ID
+        required: true
+      logs:
+        type: boolean
+        description: Include logs (optional, default false)
+        required: false
+        default: false
+
+  # Release Operations
+  - name: list_releases
+    description: List releases for a repository
+    parameters:
+      owner:
+        type: string
+        description: Repository owner
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+      limit:
+        type: integer
+        description: Maximum number of releases to return (optional, default 30)
+        required: false
+        default: 30
+        
+  - name: view_release
+    description: View details of a specific release
+    parameters:
+      owner:
+        type: string
+        description: Repository owner
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+      tag:
+        type: string
+        description: Release tag name
+        required: true
+        
+  - name: create_release
+    description: Create a new release
+    parameters:
+      owner:
+        type: string
+        description: Repository owner
+        required: true
+      repo:
+        type: string
+        description: Repository name
+        required: true
+      tag:
+        type: string
+        description: Release tag name
+        required: true
+      target:
+        type: string
+        description: Target commitish (branch or commit SHA, optional)
+        required: false
+      name:
+        type: string
+        description: Release name (optional, defaults to tag)
+        required: false
+      body:
+        type: string
+        description: Release notes (optional)
+        required: false
+      draft:
+        type: boolean
+        description: Create as draft release (optional)
+        required: false
+        default: false
+      prerelease:
+        type: boolean
+        description: Mark as prerelease (optional)
+        required: false
+        default: false
+
+  # Search Operations
+  - name: search_code
+    description: Search code across GitHub repositories
+    parameters:
+      query:
+        type: string
+        description: Search query (see GitHub search syntax)
+        required: true
+      limit:
+        type: integer
+        description: Maximum results to return (optional, default 30)
+        required: false
+        default: 30
+        
+  - name: search_repos
+    description: Search repositories on GitHub
+    parameters:
+      query:
+        type: string
+        description: Search query
+        required: true
+      limit:
+        type: integer
+        description: Maximum results to return (optional, default 30)
+        required: false
+        default: 30
+        
+  - name: search_issues
+    description: Search issues and pull requests on GitHub
+    parameters:
+      query:
+        type: string
+        description: Search query
+        required: true
+      limit:
+        type: integer
+        description: Maximum results to return (optional, default 30)
+        required: false
+        default: 30
+
+dependencies:
+  python:
+    - subprocess
+    - json
+    - os
+    - re
+    - typing
+    - pathlib
+    - dataclasses
+    
+setup:
+  instructions: |
+    ## Setup Instructions for GitHub Skill
+
+    ### Prerequisites
+    - GitHub CLI (gh) installed
+    - 1Password CLI (op) installed
+    - GitHub account with access token stored in 1Password
+    - Git installed (for clone operations)
+
+    ### Installation
+
+    #### macOS/Linux
+    ```bash
+    # Install GitHub CLI
+    brew install gh
+
+    # Install 1Password CLI
+    brew install 1password-cli
+
+    # Or download from https://developer.1password.com/docs/cli/get-started/
+    ```
+
+    #### Linux (Debian/Ubuntu)
+    ```bash
+    # Install GitHub CLI
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    sudo apt update
+    sudo apt install gh
+    ```
+
+    ### Authentication
+
+    #### Option 1: 1Password Token Storage (Recommended)
+    ```bash
+    # Sign in to 1Password
+    op signin
+
+    # Store your GitHub token in 1Password
+    op item create --category="API Credential" \
+      --title="GitHub Token" \
+      --credential-type="token" \
+      --credential="ghp_YOUR_TOKEN_HERE"
+    ```
+
+    #### Option 2: Direct gh CLI Authentication
+    ```bash
+    # Authenticate with GitHub
+    gh auth login
+    
+    # Or set token directly
+    gh auth login --with-token < ~/.github_token
+    ```
+
+    ### 1Password Configuration
+
+    Set the following environment variables in your shell profile:
+    ```bash
+    # ~/.zshrc or ~/.bashrc
+    export OP_VAULT="Private"  # Your 1Password vault name
+    export OP_GITHUB_ITEM="GitHub Token"  # Item name containing your token
+    ```
+
+    Or configure the skill to use specific vault/item:
+    ```python
+    from skills.github.github_skill import GitHubSkill
+    
+    skill = GitHubSkill(
+        op_vault="Private",
+        op_github_item="GitHub Token"
+    )
+    ```
+
+    ### Required Scopes for GitHub Token
+
+    For full functionality, your GitHub token should have these scopes:
+    - `repo` - Full control of private repositories
+    - `workflow` - Access to workflow runs
+    - `read:org` - Read org membership
+    - `read:user` - Read user profile data
+
+    ### Verification
+
+    ```bash
+    # Verify gh CLI is installed
+    gh --version
+
+    # Verify authentication
+    gh auth status
+
+    # Verify 1Password CLI
+    op --version
+    op signin --check
+
+    # Test the skill
+    python skills/github/github_skill.py list-repos --owner cli
+    ```
+
+    ### Troubleshooting
+
+    - **"gh not found"**: Install GitHub CLI and ensure it's in your PATH
+    - **"op not found"**: Install 1Password CLI and ensure it's in your PATH
+    - **"Could not resolve to a User"**: Check your GitHub token has required scopes
+    - **"401 Bad credentials"**: Your token may be expired or invalid - check in 1Password
+    - **Permission denied**: Ensure your token has the `repo` scope for private repositories

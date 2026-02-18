@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cell0-network-test
+  namespace: cell0
+  labels:
+    app.kubernetes.io/name: cell0
+    app.kubernetes.io/component: debug
+spec:
+  containers:
+    - name: debug
+      image: nicolaka/netshoot
+      command: ["sleep", "3600"]
+  restartPolicy: Never
+---
+# Job for database migrations or initialization
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cell0-migration
+  namespace: cell0
+  labels:
+    app.kubernetes.io/name: cell0
+    app.kubernetes.io/component: migration
+spec:
+  template:
+    spec:
+      containers:
+        - name: migration
+          image: ghcr.io/cell0-os/cell0:1.1.5
+          command: ["python", "-m", "cell0.migrate"]
+          envFrom:
+            - configMapRef:
+                name: cell0-config
+          env:
+            - name: CELL0_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cell0-secrets
+                  key: CELL0_SECRET_KEY
+      restartPolicy: OnFailure
+      serviceAccountName: cell0
+  backoffLimit: 3

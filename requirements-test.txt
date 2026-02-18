@@ -1,0 +1,39 @@
+# Cell 0 OS - Test Dependencies
+# Core testing framework
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-xdist>=3.3.0
+
+# Mock and fixtures
+pytest-mock>=3.12.0
+factory-boy>=3.3.0
+faker>=20.0.0
+
+# Coverage reporting
+coverage>=7.3.0
+coverage-badge>=1.1.0
+
+# Type checking (for test validation)
+mypy>=1.7.0
+
+# Linting (for CI)
+flake8>=6.1.0
+black>=23.11.0
+isort>=5.12.0
+
+# Test data
+pyyaml>=6.0.1
+jsonschema>=4.20.0
+
+# Async testing helpers
+asynctest>=0.13.0
+aiohttp>=3.9.0
+websockets>=12.0
+
+# HTTP mocking for tests
+responses>=0.24.0
+aioresponses>=0.7.6
+
+# Performance testing (optional)
+pytest-benchmark>=4.0.0

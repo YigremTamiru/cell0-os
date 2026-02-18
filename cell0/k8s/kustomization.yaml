@@ -1,0 +1,56 @@
+# Kustomize configuration for Cell 0 OS Kubernetes manifests
+# Usage: kubectl apply -k cell0/k8s/
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: cell0
+
+resources:
+  - namespace.yaml
+  - rbac.yaml
+  - configmap.yaml
+  - secrets.yaml
+  - pvc.yaml
+  - deployment.yaml
+  - service.yaml
+  - hpa.yaml
+  - pdb.yaml
+  - ingress.yaml
+  - servicemonitor.yaml
+
+# Optional: Add resource limits and requests patches
+patches:
+  - target:
+      kind: Deployment
+      name: cell0
+    patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: "16Gi"
+
+# ConfigMap generator for additional config
+configMapGenerator:
+  - name: cell0-extra-config
+    literals:
+      - LOG_LEVEL=debug
+
+# Secret generator for additional secrets (use external secrets in production)
+# secretGenerator:
+#   - name: cell0-extra-secrets
+#     literals:
+#       - API_KEY=placeholder
+
+# Common labels
+commonLabels:
+  app.kubernetes.io/managed-by: kustomize
+
+# Images
+images:
+  - name: ghcr.io/cell0-os/cell0
+    newTag: 1.1.5
+
+# Replicas
+replicas:
+  - name: cell0
+    count: 3

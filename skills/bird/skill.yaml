@@ -1,0 +1,501 @@
+name: bird
+description: X/Twitter automation via bird CLI. Read timelines, search tweets, post tweets/threads, follow/unfollow users, manage lists and bookmarks. Cookie-based authentication with 1Password integration.
+homepage: https://bird.fast
+metadata:
+  clawdbot:
+    emoji: 🐦
+    requires:
+      bins:
+        - bird
+        - op
+      os:
+        - darwin
+        - linux
+    install:
+      - id: bird
+        kind: brew
+        tap: clawbot/tap
+        formula: bird
+        bins:
+          - bird
+        label: Install bird CLI via Homebrew
+      - id: 1password-cli
+        kind: brew
+        formula: 1password-cli
+        bins:
+          - op
+        label: Install 1Password CLI
+    capabilities:
+      - read_timeline
+      - search_tweets
+      - post_tweet
+      - post_thread
+      - reply_to_tweet
+      - read_tweet
+      - like_tweet
+      - unlike_tweet
+      - follow_user
+      - unfollow_user
+      - get_user_info
+      - get_followers
+      - get_following
+      - get_user_tweets
+      - get_mentions
+      - get_bookmarks
+      - add_bookmark
+      - remove_bookmark
+      - get_lists
+      - get_list_timeline
+      - get_trending
+      - whoami
+      - get_replies
+      - get_thread
+    permissions:
+      - network
+    notes: Uses cookie-based authentication (auth_token and ct0). Store credentials securely in 1Password.
+
+version: 1.0.0
+author: Cell 0 OS
+license: MIT
+platforms:
+  - darwin
+  - linux
+
+entry_point:
+  python: bird_skill.py
+
+tools:
+  # Timeline Operations
+  - name: read_timeline
+    description: Read the home timeline (For You feed)
+    parameters:
+      count:
+        type: integer
+        description: Number of tweets to fetch (optional, default 20)
+        required: false
+        default: 20
+      following_only:
+        type: boolean
+        description: Get Following feed (chronological) instead of For You
+        required: false
+        default: false
+
+  - name: read_tweet
+    description: Read a specific tweet by ID or URL
+    parameters:
+      tweet_id:
+        type: string
+        description: Tweet ID or URL
+        required: true
+      include_replies:
+        type: boolean
+        description: Include replies to the tweet
+        required: false
+        default: false
+
+  - name: get_replies
+    description: Get replies to a specific tweet
+    parameters:
+      tweet_id:
+        type: string
+        description: Tweet ID or URL
+        required: true
+      count:
+        type: integer
+        description: Number of replies to fetch (optional, default 20)
+        required: false
+        default: 20
+
+  - name: get_thread
+    description: Get the full conversation thread containing a tweet
+    parameters:
+      tweet_id:
+        type: string
+        description: Tweet ID or URL
+        required: true
+
+  # Search Operations
+  - name: search_tweets
+    description: Search for tweets
+    parameters:
+      query:
+        type: string
+        description: Search query (e.g., "@username" or "from:username" or keywords)
+        required: true
+      count:
+        type: integer
+        description: Number of tweets to fetch (optional, default 10)
+        required: false
+        default: 10
+      fetch_all:
+        type: boolean
+        description: Fetch all search results (paged)
+        required: false
+        default: false
+
+  # Post Operations
+  - name: post_tweet
+    description: Post a new tweet
+    parameters:
+      text:
+        type: string
+        description: Tweet content (max 280 characters)
+        required: true
+      media:
+        type: array
+        items:
+          type: string
+        description: Paths to media files (up to 4 images or 1 video)
+        required: false
+      alt_text:
+        type: array
+        items:
+          type: string
+        description: Alt text for corresponding media files
+        required: false
+
+  - name: reply_to_tweet
+    description: Reply to an existing tweet
+    parameters:
+      tweet_id:
+        type: string
+        description: Tweet ID or URL to reply to
+        required: true
+      text:
+        type: string
+        description: Reply content (max 280 characters)
+        required: true
+      media:
+        type: array
+        items:
+          type: string
+        description: Paths to media files (optional)
+        required: false
+
+  - name: post_thread
+    description: Post a thread of connected tweets
+    parameters:
+      tweets:
+        type: array
+        items:
+          type: string
+        description: List of tweet texts for the thread
+        required: true
+
+  # Like Operations
+  - name: like_tweet
+    description: Like a tweet (via bookmarks/likes command)
+    parameters:
+      tweet_id:
+        type: string
+        description: Tweet ID or URL to like
+        required: true
+
+  - name: unlike_tweet
+    description: Unlike a tweet (remove from bookmarks)
+    parameters:
+      tweet_id:
+        type: string
+        description: Tweet ID or URL to unlike
+        required: true
+
+  # User Operations
+  - name: follow_user
+    description: Follow a user
+    parameters:
+      username:
+        type: string
+        description: Username to follow (with or without @)
+        required: true
+
+  - name: unfollow_user
+    description: Unfollow a user
+    parameters:
+      username:
+        type: string
+        description: Username to unfollow (with or without @)
+        required: true
+
+  - name: get_user_info
+    description: Get information about a user
+    parameters:
+      username:
+        type: string
+        description: Username (with or without @)
+        required: true
+
+  - name: get_user_tweets
+    description: Get tweets from a user's profile timeline
+    parameters:
+      username:
+        type: string
+        description: Username (with or without @)
+        required: true
+      count:
+        type: integer
+        description: Number of tweets to fetch (optional, default 20)
+        required: false
+        default: 20
+
+  - name: get_followers
+    description: Get followers of a user (or current user if no username specified)
+    parameters:
+      username:
+        type: string
+        description: Username (optional, defaults to authenticated user)
+        required: false
+      count:
+        type: integer
+        description: Number of followers to fetch (optional, default 20)
+        required: false
+        default: 20
+
+  - name: get_following
+    description: Get users that a user follows (or current user if no username specified)
+    parameters:
+      username:
+        type: string
+        description: Username (optional, defaults to authenticated user)
+        required: false
+      count:
+        type: integer
+        description: Number of users to fetch (optional, default 20)
+        required: false
+        default: 20
+
+  - name: whoami
+    description: Show which Twitter account the current credentials belong to
+    parameters: {}
+
+  # Mention Operations
+  - name: get_mentions
+    description: Get tweets mentioning the current user
+    parameters:
+      count:
+        type: integer
+        description: Number of mentions to fetch (optional, default 20)
+        required: false
+        default: 20
+
+  # Bookmark Operations
+  - name: get_bookmarks
+    description: Get bookmarked tweets
+    parameters:
+      count:
+        type: integer
+        description: Number of bookmarks to fetch (optional, default 20)
+        required: false
+        default: 20
+
+  - name: add_bookmark
+    description: Bookmark a tweet
+    parameters:
+      tweet_id:
+        type: string
+        description: Tweet ID or URL to bookmark
+        required: true
+
+  - name: remove_bookmark
+    description: Remove a bookmark
+    parameters:
+      tweet_id:
+        type: string
+        description: Tweet ID or URL to remove from bookmarks
+        required: true
+
+  # List Operations
+  - name: get_lists
+    description: Get Twitter lists owned or subscribed by the user
+    parameters: {}
+
+  - name: get_list_timeline
+    description: Get tweets from a list timeline
+    parameters:
+      list_id:
+        type: string
+        description: List ID or URL
+        required: true
+      count:
+        type: integer
+        description: Number of tweets to fetch (optional, default 20)
+        required: false
+        default: 20
+
+  # Trending Operations
+  - name: get_trending
+    description: Fetch AI-curated news and trending topics from Explore tabs
+    parameters:
+      count:
+        type: integer
+        description: Number of items to fetch (optional, default 20)
+        required: false
+        default: 20
+
+  # Authentication Operations
+  - name: check_credentials
+    description: Check if Twitter credentials are available and valid
+    parameters: {}
+
+dependencies:
+  python:
+    - subprocess
+    - json
+    - os
+    - re
+    - typing
+    - dataclasses
+    - pathlib
+    - shlex
+
+setup:
+  instructions: |
+    ## Setup Instructions for Bird/X Skill
+
+    ### Prerequisites
+    - bird CLI installed
+    - 1Password CLI (op) installed
+    - X/Twitter account with auth cookies stored in 1Password
+    - Active X/Twitter session in Chrome, Firefox, or Safari
+
+    ### Installation
+
+    #### macOS/Linux
+    ```bash
+    # Install bird CLI
+    brew install clawbot/tap/bird
+
+    # Install 1Password CLI
+    brew install 1password-cli
+    ```
+
+    ### Authentication Setup
+
+    The bird CLI uses cookie-based authentication. You need to extract your X/Twitter auth cookies.
+
+    #### Method 1: Browser Cookie Extraction (Recommended)
+
+    bird CLI can automatically extract cookies from your browser:
+
+    ```bash
+    # Use Chrome profile (default)
+    bird --chrome-profile Default whoami
+
+    # Use Firefox profile
+    bird --firefox-profile default-release whoami
+
+    # Check if credentials work
+    bird check
+    ```
+
+    #### Method 2: Manual Cookie Storage in 1Password
+
+    1. Log into X/Twitter in your browser
+    2. Open Developer Tools → Application/Storage → Cookies → twitter.com
+    3. Copy the values of `auth_token` and `ct0` cookies
+    4. Store them in 1Password:
+
+    ```bash
+    # Store auth_token
+    op item create --category="API Credential" \
+      --title="X/Twitter Auth Token" \
+      --credential-type="token" \
+      --credential="YOUR_AUTH_TOKEN_HERE"
+
+    # Store ct0 token
+    op item create --category="API Credential" \
+      --title="X/Twitter CT0 Token" \
+      --credential-type="token" \
+      --credential="YOUR_CT0_TOKEN_HERE"
+    ```
+
+    ### Configuration
+
+    Create a bird config file at `~/.config/bird/config.json5`:
+
+    ```json5
+    {
+      // Browser profile to use for cookie extraction
+      chromeProfile: "Default",
+      // Or Firefox
+      // firefoxProfile: "default-release",
+
+      // Cookie extraction timeout
+      cookieTimeoutMs: 5000,
+
+      // Request timeout
+      timeoutMs: 30000,
+
+      // Quote depth for tweet display
+      quoteDepth: 1,
+    }
+    ```
+
+    Or set environment variables:
+    ```bash
+    export BIRD_TIMEOUT_MS=30000
+    export BIRD_COOKIE_TIMEOUT_MS=5000
+    export BIRD_QUOTE_DEPTH=1
+    ```
+
+    ### 1Password Integration
+
+    Set the following environment variables:
+    ```bash
+    export OP_VAULT="Private"
+    export OP_X_AUTH_TOKEN_ITEM="X/Twitter Auth Token"
+    export OP_X_CT0_ITEM="X/Twitter CT0 Token"
+    ```
+
+    Or configure in the skill:
+    ```python
+    from skills.bird.bird_skill import BirdSkill
+
+    skill = BirdSkill(
+        op_vault="Private",
+        op_auth_token_item="X/Twitter Auth Token",
+        op_ct0_item="X/Twitter CT0 Token",
+        chrome_profile="Default"
+    )
+    ```
+
+    ### Verification
+
+    ```bash
+    # Verify bird CLI is installed
+    bird --version
+
+    # Verify credentials work
+    bird whoami
+
+    # Test timeline
+    bird home -n 5
+
+    # Test the skill
+    python skills/bird/bird_skill.py whoami
+    ```
+
+    ### Limitations
+
+    Due to X/Twitter API restrictions via bird CLI:
+
+    - **No Retweets**: bird CLI does not support retweeting
+    - **No DMs**: Direct messaging is not supported
+    - **Limited Analytics**: Only basic metrics available via user info
+    - **Rate Limits**: Subject to X/Twitter's unofficial rate limits
+    - **Cookie Expiry**: Cookies may expire; refresh by logging into browser again
+
+    ### Troubleshooting
+
+    - **"bird not found"**: Install bird CLI and ensure it's in your PATH
+    - **"op not found"**: Install 1Password CLI
+    - **"Could not authenticate"**: Check your cookies are valid and not expired
+    - **"Rate limit exceeded"**: Wait and try again; X/Twitter has aggressive rate limits
+    - **"Tweet not found"**: The tweet may be deleted or you may not have permission to view it
+
+    ### Security Notes
+
+    - Never commit your auth tokens to version control
+    - Use 1Password for secure credential storage
+    - Cookies are session-based and will expire
+    - The bird CLI extracts cookies from your browser's secure storage
+    - Always use HTTPS when working with social media credentials

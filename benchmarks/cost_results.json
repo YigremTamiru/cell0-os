@@ -1,0 +1,185 @@
+{
+  "timestamp": "2026-02-12T01:55:37.862095",
+  "pricing_per_1m_tokens": {
+    "fast": {
+      "input": 0.15,
+      "output": 0.6
+    },
+    "balanced": {
+      "input": 2.5,
+      "output": 10.0
+    },
+    "power": {
+      "input": 10.0,
+      "output": 30.0
+    }
+  },
+  "records": [
+    {
+      "operation": "col_classify_simple",
+      "model_tier": "fast",
+      "tokens": {
+        "prompt": 500,
+        "completion": 50,
+        "total": 550
+      },
+      "cost_usd": {
+        "input": 7.5e-05,
+        "output": 3e-05,
+        "total": 0.00010499999999999999
+      },
+      "latency_ms": 150,
+      "timestamp": "2026-02-12T01:55:37.862032"
+    },
+    {
+      "operation": "col_classify_complex",
+      "model_tier": "balanced",
+      "tokens": {
+        "prompt": 2000,
+        "completion": 200,
+        "total": 2200
+      },
+      "cost_usd": {
+        "input": 0.005,
+        "output": 0.002,
+        "total": 0.007
+      },
+      "latency_ms": 800,
+      "timestamp": "2026-02-12T01:55:37.862044"
+    },
+    {
+      "operation": "agent_spawn",
+      "model_tier": "balanced",
+      "tokens": {
+        "prompt": 1500,
+        "completion": 300,
+        "total": 1800
+      },
+      "cost_usd": {
+        "input": 0.00375,
+        "output": 0.0029999999999999996,
+        "total": 0.006749999999999999
+      },
+      "latency_ms": 1200,
+      "timestamp": "2026-02-12T01:55:37.862046"
+    },
+    {
+      "operation": "agent_heartbeat",
+      "model_tier": "fast",
+      "tokens": {
+        "prompt": 800,
+        "completion": 100,
+        "total": 900
+      },
+      "cost_usd": {
+        "input": 0.00012,
+        "output": 6e-05,
+        "total": 0.00018
+      },
+      "latency_ms": 200,
+      "timestamp": "2026-02-12T01:55:37.862049"
+    },
+    {
+      "operation": "skill_read_file",
+      "model_tier": "fast",
+      "tokens": {
+        "prompt": 1000,
+        "completion": 500,
+        "total": 1500
+      },
+      "cost_usd": {
+        "input": 0.00015,
+        "output": 0.0003,
+        "total": 0.00045
+      },
+      "latency_ms": 400,
+      "timestamp": "2026-02-12T01:55:37.862051"
+    },
+    {
+      "operation": "skill_web_search",
+      "model_tier": "balanced",
+      "tokens": {
+        "prompt": 2000,
+        "completion": 800,
+        "total": 2800
+      },
+      "cost_usd": {
+        "input": 0.005,
+        "output": 0.008,
+        "total": 0.013000000000000001
+      },
+      "latency_ms": 2500,
+      "timestamp": "2026-02-12T01:55:37.862052"
+    },
+    {
+      "operation": "skill_code_review",
+      "model_tier": "power",
+      "tokens": {
+        "prompt": 5000,
+        "completion": 1500,
+        "total": 6500
+      },
+      "cost_usd": {
+        "input": 0.05,
+        "output": 0.045,
+        "total": 0.095
+      },
+      "latency_ms": 5000,
+      "timestamp": "2026-02-12T01:55:37.862054"
+    },
+    {
+      "operation": "memory_read",
+      "model_tier": "fast",
+      "tokens": {
+        "prompt": 300,
+        "completion": 200,
+        "total": 500
+      },
+      "cost_usd": {
+        "input": 4.4999999999999996e-05,
+        "output": 0.00012,
+        "total": 0.000165
+      },
+      "latency_ms": 100,
+      "timestamp": "2026-02-12T01:55:37.862055"
+    },
+    {
+      "operation": "memory_write",
+      "model_tier": "fast",
+      "tokens": {
+        "prompt": 400,
+        "completion": 100,
+        "total": 500
+      },
+      "cost_usd": {
+        "input": 6e-05,
+        "output": 6e-05,
+        "total": 0.00012
+      },
+      "latency_ms": 120,
+      "timestamp": "2026-02-12T01:55:37.862057"
+    },
+    {
+      "operation": "col_reasoning",
+      "model_tier": "power",
+      "tokens": {
+        "prompt": 8000,
+        "completion": 2000,
+        "total": 10000
+      },
+      "cost_usd": {
+        "input": 0.08,
+        "output": 0.06,
+        "total": 0.14
+      },
+      "latency_ms": 8000,
+      "timestamp": "2026-02-12T01:55:37.862058"
+    }
+  ],
+  "summary": {
+    "total_tasks": 10,
+    "total_tokens": 27250,
+    "total_cost_usd": 0.26277,
+    "avg_cost_per_task_usd": 0.026277000000000002
+  }
+}

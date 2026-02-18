@@ -1,0 +1,544 @@
+id: blogwatcher
+name: Blog Watcher
+version: 1.0.0
+description: |
+  Advanced RSS/Atom feed monitoring and blog tracking system. 
+  Features feed discovery, new post detection, full-text extraction, 
+  keyword filtering, change detection, notification triggers, and 
+  OPML import/export. Supports YouTube channels, Substack, and Medium.
+author: Cell 0 OS
+license: MIT
+type: workspace
+
+metadata:
+  clawdbot:
+    emoji: 📰
+    requires:
+      bins:
+        - python3
+      network: true
+    capabilities:
+      - parse_rss_feed
+      - parse_atom_feed
+      - discover_feeds
+      - detect_new_posts
+      - extract_full_text
+      - filter_by_keywords
+      - detect_page_changes
+      - send_notifications
+      - aggregate_feeds
+      - import_opml
+      - export_opml
+      - add_feed
+      - remove_feed
+      - list_feeds
+      - get_feed_updates
+      - monitor_youtube_channel
+      - monitor_substack
+      - monitor_medium
+    permissions:
+      - network
+      - filesystem
+    notes: |
+      Requires internet connection for feed fetching. 
+      Respects robots.txt and rate limits.
+      Stores state in local JSON files.
+
+dependencies:
+  python:
+    - feedparser>=6.0.0
+    - requests>=2.28.0
+    - beautifulsoup4>=4.11.0
+    - lxml>=4.9.0
+    - python-dateutil>=2.8.0
+    - html2text>=2020.1.16
+    - readability-lxml>=0.8.1
+    - pillow>=9.0.0
+    - xmltodict>=0.13.0
+
+entry_point:
+  python: blogwatcher_skill.py
+
+# Tools that this skill registers with the engine
+tools:
+  # Feed Management
+  - name: add_feed
+    module: blogwatcher.tools
+    function: add_feed
+    description: Add a new RSS/Atom feed to monitor
+    parameters:
+      url:
+        type: string
+        description: URL of the RSS/Atom feed or webpage to discover feeds from
+        required: true
+      name:
+        type: string
+        description: Human-readable name for the feed
+        required: false
+      keywords:
+        type: array
+        items:
+          type: string
+        description: Keywords to filter posts (optional)
+        required: false
+      check_interval:
+        type: integer
+        description: Check interval in minutes (default 60)
+        required: false
+        default: 60
+
+  - name: remove_feed
+    module: blogwatcher.tools
+    function: remove_feed
+    description: Remove a feed from monitoring
+    parameters:
+      feed_id:
+        type: string
+        description: ID of the feed to remove
+        required: true
+
+  - name: list_feeds
+    module: blogwatcher.tools
+    function: list_feeds
+    description: List all monitored feeds with their status
+    parameters:
+      include_inactive:
+        type: boolean
+        description: Include inactive feeds in the list
+        required: false
+        default: false
+
+  - name: get_feed
+    module: blogwatcher.tools
+    function: get_feed
+    description: Get detailed information about a specific feed
+    parameters:
+      feed_id:
+        type: string
+        description: ID of the feed
+        required: true
+
+  # Feed Parsing and Discovery
+  - name: parse_feed
+    module: blogwatcher.tools
+    function: parse_feed
+    description: Parse an RSS/Atom feed and return entries
+    parameters:
+      url:
+        type: string
+        description: URL of the feed to parse
+        required: true
+      limit:
+        type: integer
+        description: Maximum number of entries to return
+        required: false
+        default: 10
+
+  - name: discover_feeds
+    module: blogwatcher.tools
+    function: discover_feeds
+    description: Discover RSS/Atom feeds from a URL
+    parameters:
+      url:
+        type: string
+        description: URL of a webpage to scan for feeds
+        required: true
+
+  - name: discover_feeds_from_page
+    module: blogwatcher.tools
+    function: discover_feeds_from_page
+    description: Advanced feed discovery with platform-specific handlers
+    parameters:
+      url:
+        type: string
+        description: URL to discover feeds from
+        required: true
+      platforms:
+        type: array
+        items:
+          type: string
+        description: Specific platforms to check (youtube, substack, medium, generic)
+        required: false
+
+  # Post Detection and Extraction
+  - name: get_new_posts
+    module: blogwatcher.tools
+    function: get_new_posts
+    description: Get new posts from a feed since last check
+    parameters:
+      feed_id:
+        type: string
+        description: ID of the feed to check
+        required: true
+      since:
+        type: string
+        description: ISO timestamp to check from (optional, uses last check time if not provided)
+        required: false
+
+  - name: get_all_new_posts
+    module: blogwatcher.tools
+    function: get_all_new_posts
+    description: Get new posts from all monitored feeds
+    parameters:
+      since:
+        type: string
+        description: ISO timestamp to check from (optional)
+        required: false
+      limit_per_feed:
+        type: integer
+        description: Maximum posts per feed
+        required: false
+        default: 5
+
+  - name: extract_full_text
+    module: blogwatcher.tools
+    function: extract_full_text
+    description: Extract full text content from a URL using readability
+    parameters:
+      url:
+        type: string
+        description: URL of the article to extract
+        required: true
+      include_images:
+        type: boolean
+        description: Include image URLs in extraction
+        required: false
+        default: true
+
+  - name: filter_posts
+    module: blogwatcher.tools
+    function: filter_posts
+    description: Filter posts by keywords (title, content, tags)
+    parameters:
+      posts:
+        type: array
+        description: Array of post objects to filter
+        required: true
+      keywords:
+        type: array
+        description: Keywords to filter by
+        required: true
+      match_mode:
+        type: string
+        description: Match mode - any, all, or exact
+        required: false
+        default: any
+      case_sensitive:
+        type: boolean
+        description: Case-sensitive matching
+        required: false
+        default: false
+
+  # Change Detection
+  - name: check_page_changes
+    module: blogwatcher.tools
+    function: check_page_changes
+    description: Check for changes on a webpage (for sites without RSS)
+    parameters:
+      url:
+        type: string
+        description: URL to check for changes
+        required: true
+      selector:
+        type: string
+        description: CSS selector to monitor specific element (optional)
+        required: false
+      ignore_patterns:
+        type: array
+        description: Regex patterns to ignore in changes
+        required: false
+
+  - name: add_page_monitor
+    module: blogwatcher.tools
+    function: add_page_monitor
+    description: Add a webpage to monitor for changes
+    parameters:
+      url:
+        type: string
+        description: URL to monitor
+        required: true
+      name:
+        type: string
+        description: Name for this monitor
+        required: false
+      selector:
+        type: string
+        description: CSS selector for specific content
+        required: false
+      check_interval:
+        type: integer
+        description: Check interval in minutes
+        required: false
+        default: 60
+
+  # Aggregation
+  - name: aggregate_feeds
+    module: blogwatcher.tools
+    function: aggregate_feeds
+    description: Create an aggregated feed from multiple sources
+    parameters:
+      feed_ids:
+        type: array
+        description: IDs of feeds to aggregate (empty = all feeds)
+        required: false
+      output_format:
+        type: string
+        description: Output format - atom, rss, json
+        required: false
+        default: atom
+      max_items:
+        type: integer
+        description: Maximum items in aggregated feed
+        required: false
+        default: 50
+
+  # OPML Import/Export
+  - name: import_opml
+    module: blogwatcher.tools
+    function: import_opml
+    description: Import feeds from an OPML file
+    parameters:
+      file_path:
+        type: string
+        description: Path to OPML file
+        required: true
+      import_folder:
+        type: string
+        description: Folder/category for imported feeds
+        required: false
+
+  - name: export_opml
+    module: blogwatcher.tools
+    function: export_opml
+    description: Export feeds to an OPML file
+    parameters:
+      file_path:
+        type: string
+        description: Path to save OPML file
+        required: true
+      feed_ids:
+        type: array
+        description: Specific feed IDs to export (empty = all)
+        required: false
+
+  # Platform-Specific Monitors
+  - name: add_youtube_channel
+    module: blogwatcher.tools
+    function: add_youtube_channel
+    description: Monitor a YouTube channel for new videos
+    parameters:
+      channel_url:
+        type: string
+        description: YouTube channel URL or handle
+        required: true
+      name:
+        type: string
+        description: Name for this monitor
+        required: false
+
+  - name: add_substack
+    module: blogwatcher.tools
+    function: add_substack
+    description: Monitor a Substack publication
+    parameters:
+      substack_url:
+        type: string
+        description: Substack URL (e.g., https://name.substack.com)
+        required: true
+      name:
+        type: string
+        description: Name for this monitor
+        required: false
+
+  - name: add_medium
+    module: blogwatcher.tools
+    function: add_medium
+    description: Monitor a Medium user or publication
+    parameters:
+      medium_url:
+        type: string
+        description: Medium profile or publication URL
+        required: true
+      name:
+        type: string
+        description: Name for this monitor
+        required: false
+
+  # Notifications
+  - name: configure_notifications
+    module: blogwatcher.tools
+    function: configure_notifications
+    description: Configure notification settings for feeds
+    parameters:
+      feed_id:
+        type: string
+        description: Feed ID (optional, applies to all if not specified)
+        required: false
+      enabled:
+        type: boolean
+        description: Enable/disable notifications
+        required: false
+        default: true
+      channels:
+        type: array
+        description: Notification channels (webhook, email, desktop, etc.)
+        required: false
+      webhook_url:
+        type: string
+        description: Webhook URL for notifications
+        required: false
+      filter_keywords:
+        type: array
+        description: Only notify on posts matching these keywords
+        required: false
+
+  - name: test_notification
+    module: blogwatcher.tools
+    function: test_notification
+    description: Send a test notification
+    parameters:
+      channel:
+        type: string
+        description: Channel to test (webhook, desktop, etc.)
+        required: false
+        default: desktop
+
+# CLI commands provided by this skill
+commands:
+  - name: blogwatcher
+    module: blogwatcher.cli
+    function: cli_main
+    description: Blog Watcher CLI - manage feeds and view updates
+    aliases: [bw, feeds]
+
+# Event handlers for system events
+events:
+  - event_type: skill.enabled
+    module: blogwatcher.handlers
+    function: on_skill_enabled
+    priority: 100
+
+  - event_type: heartbeat
+    module: blogwatcher.handlers
+    function: on_heartbeat
+    priority: 50
+
+setup:
+  instructions: |
+    ## Setup Instructions for Blog Watcher Skill
+
+    ### Prerequisites
+    - Python 3.8+
+    - Internet connection
+    - Required Python packages (auto-installed):
+      - feedparser>=6.0.0
+      - requests>=2.28.0
+      - beautifulsoup4>=4.11.0
+      - lxml>=4.9.0
+      - python-dateutil>=2.8.0
+      - html2text>=2020.1.16
+      - readability-lxml>=0.8.1
+
+    ### Installation
+    ```bash
+    # Install dependencies
+    pip install feedparser requests beautifulsoup4 lxml python-dateutil html2text readability-lxml xmltodict
+    ```
+
+    ### Initial Setup
+    ```python
+    from skills.blogwatcher.blogwatcher_skill import BlogWatcherSkill
+    
+    # Initialize the skill
+    watcher = BlogWatcherSkill()
+    
+    # Add a feed
+    watcher.add_feed("https://example.com/feed.xml", name="Example Blog")
+    
+    # Discover feeds from a URL
+    feeds = watcher.discover_feeds("https://example.com")
+    ```
+
+    ### YouTube Channel Monitoring
+    ```python
+    # Add YouTube channel - accepts various formats:
+    # - https://www.youtube.com/@channelname
+    # - https://www.youtube.com/c/channelname
+    # - https://www.youtube.com/channel/UC...
+    # - @channelname
+    
+    watcher.add_youtube_channel("https://www.youtube.com/@mkbhd", name="MKBHD")
+    ```
+
+    ### Substack Monitoring
+    ```python
+    # Add Substack - various formats accepted:
+    # - https://name.substack.com
+    # - name.substack.com
+    # - @substackname
+    
+    watcher.add_substack("https://platformer.substack.com", name="Platformer")
+    ```
+
+    ### Medium Monitoring
+    ```python
+    # Add Medium profile or publication:
+    # - https://medium.com/@username
+    # - https://username.medium.com
+    # - https://medium.com/publication-name
+    
+    watcher.add_medium("https://medium.com/@username", name="User Blog")
+    ```
+
+    ### OPML Import/Export
+    ```python
+    # Import from OPML (e.g., from Feedly, Inoreader)
+    watcher.import_opml("/path/to/feeds.opml")
+    
+    # Export to OPML
+    watcher.export_opml("/path/to/backup.opml")
+    ```
+
+    ### Page Change Detection (No RSS)
+    ```python
+    # Monitor a page that doesn't have RSS
+    watcher.add_page_monitor(
+        "https://example.com/announcements",
+        name="Announcements",
+        selector=".news-section"  # Monitor specific element
+    )
+    ```
+
+    ### Notification Setup
+    ```python
+    # Configure webhook notifications
+    watcher.configure_notifications(
+        webhook_url="https://hooks.slack.com/services/...",
+        channels=["webhook"]
+    )
+    ```
+
+    ### Data Storage
+    - Feed state stored in: `~/.cell0/blogwatcher/`
+    - Feed list: `feeds.json`
+    - Post history: `posts/`
+    - OPML exports: `exports/`
+
+    ### Rate Limiting
+    The skill respects rate limits:
+    - Default check interval: 60 minutes
+    - Configurable per-feed
+    - Respects robots.txt
+    - Exponential backoff on errors
+
+    ### Troubleshooting
+    - **Feed not found**: Use `discover_feeds()` to find correct feed URL
+    - **Parsing errors**: Some feeds may need specific handling
+    - **Rate limits**: Increase `check_interval` if getting blocked
+    - **Encoding issues**: Skill auto-detects and handles various encodings
+
+    ### Supported Feed Formats
+    - RSS 0.90, 0.91, 0.92, 1.0, 2.0
+    - Atom 0.3, 1.0
+    - RDF-based feeds
+    - Media RSS (MRSS) for podcasts/videos

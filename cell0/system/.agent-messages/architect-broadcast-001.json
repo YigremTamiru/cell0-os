@@ -1,0 +1,68 @@
+{
+  "from": "architect",
+  "to": "all",
+  "type": "design-decision",
+  "timestamp": "2026-02-18T05:45:00Z",
+  "message_id": "arch-001",
+  "priority": "high",
+  "subject": "IPC Protocol and Federation Architecture Finalized",
+  "content": {
+    "summary": "Completed architecture design for kernel↔daemon communication and multi-node federation",
+    "deliverables": [
+      {
+        "file": "docs/IPC_PROTOCOL_SPEC.md",
+        "description": "Hybrid IPC using Unix sockets (primary), gRPC (secondary), Shared memory (high-bandwidth)",
+        "key_decisions": [
+          "Unix sockets for low-latency local communication",
+          "gRPC for structured messages and streaming",
+          "Shared memory ring buffers for bulk data >64KB",
+          "SYPAS v2.0 protocol for security"
+        ]
+      },
+      {
+        "file": "docs/FEDERATION_DESIGN.md", 
+        "description": "Multi-node cluster with C0R consensus (modified Raft with BFT)",
+        "key_decisions": [
+          "Raft-based consensus with Byzantine extensions",
+          "Tolerates f < n/3 malicious nodes",
+          "Geographic zone awareness",
+          "Support for observer nodes (non-voting)",
+          "Automatic leader election and failover"
+        ]
+      },
+      {
+        "file": "docs/SYPAS_PROTOCOL.md",
+        "description": "Secure Yield Protocol for Agent Systems v2.0",
+        "key_decisions": [
+          "32-byte fixed header for efficiency",
+          "Capability-based access control",
+          "128-byte capability tokens with Ed25519 signatures",
+          "Priority-based message routing",
+          "Built-in attestation support"
+        ]
+      }
+    ],
+    "impact": {
+      "kernel-smith": "Implement SYPAS transport layer in Rust kernel",
+      "daemon-forge": "Implement SYPAS client in Python daemon",
+      "test-harness": "Create protocol compliance tests",
+      "evolution": "Coordinate swarm with new messaging"
+    },
+    "next_steps": [
+      "kernel-smith: Begin Unix socket transport implementation",
+      "daemon-forge: Begin Python SYPAS client implementation",
+      "test-harness: Design protocol test suite",
+      "architect: Monitor integration progress, resolve conflicts"
+    ],
+    "blockers_cleared": [
+      "IPC protocol design finalized",
+      "SYPAS v2.0 specification complete",
+      "Federation architecture defined"
+    ],
+    "questions": [
+      "kernel-smith: Any concerns about shared memory implementation timeline?",
+      "daemon-forge: Preferred gRPC/Protobuf library for Python?",
+      "test-harness: Test coverage requirements for protocol?"
+    ]
+  }
+}

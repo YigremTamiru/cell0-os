@@ -1,0 +1,282 @@
+name: apple-notes
+description: Manage Apple Notes via the memo CLI tool. Create, read, update, search, move, and export notes and folders on macOS.
+homepage: https://github.com/antoniorodr/memo
+metadata:
+  clawdbot:
+    emoji: 📝
+    requires:
+      bins:
+        - memo
+      os:
+        - macos
+    install:
+      - id: brew
+        kind: brew
+        tap: antoniorodr/memo
+        formula: antoniorodr/memo/memo
+        bins:
+          - memo
+        label: Install memo CLI via Homebrew
+      - id: pip
+        kind: pip
+        package: memo
+        label: Install memo CLI via pip
+    capabilities:
+      - list_notes
+      - list_folders
+      - create_note
+      - read_note
+      - update_note
+      - search_notes
+      - move_note
+      - export_notes
+      - delete_note
+      - create_folder
+      - delete_folder
+    permissions:
+      - apple-events
+      - file-system
+    notes: Requires macOS with Apple Notes app. Some operations require $EDITOR to be set.
+
+version: 1.0.0
+author: Cell 0 OS
+license: MIT
+platforms:
+  - darwin
+
+entry_point:
+  python: apple_notes.py
+  
+tools:
+  - name: list_notes
+    description: List all notes or notes in a specific folder
+    parameters:
+      folder:
+        type: string
+        description: Folder name to filter notes (optional)
+        required: false
+        
+  - name: list_folders
+    description: List all folders and subfolders
+    parameters: {}
+    
+  - name: create_note
+    description: Create a new note in a folder
+    parameters:
+      title:
+        type: string
+        description: Title of the note
+        required: true
+      content:
+        type: string
+        description: Content of the note
+        required: true
+      folder:
+        type: string
+        description: Folder to create note in (optional, defaults to default folder)
+        required: false
+        
+  - name: read_note
+    description: Read the content of a specific note
+    parameters:
+      title:
+        type: string
+        description: Title of the note to read
+        required: true
+      folder:
+        type: string
+        description: Folder containing the note (optional)
+        required: false
+        
+  - name: update_note
+    description: Update an existing note
+    parameters:
+      title:
+        type: string
+        description: Current title of the note
+        required: true
+      new_title:
+        type: string
+        description: New title for the note (optional)
+        required: false
+      content:
+        type: string
+        description: New content for the note
+        required: true
+      folder:
+        type: string
+        description: Folder containing the note (optional)
+        required: false
+        
+  - name: search_notes
+    description: Search notes using fuzzy search
+    parameters:
+      query:
+        type: string
+        description: Search query string
+        required: true
+        
+  - name: move_note
+    description: Move a note to a different folder
+    parameters:
+      title:
+        type: string
+        description: Title of the note to move
+        required: true
+      source_folder:
+        type: string
+        description: Current folder of the note (optional)
+        required: false
+      target_folder:
+        type: string
+        description: Target folder to move note to
+        required: true
+        
+  - name: export_notes
+    description: Export notes to Desktop in HTML/Markdown format
+    parameters:
+      folder:
+        type: string
+        description: Specific folder to export (optional, exports all if not specified)
+        required: false
+      format:
+        type: string
+        description: Export format (html or markdown)
+        required: false
+        default: markdown
+        
+  - name: delete_note
+    description: Delete a note
+    parameters:
+      title:
+        type: string
+        description: Title of the note to delete
+        required: true
+      folder:
+        type: string
+        description: Folder containing the note (optional)
+        required: false
+        
+  - name: create_folder
+    description: Create a new folder in Apple Notes
+    parameters:
+      name:
+        type: string
+        description: Name of the new folder
+        required: true
+      parent:
+        type: string
+        description: Parent folder for nested folders (optional)
+        required: false
+        
+  - name: delete_folder
+    description: Delete a folder and all its contents
+    parameters:
+      name:
+        type: string
+        description: Name of the folder to delete
+        required: true
+      force:
+        type: boolean
+        description: Force deletion without confirmation
+        required: false
+        default: false
+
+dependencies:
+  python:
+    - subprocess
+    - json
+    - re
+    - typing
+    
+setup:
+  instructions: |
+    ## Setup Instructions for memo CLI
+
+    ### Prerequisites
+    - macOS 10.15 or later
+    - Apple Notes app
+    - Python 3.8+ (for pip installation)
+    - Homebrew (optional, for brew installation)
+
+    ### Installation Options
+
+    #### Option 1: Homebrew (Recommended)
+    ```bash
+    # Add the tap
+    brew tap antoniorodr/memo
+
+    # Install memo
+    brew install antoniorodr/memo/memo
+    ```
+
+    #### Option 2: pip
+    ```bash
+    # Clone the repository
+    git clone https://github.com/antoniorodr/memo.git
+    cd memo
+
+    # Install with pip
+    pip install .
+    ```
+
+    #### Option 3: pipx (Isolated)
+    ```bash
+    pipx install git+https://github.com/antoniorodr/memo.git
+    ```
+
+    ### Configuration
+
+    1. **Set your preferred editor** (required for editing notes):
+       ```bash
+       export EDITOR="vim"  # or nano, code, etc.
+       # Add to ~/.zshrc or ~/.bashrc to make permanent
+       ```
+
+    2. **Verify installation**:
+       ```bash
+       memo --version
+       memo --help
+       ```
+
+    3. **Grant permissions**:
+       - First run will prompt for Apple Events permission
+       - Grant access in System Preferences > Security & Privacy > Privacy > Automation
+
+    ### Usage Examples
+
+    ```bash
+    # List all notes
+    memo notes
+
+    # List notes in a specific folder
+    memo notes --folder "Work"
+
+    # List all folders
+    memo notes --flist
+
+    # Create a new note
+    memo notes --add --folder "Work"
+
+    # Search notes
+    memo notes --search "meeting"
+
+    # Export all notes
+    memo notes --export
+
+    # Move a note
+    memo notes --move --folder "Source" --target "Destination"
+    ```
+
+    ### Troubleshooting
+
+    - **Permission Denied**: Ensure Apple Notes has automation permissions
+    - **Editor not opening**: Check $EDITOR environment variable
+    - **Notes not appearing**: Ensure Notes app is not in a locked state
+    - **Export fails**: Check Desktop folder permissions
+
+    ### Limitations
+
+    - Images/attachments in notes cannot be edited via memo
+    - Some rich formatting may be lost during export
+    - Requires Notes app to be accessible (not in locked state)

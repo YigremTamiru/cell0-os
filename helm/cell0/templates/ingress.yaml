@@ -1,0 +1,41 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: {{ include "cell0.ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+  name: {{ include "cell0.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "cell0.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ingress
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        {{- range .Values.ingress.hosts }}
+        - {{ .host | quote }}
+        {{- end }}
+      secretName: {{ include "cell0.ingressSecretName" . }}
+  {{- end }}
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ include "cell0.fullname" $ }}
+                port:
+                  number: {{ $.Values.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}

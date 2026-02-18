@@ -1,0 +1,139 @@
+# Video Frames Skill - Docker Compose
+# Cell 0 OS - Video Analysis via FFmpeg
+
+version: "3.8"
+
+services:
+  # ==========================================================================
+  # CPU-only service
+  # ==========================================================================
+  video-frames-cpu:
+    build:
+      context: ../..
+      dockerfile: skills/video-frames/Dockerfile
+      target: production
+    image: cell0os/video-frames:latest
+    container_name: video-frames-cpu
+    volumes:
+      - ./data:/data
+      - ./output:/output
+    environment:
+      - VIDEO_FRAMES_TEMP_DIR=/tmp/video-frames
+      - VIDEO_FRAMES_GPU_ENABLED=false
+    command: python -c "from skills.video_frames import VideoProcessor; print('CPU Video Frames Skill ready')"
+    healthcheck:
+      test: ["CMD", "ffmpeg", "-version"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  # ==========================================================================
+  # GPU-accelerated service (NVIDIA)
+  # ==========================================================================
+  video-frames-gpu:
+    build:
+      context: ../..
+      dockerfile: skills/video-frames/Dockerfile
+      target: production-gpu
+    image: cell0os/video-frames:gpu
+    container_name: video-frames-gpu
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - VIDEO_FRAMES_GPU_ENABLED=true
+      - VIDEO_FRAMES_TEMP_DIR=/tmp/video-frames
+    volumes:
+      - ./data:/data
+      - ./output:/output
+    command: python -c "from skills.video_frames import VideoProcessor; print('GPU Video Frames Skill ready')"
+    healthcheck:
+      test: ["CMD", "ffmpeg", "-version"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  # ==========================================================================
+  # Development environment
+  # ==========================================================================
+  video-frames-dev:
+    build:
+      context: ../..
+      dockerfile: skills/video-frames/Dockerfile
+      target: development
+    image: cell0os/video-frames:dev
+    container_name: video-frames-dev
+    volumes:
+      - ../..:/app
+      - ./data:/data
+      - ./output:/output
+    environment:
+      - VIDEO_FRAMES_GPU_ENABLED=false
+      - PYTHONPATH=/app
+    command: bash
+    stdin_open: true
+    tty: true
+
+  # ==========================================================================
+  # Test runner
+  # ==========================================================================
+  video-frames-test:
+    build:
+      context: ../..
+      dockerfile: skills/video-frames/Dockerfile
+      target: production
+    image: cell0os/video-frames:latest
+    container_name: video-frames-test
+    volumes:
+      - ../..:/app
+    command: python -m pytest /app/tests/test_skill_video_frames.py -v
+
+  # ==========================================================================
+  # Batch processing worker
+  # ==========================================================================
+  video-frames-worker:
+    build:
+      context: ../..
+      dockerfile: skills/video-frames/Dockerfile
+      target: production
+    image: cell0os/video-frames:latest
+    container_name: video-frames-worker
+    volumes:
+      - ./data:/data:ro
+      - ./output:/output
+      - ./jobs:/jobs
+    environment:
+      - VIDEO_FRAMES_GPU_ENABLED=false
+      - VIDEO_FRAMES_MAX_CONCURRENT=4
+    command: >
+      python -c "
+      from skills.video_frames import VideoProcessor
+      import os
+      import json
+      
+      processor = VideoProcessor()
+      jobs_dir = '/jobs'
+      
+      for job_file in os.listdir(jobs_dir):
+          if job_file.endswith('.json'):
+              with open(os.path.join(jobs_dir, job_file)) as f:
+                  job = json.load(f)
+              
+              print(f'Processing job: {job_file}')
+              # Process job based on operation type
+      
+      print('Worker idle')
+      "
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+
+# ==========================================================================
+# Shared volumes
+# ==========================================================================
+volumes:
+  video-data:
+    driver: local
+  video-output:
+    driver: local

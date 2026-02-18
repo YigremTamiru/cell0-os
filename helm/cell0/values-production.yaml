@@ -1,0 +1,307 @@
+# Production values for cell0
+# Use with: helm install cell0 ./helm/cell0 -f ./helm/cell0/values-production.yaml
+
+# -- Production replica count
+replicaCount: 3
+
+# -- Production image
+image:
+  pullPolicy: IfNotPresent
+
+# -- Production resource allocation
+resources:
+  limits:
+    cpu: 8000m
+    memory: 16Gi
+  requests:
+    cpu: 2000m
+    memory: 4Gi
+
+# -- Enable autoscaling for production
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 75
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+        - type: Pods
+          value: 4
+          periodSeconds: 60
+      selectPolicy: Max
+    scaleDown:
+      stabilizationWindowSeconds: 600
+      policies:
+        - type: Percent
+          value: 10
+          periodSeconds: 120
+        - type: Pods
+          value: 2
+          periodSeconds: 120
+      selectPolicy: Min
+
+# -- Pod Disruption Budget for high availability
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
+
+# -- Production ingress configuration
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    # NGINX specific
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+    # Rate limiting
+    nginx.ingress.kubernetes.io/limit-rps: "200"
+    nginx.ingress.kubernetes.io/limit-connections: "100"
+    # Cert-manager
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+    # External DNS
+    external-dns.alpha.kubernetes.io/hostname: "cell0.example.com,api.cell0.example.com"
+  hosts:
+    - host: cell0.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+    - host: api.cell0.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    enabled: true
+    secretName: cell0-tls
+
+# -- Production pod security
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+# -- Production persistence
+persistence:
+  enabled: true
+  storageClass: "premium-rwo"
+  accessMode: ReadWriteOnce
+  size: 50Gi
+
+# -- Production configuration
+config:
+  env: production
+  logLevel: INFO
+  logFormat: json
+  workers: 8
+  maxConnections: 5000
+  requestTimeout: 300
+  websocketTimeout: 3600
+  
+  features:
+    swarm: true
+    canvas: true
+    signal: true
+    tts: false
+  
+  security:
+    corsOrigins: "https://cell0.example.com,https://api.cell0.example.com"
+    rateLimitEnabled: true
+    rateLimitRequests: 1000
+    rateLimitWindow: 60
+
+# -- Production service account
+serviceAccount:
+  create: true
+  annotations: {}
+
+# -- Enable ServiceMonitor for Prometheus
+serviceMonitor:
+  enabled: true
+  interval: 15s
+  scrapeTimeout: 10s
+
+# -- Enable Prometheus alerting rules
+prometheusRule:
+  enabled: true
+  rules:
+    - alert: Cell0Down
+      expr: up{job="cell0"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Cell 0 instance is down"
+        description: "Cell 0 instance {{ $labels.instance }} has been down for more than 1 minute."
+        runbook_url: "https://wiki.internal/runbooks/cell0-down"
+    
+    - alert: Cell0HighErrorRate
+      expr: rate(cell0_api_requests_total{status=~"5.."}[5m]) / rate(cell0_api_requests_total[5m]) > 0.1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Cell 0 high error rate"
+        description: "Error rate is above 10% for more than 5 minutes."
+    
+    - alert: Cell0HighLatency
+      expr: histogram_quantile(0.99, rate(cell0_api_request_duration_seconds_bucket[5m])) > 5
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Cell 0 high latency"
+        description: "99th percentile latency is above 5 seconds."
+    
+    - alert: Cell0MemoryHigh
+      expr: container_memory_usage_bytes{container="cell0"} / container_spec_memory_limit_bytes{container="cell0"} > 0.9
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Cell 0 memory usage high"
+        description: "Memory usage is above 90% of limit."
+
+# -- Production affinity rules
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - cell0
+        topologyKey: kubernetes.io/hostname
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: node-type
+              operator: In
+              values:
+                - compute
+
+# -- Production tolerations
+tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "cell0"
+    effect: "NoSchedule"
+
+# -- Production node selector
+nodeSelector:
+  node-type: compute
+
+# -- Production topology spread constraints
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: ScheduleAnyway
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: cell0
+
+# -- Enable network policies
+networkPolicy:
+  enabled: true
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 18800
+  egress:
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 53
+        - protocol: UDP
+          port: 53
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ollama
+      ports:
+        - protocol: TCP
+          port: 11434
+
+# -- Redis production configuration
+redis:
+  enabled: true
+  architecture: replication
+  auth:
+    enabled: true
+    existingSecret: cell0-redis-secret
+    existingSecretPasswordKey: redis-password
+  master:
+    persistence:
+      enabled: true
+      storageClass: "premium-rwo"
+      size: 16Gi
+    resources:
+      limits:
+        memory: 4Gi
+        cpu: 2000m
+      requests:
+        memory: 2Gi
+        cpu: 1000m
+  replica:
+    replicaCount: 2
+    persistence:
+      enabled: true
+      storageClass: "premium-rwo"
+      size: 16Gi
+    resources:
+      limits:
+        memory: 4Gi
+        cpu: 2000m
+      requests:
+        memory: 2Gi
+        cpu: 1000m
+
+# -- PostgreSQL production configuration
+postgresql:
+  enabled: false
+  auth:
+    existingSecret: cell0-postgres-secret
+  primary:
+    persistence:
+      enabled: true
+      storageClass: "premium-rwo"
+      size: 50Gi
+    resources:
+      limits:
+        memory: 4Gi
+        cpu: 2000m
+      requests:
+        memory: 2Gi
+        cpu: 1000m
+  readReplicas:
+    replicaCount: 2

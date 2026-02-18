@@ -1,0 +1,27 @@
+# Video Frames Skill - Python Dependencies
+# Cell 0 OS - Video Analysis via FFmpeg
+
+# Core dependencies
+numpy>=1.20.0
+pillow>=9.0.0
+opencv-python>=4.5.0
+
+# Optional performance improvements
+# opencv-python-headless>=4.5.0  # Use for server environments
+
+# Cell 0 OS integration (optional, for skill usage)
+# cell0os>=1.0.0
+
+# Testing
+pytest>=7.0.0
+pytest-asyncio>=0.20.0
+pytest-cov>=4.0.0
+
+# Development
+black>=22.0.0
+flake8>=5.0.0
+mypy>=0.990
+ipython>=8.0.0
+
+# Type stubs
+# types-Pillow>=9.0.0

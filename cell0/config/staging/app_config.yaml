@@ -1,0 +1,76 @@
+# Staging Environment Configuration Overrides
+#
+# This file contains configuration overrides for the staging environment.
+# Staging should mirror production as closely as possible.
+
+debug: false
+
+logging:
+  level: INFO
+  format: json
+  output: file
+  file_path: logs/cell0.log
+  rotation: daily
+  retention_days: 30
+
+tool_profiles:
+  default_profile: coding
+  allow_dangerous_tools: false
+  
+performance:
+  max_workers: 8
+  request_timeout: 60
+  enable_caching: true
+  cache_ttl: 300
+  
+security:
+  require_auth: true
+  allow_cors: true
+  cors_origins:
+    - "https://staging.cell0.io"
+    - "https://app.staging.cell0.io"
+  
+  # API rate limiting
+  rate_limiting:
+    requests_per_minute: 120
+    burst_size: 20
+    
+integrations:
+  ollama:
+    url: "http://ollama-staging:11434"
+    default_model: "llama3.1:8b"
+    timeout: 60
+    max_concurrent_requests: 5
+    
+  signal:
+    enabled: true
+    phone_number: "+15551234567"
+    webhook_url: "https://staging.cell0.io/webhooks/signal"
+    
+  brave_search:
+    enabled: true
+    rate_limit: 100  # requests per day
+    
+features:
+  enable_metrics: true
+  enable_profiling: false
+  enable_swagger: true
+  enable_websocket_debug: false
+  
+# Monitoring
+monitoring:
+  prometheus:
+    enabled: true
+    port: 9090
+    path: /metrics
+    
+  health_check:
+    enabled: true
+    interval: 30
+    
+# Backup configuration
+backup:
+  enabled: true
+  schedule: "0 */6 * * *"  # Every 6 hours
+  retention_days: 14
+  encrypt: true

@@ -1,0 +1,22 @@
+{
+  "name": "batch-frame-extraction",
+  "description": "Extract frames from multiple videos",
+  "operation": "extract_frames",
+  "input_videos": [
+    "/data/video1.mp4",
+    "/data/video2.mp4",
+    "/data/video3.mp4"
+  ],
+  "output_dir": "/output/frames",
+  "config": {
+    "format": "jpg",
+    "quality": 95,
+    "fps": 1,
+    "width": 1920,
+    "height": 1080,
+    "use_gpu": true
+  },
+  "parallel": 4,
+  "priority": "normal",
+  "created_at": "2026-02-12T01:00:00Z"
+}

@@ -1,0 +1,62 @@
+id: hello_world
+name: Hello World
+version: 1.0.0
+description: A simple example skill demonstrating the Cell 0 OS skill system
+author: Cell 0 Team
+license: MIT
+type: workspace
+
+# This skill has no dependencies
+dependencies: []
+
+# Tools that this skill registers with the engine
+tools:
+  - name: hello
+    module: hello_world.tools
+    function: say_hello
+    description: Returns a greeting message
+    parameters:
+      name:
+        type: string
+        description: Name to greet
+        default: "World"
+      language:
+        type: string
+        description: Language for greeting (en, es, fr)
+        default: "en"
+
+  - name: goodbye
+    module: hello_world.tools
+    function: say_goodbye
+    description: Returns a farewell message
+    parameters:
+      name:
+        type: string
+        description: Name to bid farewell
+        default: "Friend"
+
+# CLI commands provided by this skill
+commands:
+  - name: hello
+    module: hello_world.cli
+    function: hello_command
+    description: Print a hello message
+    aliases: [hi]
+
+  - name: goodbye
+    module: hello_world.cli
+    function: goodbye_command
+    description: Print a goodbye message
+    aliases: [bye]
+
+# Event handlers for system events
+events:
+  - event_type: skill.enabled
+    module: hello_world.handlers
+    function: on_skill_enabled
+    priority: 100
+
+  - event_type: skill.disabled
+    module: hello_world.handlers
+    function: on_skill_disabled
+    priority: 100

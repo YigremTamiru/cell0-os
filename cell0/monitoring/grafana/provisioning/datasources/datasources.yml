@@ -1,0 +1,49 @@
+# Cell 0 OS - Grafana Datasources Configuration
+# This file configures automatic datasource provisioning
+
+apiVersion: 1
+
+datasources:
+  # ============================================================================
+  # Prometheus - Metrics
+  # ============================================================================
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+    jsonData:
+      timeInterval: 15s
+      httpMethod: POST
+      manageAlerts: true
+      alertmanagerUid: alertmanager
+
+  # ============================================================================
+  # Loki - Logs
+  # ============================================================================
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    editable: false
+    jsonData:
+      maxLines: 1000
+      derivedFields:
+        # Extract trace_id from logs for correlation
+        - name: TraceID
+          matcherRegex: '"trace_id":"([^"]+)"'
+          url: ''  # Can link to Jaeger/Tempo if available
+          datasourceUid: ''
+
+  # ============================================================================
+  # AlertManager
+  # ============================================================================
+  - name: Alertmanager
+    type: alertmanager
+    uid: alertmanager
+    access: proxy
+    url: http://alertmanager:9093
+    editable: false
+    jsonData:
+      implementation: prometheus

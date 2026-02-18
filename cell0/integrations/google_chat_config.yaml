@@ -1,0 +1,254 @@
+# Google Chat Bot Configuration for Cell 0 OS
+# Copy this file and customize for your deployment
+
+bot_name: "Cell0Bot"
+version: "1.0.0"
+description: "Cell 0 OS - Sovereign Edge AI Bot for Google Chat"
+
+# Google Cloud Project Configuration
+project_id: "${GOOGLE_PROJECT_ID}"
+project_number: "${GOOGLE_PROJECT_NUMBER}"
+
+# Authentication
+# Service account credentials JSON file path
+# Download from Google Cloud Console > IAM & Admin > Service Accounts
+credentials_path: "${GOOGLE_APPLICATION_CREDENTIALS}"
+
+auth:
+  type: "service_account"
+  token_uri: "https://oauth2.googleapis.com/token"
+  scopes:
+    - "https://www.googleapis.com/auth/chat.bot"
+    - "https://www.googleapis.com/auth/chat.messages"
+    - "https://www.googleapis.com/auth/chat.members"
+  
+  # Optional: User impersonation for admin operations
+  # impersonate_user: "admin@your-domain.com"
+
+# Webhook Server Configuration
+webhook:
+  enabled: true
+  host: "0.0.0.0"
+  port: 8080
+  path: "/chat/webhook"
+  
+  # TLS Configuration (recommended for production)
+  tls:
+    enabled: false
+    cert_path: "/path/to/cert.pem"
+    key_path: "/path/to/key.pem"
+  
+  # Request verification
+  verify_tokens: true
+  allowed_ips: []  # Leave empty to allow all, or specify ["1.2.3.4", "5.6.7.8"]
+  
+  # Rate limiting
+  rate_limit:
+    enabled: true
+    requests_per_minute: 60
+
+# Pub/Sub Configuration (alternative to HTTP webhooks)
+pubsub:
+  enabled: false
+  project_id: "${GOOGLE_PROJECT_ID}"
+  subscription_name: "cell0-chat-events"
+  
+  # Authentication for Pub/Sub
+  # Uses same service account as above
+  
+  # Message processing
+  max_messages: 100
+  ack_deadline_seconds: 60
+  
+  # Retry configuration
+  retry:
+    max_retries: 3
+    initial_delay_seconds: 1
+    max_delay_seconds: 60
+
+# Feature Flags
+features:
+  # Enable threaded conversations
+  threading: true
+  
+  # Enable Cards V2 API
+  cards: true
+  
+  # Enable slash commands
+  slash_commands: true
+  
+  # Enable message reactions
+  reactions: true
+  
+  # Enable private responses (visible only to sender)
+  private_responses: true
+  
+  # Enable @mentions processing
+  mentions: true
+  
+  # Enable card interaction callbacks
+  card_interactions: true
+
+# Slash Commands Configuration
+# These must also be registered in Google Chat API
+slash_commands:
+  - name: "/help"
+    description: "Show help and available commands"
+    requires_admin: false
+    
+  - name: "/status"
+    description: "Check Cell 0 OS system status"
+    requires_admin: false
+    
+  - name: "/ask"
+    description: "Ask the AI a question"
+    requires_admin: false
+    usage: "/ask <your question>"
+    
+  - name: "/tasks"
+    description: "List and manage your tasks"
+    requires_admin: false
+    subcommands:
+      - "list"
+      - "add <task>"
+      - "done <task_id>"
+      
+  - name: "/profile"
+    description: "View and edit your user profile"
+    requires_admin: false
+    
+  - name: "/admin"
+    description: "Admin commands (admins only)"
+    requires_admin: true
+    subcommands:
+      - "users"
+      - "spaces"
+      - "stats"
+
+# Card Templates
+card_templates:
+  welcome:
+    header:
+      title: "🌊 Welcome to Cell 0 OS"
+      subtitle: "Your Sovereign Edge AI"
+    sections:
+      - header: "Getting Started"
+        widgets:
+          - textParagraph:
+              text: "I'm here to help you with your tasks and answer your questions."
+      - header: "Quick Actions"
+        widgets:
+          - buttonList:
+              buttons:
+                - text: "Documentation"
+                  onClick:
+                    action:
+                      link:
+                        url: "https://cell0.ai/docs"
+                - text: "Dashboard"
+                  onClick:
+                    action:
+                      link:
+                        url: "https://cell0.ai/dashboard"
+  
+  error:
+    header:
+      title: "❌ Error"
+      subtitle: "Something went wrong"
+    sections:
+      - widgets:
+          - textParagraph:
+              text: "An error occurred while processing your request. Please try again."
+          - buttonList:
+              buttons:
+                - text: "Get Help"
+                  onClick:
+                    action:
+                      link:
+                        url: "https://cell0.ai/support"
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # Optional: Log to file
+  file:
+    enabled: true
+    path: "/var/log/cell0/google_chat_bot.log"
+    max_bytes: 10485760  # 10MB
+    backup_count: 5
+  
+  # Optional: Structured logging (JSON)
+  structured: false
+
+# Cell 0 OS Integration
+cell0_integration:
+  # API endpoint for Cell 0 OS core
+  api_url: "http://localhost:5000"
+  
+  # Authentication for Cell 0 API
+  api_key: "${CELL0_API_KEY}"
+  
+  # Request timeout
+  timeout_seconds: 30
+  
+  # Features to enable
+  features:
+    - "inference"
+    - "memory"
+    - "tasks"
+    - "knowledge"
+
+# User Management
+users:
+  # Default permissions for new users
+  default_permissions:
+    - "read"
+    - "chat"
+    - "tasks"
+  
+  # Admin users (email addresses)
+  admins:
+    - "${ADMIN_EMAIL}"
+  
+  # Allowlist (empty = allow all domain users)
+  allowlist: []
+  
+  # Blocklist
+  blocklist: []
+
+# Space Management
+spaces:
+  # Auto-respond to mentions in spaces
+  auto_respond_mentions: true
+  
+  # Welcome message when added to space
+  send_welcome_message: true
+  
+  # Allowed space types
+  allowed_types:
+    - "SPACE"
+    - "GROUP_CHAT"
+    - "DIRECT_MESSAGE"
+
+# Metrics and Monitoring
+metrics:
+  enabled: true
+  
+  # Prometheus metrics endpoint
+  prometheus:
+    enabled: false
+    port: 9090
+    path: "/metrics"
+  
+  # Health check endpoint
+  health_check:
+    enabled: true
+    path: "/health"
+
+# Development Settings (disable in production)
+development:
+  debug_mode: false
+  mock_authentication: false
+  verbose_logging: false

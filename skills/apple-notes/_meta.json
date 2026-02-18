@@ -1,0 +1,24 @@
+{
+  "ownerId": "cell0-os",
+  "slug": "apple-notes",
+  "version": "1.0.0",
+  "publishedAt": 1707690480000,
+  "platform": "darwin",
+  "requires": {
+    "bins": ["memo"],
+    "os": ["macos"]
+  },
+  "capabilities": [
+    "list_notes",
+    "list_folders",
+    "create_note",
+    "read_note",
+    "update_note",
+    "search_notes",
+    "move_note",
+    "export_notes",
+    "delete_note",
+    "create_folder",
+    "delete_folder"
+  ]
+}
