@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cell0-os"
-version = "1.1.5"
+version = "1.2.0"
 description = "Cell 0 OS - Sovereign Edge Model Operating System"
 readme = "README.md"
 license = {text = "GPL-3.0"}

@@ -1,0 +1,127 @@
+name: Publish Universal Native Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Trigger when a version tag like v1.2.0 is pushed
+
+jobs:
+  build-and-release:
+    name: "Compile & Publish Architecture (${{ matrix.target }})"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # 1. macOS (Apple Silicon)
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact_name: cell0-os-macos-aarch64
+            ext: dylib
+          # 2. macOS (Intel)
+          - os: macos-13 # Standard intel runner
+            target: x86_64-apple-darwin
+            artifact_name: cell0-os-macos-x86_64
+            ext: dylib
+          # 3. Linux (x86_64)
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact_name: cell0-os-linux-x86_64
+            ext: so
+          # 4. Linux (ARM64 / Aarch64)
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            artifact_name: cell0-os-linux-aarch64
+            ext: so
+          # 5. Windows (x64)
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact_name: cell0-os-windows-x64
+            ext: dll
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ----------------------------------------------------------------------
+      # RUST KERNEL CROSS-COMPILATION (Matrix Target)
+      # ----------------------------------------------------------------------
+      - name: 🦀 Setup Rust (${{ matrix.target }})
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+          targets: ${{ matrix.target }}
+
+      - name: 📦 Install Cross-Compilation Dependencies (Linux ARM64)
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu libc6-dev-arm64-cross
+
+      - name: 🛠️ Compile Absolute Kernel (${{ matrix.target }})
+        working-directory: ./cell0/kernel
+        run: |
+          # Use cross for aarch64-linux if on ubuntu
+          if [ "${{ matrix.target }}" = "aarch64-unknown-linux-gnu" ]; then
+            cargo install cross --git https://github.com/cross-rs/cross
+            cross build --release --target ${{ matrix.target }}
+          else
+            cargo build --release --target ${{ matrix.target }}
+          fi
+        shell: bash
+
+      # ----------------------------------------------------------------------
+      # NODE.JS ARCHITECTURE COMPILATION
+      # ----------------------------------------------------------------------
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 🛠️ Compile Gateway & Portal
+        run: |
+          npm ci
+          npm run build
+
+      # ----------------------------------------------------------------------
+      # PACKAGING & DISTRIBUTION
+      # ----------------------------------------------------------------------
+      - name: 📦 Package OS Artifacts (*nix)
+        if: runner.os != 'Windows'
+        run: |
+          mkdir -p ${{ matrix.artifact_name }}
+          cp -r dist/ ${{ matrix.artifact_name }}/
+          cp package.json ${{ matrix.artifact_name }}/
+          cp -r cell0/ ${{ matrix.artifact_name }}/
+          cp cell0/kernel/target/${{ matrix.target }}/release/libcell0_kernel.${{ matrix.ext }} ${{ matrix.artifact_name }}/cell0/kernel/ 2>/dev/null || true
+          cp -r docs/ ${{ matrix.artifact_name }}/
+          cp README.md ${{ matrix.artifact_name }}/
+          tar -czvf ${{ matrix.artifact_name }}.tar.gz ${{ matrix.artifact_name }}/
+        shell: bash
+
+      - name: 📦 Package OS Artifacts (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          mkdir ${{ matrix.artifact_name }}
+          Copy-Item -Path dist, package.json, cell0, docs, README.md -Destination ${{ matrix.artifact_name }} -Recurse
+          Copy-Item -Path cell0\kernel\target\${{ matrix.target }}\release\cell0_kernel.${{ matrix.ext }} -Destination ${{ matrix.artifact_name }}\cell0\kernel\ -ErrorAction SilentlyContinue
+          Compress-Archive -Path ${{ matrix.artifact_name }} -DestinationPath ${{ matrix.artifact_name }}.zip
+        shell: powershell
+
+      # ----------------------------------------------------------------------
+      # GITHUB RELEASE UPLOAD
+      # ----------------------------------------------------------------------
+      - name: 🚀 Publish Universal GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ${{ matrix.artifact_name }}.tar.gz
+            ${{ matrix.artifact_name }}.zip
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

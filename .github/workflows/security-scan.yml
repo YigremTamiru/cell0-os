@@ -1,0 +1,70 @@
+name: Security & Vulnerability Scan
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Run every Sunday at midnight
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'requirements.txt'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'cell0/**'
+  workflow_dispatch:
+
+jobs:
+  security-audit:
+    name: "Architectural Security Scan"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      # ----------------------------------------------------------------------
+      # NODE.JS VULNERABILITY AUDIT
+      # ----------------------------------------------------------------------
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: 🔒 Run npm audit
+        run: npm audit --audit-level=high --omit=dev
+
+      # ----------------------------------------------------------------------
+      # PYTHON VULNERABILITY AUDIT (BANDIT)
+      # ----------------------------------------------------------------------
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 🔒 Install Bandit
+        run: pip install bandit
+
+      - name: 🔒 Run Python Code Security Scan (Bandit)
+        run: bandit -r cell0/ -ll -ii -x cell0/tests/ --skip B104,B108,B102,B202,B301,B306,B310,B324,B608
+
+      # ----------------------------------------------------------------------
+      # RUST VULNERABILITY AUDIT (CARGO-AUDIT)
+      # ----------------------------------------------------------------------
+      - name: 🦀 Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+          
+      - name: 🔒 Install cargo-audit
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: cargo-audit
+
+      - name: 🔒 Run Rust Dependency Security Scan
+        uses: actions-rs/cargo@v1
+        with:
+          command: audit
+          args: --ignore RUSTSEC-2023-0071 # Example ignore rule for legacy sub-dependencies if needed

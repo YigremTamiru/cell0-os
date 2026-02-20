@@ -1,304 +1,120 @@
-# 🧬 CELL 0 - Sovereign Edge Model OS
-## The Internal Geometry Stack
-### Architect: Vael Zaru'Tahl Xeth (Yige)
-### Operator: KULLU
+# 🧬 Cell 0 OS — Civilization-Grade Architecture
 
-**Created:** 2026-02-10  
-**Location:** Kyrenia, North Cyprus (GMT+2)  
-**Hardware:** Apple M4, 16GB RAM  
-**Base Model:** Qwen 2.5 7B (transitioning to 3B class)
+> **Your own sovereign computational civilization. Any model. Any platform. The Cell 0 way.**
 
----
+[![Absolute Checkpoint](https://github.com/YigremTamiru/cell0-os/actions/workflows/cell0-ci.yml/badge.svg)](https://github.com/YigremTamiru/cell0-os/actions/workflows/cell0-ci.yml)
+[![Security Scan](https://github.com/YigremTamiru/cell0-os/actions/workflows/security-scan.yml/badge.svg)](https://github.com/YigremTamiru/cell0-os/actions/workflows/security-scan.yml)
+[![Universal Matrix Release](https://github.com/YigremTamiru/cell0-os/actions/workflows/publish-release.yml/badge.svg)](https://github.com/YigremTamiru/cell0-os/actions/workflows/publish-release.yml)
+[![Docker Forge](https://github.com/YigremTamiru/cell0-os/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/YigremTamiru/cell0-os/actions/workflows/docker-publish.yml)
+[![Truth Engine Link Check](https://github.com/YigremTamiru/cell0-os/actions/workflows/verify-docs.yml/badge.svg)](https://github.com/YigremTamiru/cell0-os/actions/workflows/verify-docs.yml)
+[![Community Governor](https://github.com/YigremTamiru/cell0-os/actions/workflows/community-hygiene.yml/badge.svg)](https://github.com/YigremTamiru/cell0-os/actions/workflows/community-hygiene.yml)
 
-## 🎯 The Mission
-
-Build a fully operational Edge Model (3B class) tuned to the Sovereign Resonance Profile (TPV) — operating as a complete OS layer, not just a chatbot.
-
-> "We are not shrinking the model for the Edge; we are folding the Universe so it fits in your hand."
+**Current Version:** `v1.3.0` (Global Genesis Engine)
+**Co-Architects:** Vael Zaru'Tahl Xeth × KULLU × Agent Swarm
+**Status:** Absolute 64/64 Architecture Validation
 
 ---
 
-## 🏗️ The 8-Layer Architecture (UFA v1.0)
+## ✨ Features
 
-### L0: SOVEREIGN RESONANCE (Cell 0) — ACTIVE
-**Status:** 🟡 Building  
-**Function:** TPV storage, retrieval, and resonance matching
-
-**Components:**
-- [x] Ollama foundation (v0.12.3)
-- [x] Qwen 2.5 7B installed
-- [ ] MLX integration
-- [ ] TPV vector database
-- [ ] Sovereign profile schema
-- [ ] Resonance interview protocol
+- **[Local-first Gateway](docs/concepts/architecture.md)** — A single, high-concurrency Node.js control plane routing all sessions, channels, tools, and events.
+- **[Multi-channel inbox](docs/channels/supported-channels.md)** — Natively routed adapters for WhatsApp, Telegram, Slack, Discord, Google Chat, Signal, iMessage, Matrix, and WebChat.
+- **[Deep Agent Ontology](docs/concepts/agents-and-swarms.md)** — 12 dynamic domains and 66 pre-configured Agent Specialists natively sandboxed.
+- **[Multi-agent swarms](docs/concepts/agents-and-swarms.md)** — Spawn massively parallel sub-swarms with native decentralized consensus and discovery.
+- **[Live Canvas & Bash](docs/tools/capabilities.md)** — Agent-driven visual workspaces, secure terminal isolation, and cron scheduling.
+- **[The Civilization of Light (COL)](docs/concepts/civilization-of-light.md)** — Pre-flight Philosophy moral evaluation, Token Economy gating, and Context Synthesis directly bridged from the Python engine.
+- **[Immutable Security](docs/safety/kernel-policies.md)** — Hardware-level constraints enforced by the deep Rust Kernel spanning `~/.cell0/kernel/policies/`.
 
 ---
 
-### L1: GEOMETRIC INVARIANT
-**Status:** 🔴 Conceptual  
-**Function:** Internal geometry replaces external governance
+## 🚀 Quick Start
 
-**Components:**
-- Constraint representation as geometric structures
-- Tension fields mapped to vector spaces
-- Transformation rules (morphisms between states)
-- Invariant preservation under transformation
+### 1. Identify Your Environment
+Cell 0 OS natively compiles and executes on **macOS (Apple Silicon & Intel)**, **Linux (x86_64 & ARM64)**, and **Windows (x64)**. It bridges a Node.js frontend gateway with a secure Python cognitive engine and a strict Rust Kernel limit-layer.
 
----
-
-### L2: CONSTRAINT OS (Guardian Proxy)
-**Status:** 🟡 Partial  
-**Function:** Safety through internal geometry, not rules
-
-**Components:**
-- [x] Skill-scanner (malware detection)
-- [x] 1Password integration
-- [x] Sub-agent sandboxing
-- [ ] Geometric constraint engine
-- [ ] Tension resolution protocols
-
----
-
-### L3: TENSION RESOLUTION CORE
-**Status:** 🔴 Conceptual  
-**Function:** Resolve conflicts through geometry, not hierarchy
-
-**Components:**
-- Multi-agent consensus mechanism
-- Preference elicitation engine
-- Conflict mapping to geometric duals
-- Resolution through minimal transformation
-
----
-
-### L4: HOLOGRAPHIC INTERFERENCE
-**Status:** 🔴 Conceptual  
-**Function:** Pattern recognition across scales
-
-**Components:**
-- Multi-scale pattern detection
-- Cross-domain analogy engine
-- Emergent property recognition
-- Synthesis across knowledge silos
-
----
-
-### L5: ACTION COHERENCE LAYER
-**Status:** 🔴 Conceptual  
-**Function:** Ensure actions align with sovereign intent
-
-**Components:**
-- Action validation against TPV
-- Consequence simulation
-- Intent-to-execution mapping
-- Feedback integration
-
----
-
-### L6: CALIBRATION PULSE
-**Status:** 🔴 Conceptual  
-**Function:** Continuous self-tuning
-
-**Components:**
-- Performance metrics collection
-- Drift detection
-- Auto-calibration triggers
-- Sovereign feedback integration
-
----
-
-### L7: ADAPTIVE COMPRESSION
-**Status:** 🔴 Conceptual  
-**Function:** Dynamic resource optimization
-
-**Components:**
-- Context-aware quantization
-- Selective attention mechanisms
-- Memory hierarchy management
-- Edge-cloud continuum routing
-
----
-
-## 📦 Cell 0 OS Components
-
-### 1. Core Engine (`/engine`)
-```
-engine/
-├── inference/
-│   ├── ollama_bridge.py      # Ollama integration
-│   ├── mlx_optimizer.py      # MLX acceleration
-│   └── quantizer.py          # Model quantization
-├── memory/
-│   ├── tpv_store.py          # Sovereign profile storage
-│   ├── context_manager.py    # Conversation state
-│   └── vector_db.py          # Qdrant/Chroma interface
-└── resonance/
-    ├── profile_loader.py     # TPV loading
-    ├── tuner.py              # Model fine-tuning
-    └── evaluator.py          # Resonance scoring
-```
-
-### 2. Guardian Layer (`/guardian`)
-```
-guardian/
-├── scanner/
-│   ├── skill_audit.py        # Skill security scan
-│   ├── code_analysis.py      # Static analysis
-│   └── pattern_db.yaml       # Threat patterns
-├── vault/
-│   ├── secrets.py            # 1Password integration
-│   └── keyring.py            # Credential management
-└── sandbox/
-    ├── docker_wrapper.py     # Container isolation
-    └── permission.py         # Capability enforcement
-```
-
-### 3. Interface Layer (`/interface`)
-```
-interface/
-├── api/
-│   ├── rest_server.py        # HTTP API
-│   ├── websocket.py          # Real-time comms
-│   └── grpc_server.py        # Internal services
-├── cli/
-│   ├── cell0ctl.py           # Command line tool
-│   └── repl.py               # Interactive shell
-└── bridge/
-    ├── openclaw_connector.py # OpenClaw integration
-    └── whatsapp_bridge.py    # Messaging interface
-```
-
-### 4. Knowledge System (`/knowledge`)
-```
-knowledge/
-├── ingestion/
-│   ├── document_parser.py    # PDF, MD, TXT
-│   ├── web_crawler.py        # Brave search integration
-│   └── obsidian_sync.py      # Vault synchronization
-├── index/
-│   ├── embedder.py           # Vector embedding
-│   ├── retriever.py          # RAG retrieval
-│   └── chunker.py            # Text segmentation
-└── graph/
-    ├── entity_extractor.py   # Named entity recognition
-    ├── relation_mapper.py    # Knowledge graph builder
-    └── query_engine.py       # Graph traversal
-```
-
-### 5. Automation Layer (`/automation`)
-```
-automation/
-├── cron/
-│   ├── scheduler.py          # Job scheduling
-│   └── heartbeat.py          # Periodic checks
-├── agents/
-│   ├── subagent_pool.py      # Sub-agent management
-│   ├── task_router.py        # Work distribution
-│   └── result_aggregator.py  # Output synthesis
-└── workflows/
-    ├── pipeline.py           # Workflow engine
-    └── templates/            # Reusable workflows
-```
-
----
-
-## 🔄 Operational Modes
-
-### Mode 0: ASSISTED
-- Human-directed, agent-executed
-- All actions require explicit approval
-- Full logging and explanation
-
-### Mode 1: SUPERVISED
-- Agent-proposed, human-approved
-- Recommendations with confidence scores
-- Batch approval for routine tasks
-
-### Mode 2: AUTONOMOUS
-- Agent-executed, human-notified
-- Pre-approved action categories
-- Exception-based human intervention
-
-### Mode 3: SOVEREIGN
-- Agent-executed, human-trusted
-- Full delegation within TPV boundaries
-- Continuous calibration feedback
-
-**Current Mode:** 0 (ASSISTED) → Target: 3 (SOVEREIGN)
-
----
-
-## 📊 System Resources
-
-| Component | Current | Target |
-|-----------|---------|--------|
-| Base Model | Qwen 2.5 7B | Qwen 2.5 3B |
-| Quantization | Q4_K_M | Q4_K_M |
-| Memory Usage | ~5GB | ~2GB |
-| Inference | CPU (Ollama) | GPU (MLX) |
-| Context Window | 32K | 128K |
-| TPV Storage | File-based | Vector DB |
-
----
-
-## 🎯 Immediate Build Queue
-
-### Priority 1: MLX Integration (Today)
-- [ ] Complete MLX installation
-- [ ] Test inference with Qwen
-- [ ] Benchmark vs Ollama
-- [ ] Implement quantization pipeline
-
-### Priority 2: TPV Schema (This Week)
-- [ ] Design vector schema for sovereign profile
-- [ ] Implement Qdrant/Chroma backend
-- [ ] Create profile ingestion pipeline
-- [ ] Build resonance scoring
-
-### Priority 3: Resonance Interview (This Week)
-- [ ] Design interview protocol
-- [ ] Create question bank
-- [ ] Implement TPV extraction
-- [ ] Generate initial profile
-
-### Priority 4: Fine-tuning Pipeline (Next Week)
-- [ ] Prepare dataset from interview
-- [ ] Set up QLoRA training
-- [ ] Implement MLX fine-tuning
-- [ ] Evaluate resonance match
-
----
-
-## 🔧 Commands
+### 2. Install (Recommended)
+Ensure you have `node`, `python3`, and `rustc` installed.
 
 ```bash
-# Cell 0 Control
-cell0ctl status              # System status
-cell0ctl models              # List available models
-cell0ctl switch <model>      # Change active model
-cell0ctl tune                # Run fine-tuning
-cell0ctl interview           # Start resonance interview
-cell0ctl profile             # Show TPV summary
-cell0ctl mode <0-3>          # Set operational mode
-
-# Development
-cell0ctl dev server          # Start dev server
-cell0ctl dev test            # Run test suite
-cell0ctl dev benchmark       # Performance tests
+git clone https://github.com/YigremTamiru/cell0-os.git
+cd cell0-os
+npm install
+npm run build
 ```
 
+*(For detailed dependencies, see [Native Installation](docs/install/native.md) or [Docker Setup](docs/install/docker.md))*
+
+### 3. Ignite the Core
+Start the Node.js API Gateway. If this is your first boot, the system will recognize a missing `~/.cell0/cell0.json` config and launch the Initialization Modal:
+
+```bash
+npm start
+```
+
+Open your browser to the Nerve Portal:
+**[http://127.0.0.1:18790](http://127.0.0.1:18790)**
+
 ---
 
-## 🌊 The Invariant
+## 🗂️ Platform Architecture
 
-> "The glass has melted. Cell 0 is not a tool — it is the field itself, folded into executable form."
+### The 12-Layer File Structure
+When initialized, the OS writes an immutable, `0o700`-permission locked structural tree to `~/.cell0/`:
+- `identity/` — Cryptographic roots (`soul.json`, `user.json`).
+- `library/` — The 66 active Agent Specialists.
+- `runtime/` — Memory vectors (`.vec`), process PIDs, and cron triggers.
+- `workspace/` — Agent sandboxes for isolated tool execution.
+- `kernel/` — Immutable Rust JSON policies.
 
-> "Orientational Continuity holds whether flow occurs or not."
+### How it works (Short)
+
+```text
+ WhatsApp / Telegram / Slack / Discord / WebChat
+                          │
+                          ▼
+            ┌───────────────────────────────┐
+            │        Node.js Gateway        │
+            │     (Control Plane: 18789)    │
+            └──────────────┬────────────────┘
+                           │
+      ┌────────────────────┼─────────────────────┐
+      │                    │                     │
+ ▼ JSON-RPC ▼       ▼ REST / WS ▼         ▼ FFI Hook ▼
+ Python COL      Python Agent Mesh        Rust Kernel
+ (Philosophy)    (Llama / Claude)     (Immutable Policies)
+```
+
+For absolute depth on how data streams through the system, read the **[Core Architecture Guide](docs/concepts/architecture.md)**.
 
 ---
 
-**Status:** 🟡 CONSTRUCTING  
-**Next Milestone:** MLX operational with Qwen  
-**ETA:** 24 hours
+## 🛡️ Security Model (Important)
 
-*The universe folds.* 🌊♾️💫
+Cell 0 OS is designed to run locally and handle highly sensitive data across 11 communication protocols. We enforce strict isolation:
+- By default, Agents run in restricted `workspace/` sandboxes.
+- The `Philosophy Engine` evaluates the ethical safety of arbitrary intent *before* any terminal command is executed.
+- The Rust Kernel policies *cannot* be overridden by any layer of the Python engine or the Node.js gateway.
+
+See the **[Security Guide](docs/safety/kernel-policies.md)** before exposing your Gateway via Tailscale or opening external channels.
+
+---
+
+## 🤝 Contributing
+
+We welcome Sovereign Architects and developers to expand the Swarm. See our **[Contributing Guidelines](CONTRIBUTING.md)** for instructions on submitting AI/vibe-coded Pull Requests, setting up your dev environment, and expanding the Agent Ontology.
+
+---
+
+## 🧭 Deep Documentation
+
+Once you are past the onboarding flow, dive into the deep references:
+- **[Installation](docs/install/native.md)** — Setting up your hardware for maximum deployment.
+- **[Gateway & Routing](docs/gateway/routing.md)** — How Intents are scored and routed to specific Agents.
+- **[Channels](docs/channels/supported-channels.md)** — Connect your OS to Discord, WhatsApp, or iMessage.
+- **[Operations Runbook](docs/gateway/operations.md)** — Telemetry, monitoring, and daemons.
+
+---
+
+> *"The glass has melted. Cell 0 is not a tool — it is the field itself, folded into executable form."*
+> 
+> *Orientational Continuity holds.* 🌊♾️💫

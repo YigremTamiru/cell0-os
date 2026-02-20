@@ -1,0 +1,92 @@
+name: Cell 0 OS — Checkpoint Audit Validate
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-architecture:
+    name: "Architectural Audit (64/64 Checkpoint)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      # ----------------------------------------------------------------------
+      # ENVIRONMENT PROVISIONING
+      # ----------------------------------------------------------------------
+      - name: 🟢 Setup Node.js (Gateway & Portal)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 🐍 Setup Python (Intelligence Engine)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 🦀 Setup Rust (Kernel Validation)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+          components: rust-src
+
+      # ----------------------------------------------------------------------
+      # DEPENDENCY RESOLUTION
+      # ----------------------------------------------------------------------
+      - name: 📦 Install Node Dependencies
+        run: npm ci
+
+      - name: 📦 Install Python Dependencies
+        run: pip install -r requirements.txt
+
+      # ----------------------------------------------------------------------
+      # COMPILATION
+      # ----------------------------------------------------------------------
+      - name: 🛠️ Build TypeScript OS Architecture
+        run: npm run build
+        
+      # ----------------------------------------------------------------------
+      # SERVICE ORCHESTRATION (THE LIVE OS)
+      # ----------------------------------------------------------------------
+      - name: 🚀 Boot Cell 0 Architecture
+        run: |
+          echo "Starting Python Intelligence Engine..."
+          nohup python cell0/cell0d.py > python.log 2>&1 &
+          sleep 5
+          
+          echo "Starting Node WebSocket Gateway..."
+          nohup npm run gateway > gateway.log 2>&1 &
+          sleep 5
+          
+          echo "Starting Node Portal UI..."
+          nohup node dist/cli/index.js portal > portal.log 2>&1 &
+          sleep 10
+          
+      # ----------------------------------------------------------------------
+      # THE ULTIMATE GATE
+      # ----------------------------------------------------------------------
+      - name: ⚖️ Absolute Checkpoint Validation (64/64)
+        run: |
+          echo "Initiating Deep Architectural Scan..."
+          # The node script must exit 0 only if all 64 criteria return true
+          node scripts/audit.mjs
+
+      - name: 🧹 Teardown Virtual Architecture
+        if: always()
+        run: |
+          # Clean exit of all architecture daemons
+          pkill -f "cell0d.py" || true
+          pkill -f "npm run gateway" || true
+          pkill -f "dist/cli/index.js portal" || true

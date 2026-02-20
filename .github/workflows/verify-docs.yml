@@ -1,0 +1,40 @@
+name: Verification of Documentation Integrity
+
+on:
+  push:
+    paths:
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'SECURITY.md'
+      - 'VISION.md'
+      - 'docs/**.md'
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'SECURITY.md'
+      - 'VISION.md'
+      - 'docs/**.md'
+  workflow_dispatch:
+
+jobs:
+  verify-docs:
+    name: "Architectural Documentation Link Check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔗 Verify Markdown Integrity (Lychee)
+        uses: lycheeverse/lychee-action@v1.9.3
+        with:
+          args: >-
+            --verbose
+            --no-progress
+            --insecure
+            '**/*.md'
+          fail: true
