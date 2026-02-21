@@ -22,6 +22,7 @@
 - **[Deep Agent Ontology](docs/concepts/agents-and-swarms.md)** — 12 dynamic domains and 66 pre-configured Agent Specialists natively sandboxed.
 - **[Multi-agent swarms](docs/concepts/agents-and-swarms.md)** — Spawn massively parallel sub-swarms with native decentralized consensus and discovery.
 - **[Live Canvas & Bash](docs/tools/capabilities.md)** — Agent-driven visual workspaces, secure terminal isolation, and cron scheduling.
+- **[Neural Glassbox UI](docs/concepts/architecture.md)** — A dynamically-mounted, React-based spatial interface served natively through the Node Gateway.
 - **[The Civilization of Light (COL)](docs/concepts/civilization-of-light.md)** — Pre-flight Philosophy moral evaluation, Token Economy gating, and Context Synthesis directly bridged from the Python engine.
 - **[Immutable Security](docs/safety/kernel-policies.md)** — Hardware-level constraints enforced by the deep Rust Kernel spanning `~/.cell0/kernel/policies/`.
 

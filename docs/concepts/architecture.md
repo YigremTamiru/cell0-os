@@ -9,8 +9,8 @@ We built a pristine native bridge between the two.
 ## 1. The Gateway (TypeScript / Node.js)
 
 The Gateway is the hyper-concurrent frontal cortex. It executes on Port `18789`.
-- **Purpose**: Manage the 11-Channel Router (WhatsApp, Slack, Discord), authenticate incoming webhook payloads via JWT/RBAC, and stream state telemetry back to the Nerve Portal.
-- **Why Node.js?** Event-loop architecture. The Gateway never blocks. It takes inbound human text, parses the cryptographic token, packages the intent payload, and ships it via IPC. 
+- **Purpose**: Manage the 11-Channel Router (WhatsApp, Slack, Discord), authenticate incoming webhook payloads via JWT/RBAC, stream state telemetry, and statically host the compiled React Neural Glassbox payload (`/glassbox/dist/`).
+- **Why Node.js?** Event-loop architecture. The Gateway never blocks. It takes inbound human text, parses the cryptographic token, packages the intent payload, ships it via IPC, and natively renders the spatial interface iframe. 
 
 ## 2. The Python Intelligence Engine (`cell0d.py`)
 
