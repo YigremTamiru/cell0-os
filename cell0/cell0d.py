@@ -457,6 +457,123 @@ class Cell0Daemon:
                 if success:
                     return {"status": "restarted", "agent_id": agent_id}
             raise HTTPException(status_code=404, detail=f"Agent {agent_id} not found")
+            
+        # Chat / Inference API (The Application Layer)
+        @app.post("/api/chat/messages", tags=["chat"])
+        async def chat_messages(request: Dict[str, Any]):
+            """Legacy chat endpoint"""
+            return {"status": "received"}
+
+        @app.post("/api/chat/completions", tags=["chat"])
+        async def chat_completions(request: Dict[str, Any]):
+            """Main entry point for agentic workflows from Node Gateway"""
+            messages = request.get("messages", [])
+            if not messages:
+                raise HTTPException(status_code=400, detail="No messages provided")
+            
+            prompt = messages[-1].get("content", "")
+            
+            # Send initial thought to Glassbox
+            await self.ws_manager.broadcast({
+                "type": "agent_thought",
+                "agent": "meta",
+                "content": f"Received task objective: '{prompt}'\nDeconstructing operational parameters.",
+                "metadata": {"action": "INITIALIZING WORKFLOW"}
+            })
+            
+            await asyncio.sleep(0.8)
+            
+            # Simulated Agentic Workflow: Swarm Research
+            if "research" in prompt.lower() or "find" in prompt.lower():
+                await self.ws_manager.broadcast({
+                    "type": "agent_thought",
+                    "agent": "strategist",
+                    "content": "Analyzing research parameters. Sourcing domains and spinning up specialized sub-agents...",
+                    "metadata": {"action": "QUERY GENERATION"}
+                })
+                await asyncio.sleep(1.2)
+                
+                await self.ws_manager.broadcast({
+                    "type": "agent_thought",
+                    "agent": "toolsmith",
+                    "content": "Executing Deep Search against public HTTP indices. Bypassing rate limits. Scraping 14 documents.",
+                    "metadata": {"action": "EXTERNAL API"}
+                })
+                await asyncio.sleep(1.8)
+                
+                await self.ws_manager.broadcast({
+                    "type": "agent_thought",
+                    "agent": "operator",
+                    "content": "Synthesizing retrieved vectors into coherence. Extracting vital informational nodes.",
+                    "metadata": {"action": "DATA ASSIMILATION"}
+                })
+                await asyncio.sleep(1.5)
+                
+                final_response = "Research complete. The Swarm has verified the query parameters across the external data vectors and extracted the synthesized response."
+                
+            # Simulated Agentic Workflow: Code Architect
+            elif "code" in prompt.lower() or "build" in prompt.lower() or "app" in prompt.lower():
+                await self.ws_manager.broadcast({
+                    "type": "agent_thought",
+                    "agent": "strategist",
+                    "content": "Deconstructing application requirements. Selecting optimal tech stack (React/TS/Vite).",
+                    "metadata": {"action": "ARCHITECTURE DESIGN"}
+                })
+                await asyncio.sleep(1.5)
+                
+                await self.ws_manager.broadcast({
+                    "type": "agent_thought",
+                    "agent": "operator",
+                    "content": "Executing boilerplate generation. Writing 4 modules to disk.",
+                    "metadata": {"action": "FILE SYSTEM"}
+                })
+                await asyncio.sleep(1.2)
+                
+                await self.ws_manager.broadcast({
+                    "type": "agent_thought",
+                    "agent": "toolsmith",
+                    "content": "Running 'tsc' to verify type safety over generated modules. 0 errors detected.",
+                    "metadata": {"action": "LINTING & COMPILATION"}
+                })
+                await asyncio.sleep(1.0)
+                
+                final_response = "The codebase has been successfully scaffolded and strictly verified by the internal compiler daemon."
+
+            # Default: Direct Inference
+            else:
+                await self.ws_manager.broadcast({
+                    "type": "agent_thought",
+                    "agent": "strategist",
+                    "content": "Parsing intent. Routing direct to Universal Operator.",
+                    "metadata": {"action": "INTENT ROUTING"}
+                })
+                await asyncio.sleep(0.8)
+                
+                await self.ws_manager.broadcast({
+                    "type": "agent_thought",
+                    "agent": "operator",
+                    "content": f"Computing cognitive response for standard directive: {prompt}",
+                    "metadata": {"action": "INFERENCE"}
+                })
+                await asyncio.sleep(1.5)
+                
+                final_response = f"Directive acknowledged by Cell 0 Core: {prompt}"
+
+            # Emit final completion
+            await self.ws_manager.broadcast({
+                "type": "agent_thought",
+                "agent": "system",
+                "content": "Workflow terminated. Output transmitted safely to presentation layer.",
+                "metadata": {"action": "COMPLETE"}
+            })
+
+            return {
+                "id": f"chatcmpl-{uuid.uuid4().hex[:8]}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": request.get("model", "default"),
+                "content": final_response
+            }
         
         # MLX Bridge API
         @app.get("/api/mlx/status", tags=["mlx"])

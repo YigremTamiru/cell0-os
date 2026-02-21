@@ -10,7 +10,7 @@
     },
     "main": "./dist/gateway/index.js",
     "scripts": {
-        "build": "tsc",
+        "build": "tsc && npm run build --prefix glassbox",
         "dev": "tsx watch src/gateway/index.ts",
         "start": "node dist/gateway/index.js",
         "gateway": "tsx src/gateway/index.ts",

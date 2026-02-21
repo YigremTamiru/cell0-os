@@ -19,6 +19,7 @@ import fastifyWebsocket from "@fastify/websocket";
 import fastifyCors from "@fastify/cors";
 import { type WebSocket } from "ws";
 import { randomUUID } from "node:crypto";
+import path from "node:path";
 
 import {
     type RequestFrame,
@@ -172,6 +173,18 @@ export class Gateway {
         await this.fastify.register(fastifyCors, { origin: true });
         await this.fastify.register(fastifyWebsocket);
 
+        // Serve Neural Glassbox UI statically
+        try {
+            const glassboxPath = path.join(this.config.projectRoot, "glassbox", "dist");
+            await this.fastify.register(import("@fastify/static"), {
+                root: glassboxPath,
+                prefix: "/glassbox/",
+                decorateReply: false
+            });
+        } catch (e) {
+            console.warn("   [WARN] Glassbox UI not found. Run `npm run build` in glassbox/");
+        }
+
         // HTTP routes
         this.setupHttpRoutes();
 
@@ -182,6 +195,11 @@ export class Gateway {
         if (this.config.autoStartPython) {
             try {
                 await this.python.start();
+
+                // Bind Python internal event mesh to Gateway broadcast for the Neural Glassbox
+                this.python.on("message", (msg) => {
+                    this.broadcastEvent("agent_thought", msg);
+                });
             } catch (err) {
                 console.warn(`⚠️  Python backend failed to start: ${err}`);
                 console.warn("   Gateway will run in standalone mode.");

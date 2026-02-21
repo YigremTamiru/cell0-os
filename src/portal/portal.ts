@@ -356,35 +356,19 @@ body { font-family:var(--font-sans); background:var(--bg-primary); color:var(--t
 @keyframes gb-pulse { 0%,100%{box-shadow:0 4px 20px rgba(0,229,160,0.3)} 50%{box-shadow:0 4px 30px rgba(0,229,160,0.6)} }
 
 .glassbox-panel {
-  position:fixed; bottom:80px; right:24px; z-index:999;
-  width:360px; max-height:480px; background:var(--bg-card);
-  border:1px solid var(--border); border-radius:var(--radius);
-  box-shadow:0 8px 40px rgba(0,0,0,0.5); overflow:hidden;
+  position:fixed; bottom:24px; right:24px; z-index:1000;
+  width:90vw; height:85vh; max-width:1400px;
+  background:#030712;
+  border:1px solid #1f2937; border-radius:12px;
+  box-shadow:0 8px 40px rgba(0,0,0,0.8); overflow:hidden;
   transform:translateY(20px) scale(0.95); opacity:0; pointer-events:none;
   transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+  display: flex; flex-direction: column;
 }
 .glassbox-panel.open { transform:translateY(0) scale(1); opacity:1; pointer-events:auto; }
 .glassbox-header { padding:12px 16px; border-bottom:1px solid var(--border);
-  font-size:13px; font-weight:600; color:var(--accent); display:flex; justify-content:space-between; }
-.glassbox-body { padding:12px 16px; overflow-y:auto; max-height:400px;
-  font-family:var(--font-mono); font-size:12px; line-height:1.7; }
-.gb-section { margin-bottom:12px; }
-.gb-section-title { color:var(--accent-dim); font-size:11px; font-weight:600; text-transform:uppercase;
-  letter-spacing:0.5px; margin-bottom:4px; }
-.gb-row { display:flex; justify-content:space-between; }
-.gb-key { color:var(--text-muted); }
-.gb-val { color:var(--text-primary); }
-.gb-event { color:var(--text-secondary); padding:2px 0; }
-.gb-event .tag { display:inline-block; padding:1px 6px; border-radius:3px; font-size:10px;
-  font-weight:600; margin-right:6px; }
-.gb-event .tag-think { background:rgba(94,234,212,0.15); color:var(--info); }
-.gb-event .tag-tool { background:rgba(251,191,36,0.15); color:var(--warning); }
-.gb-event .tag-model { background:rgba(0,229,160,0.15); color:var(--accent); }
-.gb-event .tag-security { background:rgba(52,211,153,0.15); color:var(--success); }
-.gb-conn { display:flex; align-items:center; gap:6px; padding:2px 0; }
-.gb-conn .dot { width:6px; height:6px; border-radius:50%; }
-.gb-conn .dot.on { background:var(--success); }
-.gb-conn .dot.off { background:var(--error); }
+  font-size:13px; font-weight:600; color:var(--accent); display:flex; justify-content:space-between; background:var(--bg-secondary); }
+.glassbox-body { flex:1; overflow:hidden; padding: 0; }
 
 @media(max-width:768px) {
   .header{padding:10px 16px} .tabs{padding:0 16px} .tab{padding:8px 14px; font-size:12px}
@@ -519,10 +503,12 @@ body { font-family:var(--font-sans); background:var(--bg-primary); color:var(--t
 <div class="glassbox-bubble" id="glassbox-bubble" title="Glassbox — System Transparency">🔍</div>
 <div class="glassbox-panel" id="glassbox-panel">
   <div class="glassbox-header">
-    <span>🔍 GLASSBOX — Live System View</span>
+    <span>🔍 GLASSBOX — Neural Application Layer</span>
     <span style="cursor:pointer;color:var(--text-muted)" id="glassbox-close">✕</span>
   </div>
-  <div class="glassbox-body" id="glassbox-body"></div>
+  <div class="glassbox-body" id="glassbox-body">
+    <iframe src="/glassbox/" style="width:100%; height:100%; border:none; display:block;"></iframe>
+  </div>
 </div>
 
 <script>
@@ -619,7 +605,6 @@ function initApp() {
   renderUfaBar();
   connectGateway();
   setInterval(renderHtop, 2000);
-  setInterval(updateGlassboxBody, 1000);
 }
 
 // ═══════════════════════ TABS ═══════════════════════
@@ -1033,43 +1018,7 @@ function initGlassbox() {
     document.addEventListener('mouseup', onUp);
   });
 
-  updateGlassboxBody();
-}
-
-function addGlassboxEvent(type, text) {
-  glassboxEvents.unshift({ type, text, time: new Date() });
-  if (glassboxEvents.length > 20) glassboxEvents.pop();
-}
-
-function updateGlassboxBody() {
-  const tags = { think:'tag-think', tool:'tag-tool', model:'tag-model', security:'tag-security' };
-  let html = '';
-  html += '<div class="gb-section"><div class="gb-section-title">System</div>';
-  html += '<div class="gb-row"><span class="gb-key">provider</span><span class="gb-val">' + ACTIVE_PROVIDER + '</span></div>';
-  html += '<div class="gb-row"><span class="gb-key">model</span><span class="gb-val">' + ACTIVE_MODEL + '</span></div>';
-  html += '</div>';
-
-  html += '<div class="gb-section"><div class="gb-section-title">Connections</div>';
-  html += '<div class="gb-conn"><span class="dot ' + (gwOnline?'on':'off') + '"></span>gateway :' + GW_PORT + '</div>';
-  html += '<div class="gb-conn"><span class="dot on"></span>portal :18790</div>';
-  html += '<div class="gb-conn"><span class="dot ' + (pyOnline?'on':'off') + '"></span>python :18800</div>';
-  html += '</div>';
-
-  html += '<div class="gb-section"><div class="gb-section-title">UFA Layers</div>';
-  html += '<div class="gb-row"><span class="gb-key">L0 Resonance</span><span class="gb-val" style="color:var(--accent)">■■■ active</span></div>';
-  html += '<div class="gb-row"><span class="gb-key">L2 Guardian</span><span class="gb-val" style="color:var(--accent-dim)">■■░ partial</span></div>';
-  html += '</div>';
-
-  if (glassboxEvents.length > 0) {
-    html += '<div class="gb-section"><div class="gb-section-title">Events</div>';
-    for (const ev of glassboxEvents.slice(0,10)) {
-      const t = ev.time.toLocaleTimeString();
-      html += '<div class="gb-event"><span class="tag ' + (tags[ev.type]||'tag-think') + '">' + ev.type + '</span>' + escapeHtml(ev.text) + '</div>';
-    }
-    html += '</div>';
-  }
-
-  document.getElementById('glassbox-body').innerHTML = html;
+  // Removed previous JS body update as React is now fully loaded via iframe
 }
 
 // ═══════════════════════ START ═══════════════════════

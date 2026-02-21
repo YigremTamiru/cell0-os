@@ -1,0 +1,903 @@
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	﻿2026-02-21T14:49:34.4203641Z Current runner version: '2.331.0'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4228310Z ##[group]Runner Image Provisioner
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4229253Z Hosted Compute Agent
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4229800Z Version: 20260123.484
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4230399Z Commit: 6bd6555ca37d84114959e1c76d2c01448ff61c5d
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4231042Z Build Date: 2026-01-23T19:41:17Z
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4231800Z Worker ID: {e6b80a6a-7a49-408c-868a-0c5b4ef6de6f}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4232468Z Azure Region: eastus
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4233023Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4235046Z ##[group]Operating System
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4235666Z Ubuntu
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4236088Z 24.04.3
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4236670Z LTS
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4237119Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4237555Z ##[group]Runner Image
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4238231Z Image: ubuntu-24.04
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4238704Z Version: 20260201.15.1
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4239929Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260201.15/images/ubuntu/Ubuntu2404-Readme.md
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4241362Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260201.15
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4242344Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4243362Z ##[group]GITHUB_TOKEN Permissions
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4245544Z Contents: read
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4246115Z Metadata: read
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4246579Z Packages: read
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4247109Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4249174Z Secret source: Actions
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4250271Z Prepare workflow directory
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4572191Z Prepare all required actions
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.4610206Z Getting action download info
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.7678781Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:34.8828787Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.0086092Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.1244060Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:631a55b12751854ce901bb631d5902ceb48146f7)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.4929510Z Complete job name: Architectural Audit (64/64 Checkpoint)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5682393Z ##[group]Run actions/checkout@v4
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5683309Z with:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5683975Z   repository: YigremTamiru/cell0-os
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5684725Z   token: ***
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5685135Z   ssh-strict: true
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5685546Z   ssh-user: git
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5685968Z   persist-credentials: true
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5686427Z   clean: true
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5686846Z   sparse-checkout-cone-mode: true
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5687356Z   fetch-depth: 1
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5687766Z   fetch-tags: false
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5688179Z   show-progress: true
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5688613Z   lfs: false
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5689006Z   submodules: false
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5689431Z   set-safe-directory: true
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.5690192Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.6759273Z Syncing repository: YigremTamiru/cell0-os
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.6761147Z ##[group]Getting Git version info
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.6761881Z Working directory is '/home/runner/work/cell0-os/cell0-os'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.6762979Z [command]/usr/bin/git version
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.6846005Z git version 2.52.0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.6871775Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.6886379Z Temporarily overriding HOME='/home/runner/work/_temp/1a2c3472-208e-47e0-894c-a8c961ab37e9' before making global git config changes
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.6887850Z Adding repository directory to the temporary git global config as a safe directory
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.6898917Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/cell0-os/cell0-os
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.6935512Z Deleting the contents of '/home/runner/work/cell0-os/cell0-os'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.6938744Z ##[group]Initializing the repository
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.6942919Z [command]/usr/bin/git init /home/runner/work/cell0-os/cell0-os
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7046237Z hint: Using 'master' as the name for the initial branch. This default branch name
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7048722Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7050951Z hint: to use in all of your new repositories, which will suppress this warning,
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7052487Z hint: call:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7052957Z hint:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7053567Z hint: 	git config --global init.defaultBranch <name>
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7054471Z hint:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7055061Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7056047Z hint: 'development'. The just-created branch can be renamed via this command:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7057110Z hint:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7057758Z hint: 	git branch -m <name>
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7058254Z hint:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7058885Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7059974Z Initialized empty Git repository in /home/runner/work/cell0-os/cell0-os/.git/
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7062860Z [command]/usr/bin/git remote add origin https://github.com/YigremTamiru/cell0-os
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7096843Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7098108Z ##[group]Disabling automatic garbage collection
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7100454Z [command]/usr/bin/git config --local gc.auto 0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7128848Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7129559Z ##[group]Setting up auth
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7135944Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7165105Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7488894Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7519812Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7736824Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7765527Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.7992370Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.8026444Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.8027595Z ##[group]Fetching the repository
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:35.8035002Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +c8a9b0df78d608598e0d074ac5170a5613f453b5:refs/remotes/origin/main
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:37.4603653Z From https://github.com/YigremTamiru/cell0-os
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:37.4605205Z  * [new ref]         c8a9b0df78d608598e0d074ac5170a5613f453b5 -> origin/main
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:37.4636601Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:37.4637412Z ##[group]Determining the checkout info
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:37.4639314Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:37.4644899Z [command]/usr/bin/git sparse-checkout disable
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:37.4703969Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:37.4729432Z ##[group]Checking out the ref
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:37.4733381Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.3282796Z Switched to a new branch 'main'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.3283622Z branch 'main' set up to track 'origin/main'.
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.3322401Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.3365918Z [command]/usr/bin/git log -1 --format=%H
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.3388213Z c8a9b0df78d608598e0d074ac5170a5613f453b5
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.3623199Z ##[group]Run actions/setup-node@v4
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.3623512Z with:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.3623924Z   node-version: 18
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.3624210Z   cache: npm
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.3624391Z   always-auth: false
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.3624845Z   check-latest: false
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.3625177Z   token: ***
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.3625350Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.5678232Z Attempting to download 18...
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:38.9108146Z Acquiring 18.20.8 - x64 from https://github.com/actions/node-versions/releases/download/18.20.8-14110393767/node-18.20.8-linux-x64.tar.gz
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:39.2567654Z Extracting ...
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:39.2677286Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/4166fed4-2a7b-4d05-9f37-26ceb67f009b -f /home/runner/work/_temp/d500bfbf-e836-498a-8a78-8fd968f6734c
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:40.2108374Z Adding to the cache ...
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:41.8838802Z ##[group]Environment details
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.2608076Z node: v18.20.8
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.2608558Z npm: 10.8.2
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.2608933Z yarn: 1.22.22
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.2609673Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.2632226Z [command]/opt/hostedtoolcache/node/18.20.8/x64/bin/npm config get cache
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.3792606Z /home/runner/.npm
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.4795998Z npm cache is not found
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.5024872Z ##[group]Run actions/setup-python@v5
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.5025278Z with:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.5025543Z   python-version: 3.11
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.5025836Z   cache: pip
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.5026100Z   check-latest: false
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.5026536Z   token: ***
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.5026817Z   update-environment: true
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.5027182Z   allow-prereleases: false
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.5027523Z   freethreaded: false
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.5027835Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.6765429Z ##[group]Installed versions
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.8863172Z Successfully set up CPython (3.11.14)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:42.8864184Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:43.2011844Z [command]/opt/hostedtoolcache/Python/3.11.14/x64/bin/pip cache dir
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.6251987Z /home/runner/.cache/pip
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7132889Z pip cache is not found
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7358992Z ##[group]Run dtolnay/rust-toolchain@stable
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7359303Z with:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7359474Z   toolchain: nightly
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7359662Z   components: rust-src
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7359850Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7360076Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7360522Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7360940Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7361298Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7361861Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7362486Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7362954Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7466502Z ##[group]Run : parse toolchain version
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7466866Z [36;1m: parse toolchain version[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7467208Z [36;1mif [[ -z $toolchain ]]; then[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7467711Z [36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7468268Z [36;1m  echo "'toolchain' is a required input" >&2[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7468539Z [36;1m  exit 1[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7468842Z [36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7469237Z [36;1m  if [[ Linux == macOS ]]; then[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7469749Z [36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7470238Z [36;1m  else[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7470608Z [36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7471039Z [36;1m  fi[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7471310Z [36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7471816Z [36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7472490Z [36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7473000Z [36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7473478Z [36;1melse[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7473845Z [36;1m  echo "toolchain=$toolchain" >> $GITHUB_OUTPUT[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7474115Z [36;1mfi[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7510792Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7511120Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7511364Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7511769Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7512176Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7512555Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7512923Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7513288Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7513602Z   toolchain: nightly
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7513954Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7642812Z ##[group]Run : construct rustup command line
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7643143Z [36;1m: construct rustup command line[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7643576Z [36;1mecho "targets=$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)" >> $GITHUB_OUTPUT[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7644500Z [36;1mecho "components=$(for c in ${components//,/ }; do echo -n ' --component' $c; done)" >> $GITHUB_OUTPUT[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7645047Z [36;1mecho "downgrade= --allow-downgrade" >> $GITHUB_OUTPUT[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7677801Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7678113Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7678355Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7678977Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7679403Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7679764Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7680142Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7680524Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7680818Z   targets: 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7680988Z   components: rust-src
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7681176Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7769593Z ##[group]Run : set $CARGO_HOME
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7769866Z [36;1m: set $CARGO_HOME[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7770165Z [36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7803302Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7803624Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7804136Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7804601Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7805059Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7805498Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7805855Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7806242Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7806542Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7892166Z ##[group]Run : install rustup if needed
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7892465Z [36;1m: install rustup if needed[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7892738Z [36;1mif ! command -v rustup &>/dev/null; then[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7893482Z [36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7894493Z [36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7894770Z [36;1mfi[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7927910Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7928391Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7928627Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7929028Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7929445Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7929805Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7930166Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7930521Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7930841Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.7931062Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8016630Z ##[group]Run rustup toolchain install nightly --component rust-src --profile minimal --allow-downgrade --no-self-update
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8017470Z [36;1mrustup toolchain install nightly --component rust-src --profile minimal --allow-downgrade --no-self-update[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8077153Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8077499Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8077756Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8078166Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8078572Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8078927Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8079290Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8079658Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8079964Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8080199Z   RUSTUP_PERMIT_COPY_RENAME: 1
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8080405Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:44.8956299Z info: syncing channel updates for 'nightly-x86_64-unknown-linux-gnu'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:45.2731105Z info: latest update on 2026-02-21, rust version 1.95.0-nightly (0376d43d4 2026-02-20)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:45.2732021Z info: downloading component 'cargo'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:45.3239581Z info: downloading component 'rust-src'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:45.3448053Z info: downloading component 'rust-std'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:45.4809570Z info: downloading component 'rustc'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:45.8142308Z info: installing component 'cargo'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:46.5466633Z info: installing component 'rust-src'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:47.0111336Z info: installing component 'rust-std'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:48.9414322Z info: installing component 'rustc'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7047251Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7139495Z   nightly-x86_64-unknown-linux-gnu installed - rustc 1.95.0-nightly (0376d43d4 2026-02-20)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7140131Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7190711Z ##[group]Run rustup default nightly
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7190999Z [36;1mrustup default nightly[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7222384Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7222720Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7222959Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7223393Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7224040Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7224402Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7224770Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7225128Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7225441Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7225664Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7331924Z info: using existing install for 'nightly-x86_64-unknown-linux-gnu'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7627308Z info: default toolchain set to 'nightly-x86_64-unknown-linux-gnu'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7627648Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7714733Z   nightly-x86_64-unknown-linux-gnu unchanged - rustc 1.95.0-nightly (0376d43d4 2026-02-20)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7715287Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7754467Z ##[group]Run : create cachekey
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7754927Z [36;1m: create cachekey[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7755420Z [36;1mDATE=$(rustc +nightly --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7756074Z [36;1mHASH=$(rustc +nightly --version --verbose | sed -ne 's/^commit-hash: //p')[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7756551Z [36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7787958Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7788269Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7788510Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7788924Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7789321Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7789671Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7790057Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7790422Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7790736Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.7790956Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8174181Z ##[group]Run : disable incremental compilation
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8174524Z [36;1m: disable incremental compilation[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8174813Z [36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8175134Z [36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8175400Z [36;1mfi[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8206682Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8206994Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8207236Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8207640Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8208225Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8208592Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8208953Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8209310Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8209613Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8209835Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8279175Z ##[group]Run : enable colors in Cargo output
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8279479Z [36;1m: enable colors in Cargo output[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8279766Z [36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8280092Z [36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8280366Z [36;1mfi[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8308502Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8308802Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8309038Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8309444Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8309846Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8310219Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8310567Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8310923Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8311231Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8311462Z   CARGO_INCREMENTAL: 0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8311649Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8379276Z ##[group]Run : enable Cargo sparse registry
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8379586Z [36;1m: enable Cargo sparse registry[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8379933Z [36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8380631Z [36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8381352Z [36;1m  if rustc +nightly --version --verbose | grep -q '^release: 1\.6[89]\.'; then[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8382078Z [36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8382605Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8383087Z [36;1m  elif rustc +nightly --version --verbose | grep -q '^release: 1\.6[67]\.'; then[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8383646Z [36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8384428Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8384753Z [36;1m  fi[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8384923Z [36;1mfi[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8413071Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8413375Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8413620Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8414268Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8414664Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8415022Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8415363Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8415722Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8416026Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8416253Z   CARGO_INCREMENTAL: 0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8416448Z   CARGO_TERM_COLOR: always
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8416635Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8777641Z ##[group]Run : work around spurious network errors in curl 8.0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8778070Z [36;1m: work around spurious network errors in curl 8.0[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8778603Z [36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8779377Z [36;1mif rustc +nightly --version --verbose | grep -q '^release: 1\.7[01]\.'; then[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8779834Z [36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8780136Z [36;1mfi[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8811543Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8811862Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8812105Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8812507Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8812916Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8813262Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8813628Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8814252Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8814558Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8814787Z   CARGO_INCREMENTAL: 0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8814980Z   CARGO_TERM_COLOR: always
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.8815190Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9035888Z ##[group]Run rustc +nightly --version --verbose
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9036271Z [36;1mrustc +nightly --version --verbose[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9068926Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9069244Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9069482Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9069896Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9070302Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9070647Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9071005Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9071365Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9071673Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9071895Z   CARGO_INCREMENTAL: 0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9072095Z   CARGO_TERM_COLOR: always
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9072307Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9275900Z rustc 1.95.0-nightly (0376d43d4 2026-02-20)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9277506Z binary: rustc
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9278167Z commit-hash: 0376d43d443cba463a0b6a6ec9140ea17d7b7130
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9278749Z commit-date: 2026-02-20
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9279234Z host: x86_64-unknown-linux-gnu
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9279732Z release: 1.95.0-nightly
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9280143Z LLVM version: 22.1.0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9350841Z ##[group]Run npm ci
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9351093Z [36;1mnpm ci[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9382947Z shell: /usr/bin/bash -e {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9383170Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9383410Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9384113Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9384537Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9384898Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9385263Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9385622Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9385943Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9386169Z   CARGO_INCREMENTAL: 0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9386360Z   CARGO_TERM_COLOR: always
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:53.9386560Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4512829Z npm warn EBADENGINE Unsupported engine {
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4513637Z npm warn EBADENGINE   package: 'cell0-os@1.2.0',
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4514443Z npm warn EBADENGINE   required: { node: '>=20.0.0' },
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4514999Z npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4515421Z npm warn EBADENGINE }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4533925Z npm warn EBADENGINE Unsupported engine {
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4534575Z npm warn EBADENGINE   package: 'thread-stream@4.0.0',
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4535402Z npm warn EBADENGINE   required: { node: '>=20' },
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4536328Z npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4537102Z npm warn EBADENGINE }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4538043Z npm warn EBADENGINE Unsupported engine {
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4538766Z npm warn EBADENGINE   package: 'find-my-way@9.4.0',
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4539481Z npm warn EBADENGINE   required: { node: '>=20' },
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4540437Z npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4541181Z npm warn EBADENGINE }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4542558Z npm warn EBADENGINE Unsupported engine {
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4543204Z npm warn EBADENGINE   package: 'glob@11.1.0',
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4544155Z npm warn EBADENGINE   required: { node: '20 || >=22' },
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4545123Z npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4545874Z npm warn EBADENGINE }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4546971Z npm warn EBADENGINE Unsupported engine {
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4547690Z npm warn EBADENGINE   package: 'balanced-match@4.0.3',
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4548452Z npm warn EBADENGINE   required: { node: '20 || >=22' },
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4549306Z npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4549911Z npm warn EBADENGINE }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4550597Z npm warn EBADENGINE Unsupported engine {
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4552016Z npm warn EBADENGINE   package: 'brace-expansion@5.0.2',
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4553018Z npm warn EBADENGINE   required: { node: '20 || >=22' },
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4554237Z npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4555066Z npm warn EBADENGINE }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4555744Z npm warn EBADENGINE Unsupported engine {
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4556576Z npm warn EBADENGINE   package: 'minimatch@10.2.1',
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4557306Z npm warn EBADENGINE   required: { node: '20 || >=22' },
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4558119Z npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4558758Z npm warn EBADENGINE }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4560145Z npm warn EBADENGINE Unsupported engine {
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4560864Z npm warn EBADENGINE   package: 'jackspeak@4.2.3',
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4562011Z npm warn EBADENGINE   required: { node: '20 || >=22' },
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4562900Z npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4563537Z npm warn EBADENGINE }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4564266Z npm warn EBADENGINE Unsupported engine {
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4565318Z npm warn EBADENGINE   package: 'lru-cache@11.2.6',
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4566155Z npm warn EBADENGINE   required: { node: '20 || >=22' },
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4567050Z npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4567716Z npm warn EBADENGINE }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4571023Z npm warn EBADENGINE Unsupported engine {
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4571974Z npm warn EBADENGINE   package: 'path-scurry@2.0.1',
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4572765Z npm warn EBADENGINE   required: { node: '20 || >=22' },
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4573631Z npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:54.4574623Z npm warn EBADENGINE }
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:57.1837363Z npm warn deprecated glob@11.1.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1303354Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1304355Z added 318 packages, and audited 319 packages in 5s
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1304672Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1304843Z 108 packages are looking for funding
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1305128Z   run `npm fund` for details
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1578924Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1579533Z 10 vulnerabilities (6 moderate, 4 high)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1579790Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1580032Z To address issues that do not require attention, run:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1580383Z   npm audit fix
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1580505Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1580742Z To address all issues (including breaking changes), run:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1581094Z   npm audit fix --force
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1581244Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1581379Z Run `npm audit` for details.
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1834054Z ##[group]Run pip install -r requirements.txt
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1834433Z [36;1mpip install -r requirements.txt[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1866212Z shell: /usr/bin/bash -e {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1866442Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1866683Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1867114Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1867519Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1867887Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1868260Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1868631Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1868952Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1869175Z   CARGO_INCREMENTAL: 0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1869373Z   CARGO_TERM_COLOR: always
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:49:59.1869582Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.5053305Z Collecting aiohttp>=3.9.0 (from -r requirements.txt (line 5))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.5716419Z   Downloading aiohttp-3.13.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.1 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.6497890Z Collecting websockets>=12.0 (from -r requirements.txt (line 6))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.6540196Z   Downloading websockets-16.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.8 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.6657553Z Collecting asyncio-mqtt>=0.16.0 (from -r requirements.txt (line 7))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.6705269Z   Downloading asyncio_mqtt-0.16.2-py3-none-any.whl.metadata (17 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.7076700Z Collecting pyyaml>=6.0.1 (from -r requirements.txt (line 10))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.7116629Z   Downloading pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.8085332Z Collecting pydantic>=2.5.0 (from -r requirements.txt (line 11))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.8123511Z   Downloading pydantic-2.12.5-py3-none-any.whl.metadata (90 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.8438721Z Collecting typing-extensions>=4.8.0 (from -r requirements.txt (line 12))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.8474757Z   Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.8624188Z Collecting httpx>=0.25.0 (from -r requirements.txt (line 15))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.8659328Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.8865939Z Collecting requests>=2.31.0 (from -r requirements.txt (line 16))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:00.8900218Z   Downloading requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.0869651Z Collecting cryptography>=41.0.0 (from -r requirements.txt (line 19))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.0907362Z   Downloading cryptography-46.0.5-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (5.7 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.1140172Z Collecting pynacl>=1.5.0 (from -r requirements.txt (line 20))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.1176285Z   Downloading pynacl-1.6.2-cp38-abi3-manylinux_2_34_x86_64.whl.metadata (10.0 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.1544502Z Collecting fastapi>=0.104.0 (from -r requirements.txt (line 23))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.1581240Z   Downloading fastapi-0.129.1-py3-none-any.whl.metadata (30 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.1831586Z Collecting uvicorn>=0.24.0 (from -r requirements.txt (line 24))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.1867763Z   Downloading uvicorn-0.41.0-py3-none-any.whl.metadata (6.7 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.5355388Z Collecting regex>=2023.10.3 (from -r requirements.txt (line 27))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.5394645Z   Downloading regex-2026.2.19-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.6047062Z Collecting psutil>=5.9.6 (from -r requirements.txt (line 30))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.6084888Z   Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl.metadata (22 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.6269167Z Collecting platformdirs>=4.0.0 (from -r requirements.txt (line 31))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.6318177Z   Downloading platformdirs-4.9.2-py3-none-any.whl.metadata (4.7 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.6436656Z Collecting python-dateutil>=2.8.2 (from -r requirements.txt (line 34))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.6493209Z   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.6629344Z Collecting python-dotenv>=1.0.0 (from -r requirements.txt (line 35))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.6666134Z   Downloading python_dotenv-1.2.1-py3-none-any.whl.metadata (25 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.6948991Z Collecting rich>=13.7.0 (from -r requirements.txt (line 36))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.6986183Z   Downloading rich-14.3.3-py3-none-any.whl.metadata (18 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.7167990Z Collecting typer>=0.9.0 (from -r requirements.txt (line 37))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.7202676Z   Downloading typer-0.24.0-py3-none-any.whl.metadata (16 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.7458997Z Collecting pytest>=7.4.0 (from -r requirements.txt (line 41))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.7494868Z   Downloading pytest-9.0.2-py3-none-any.whl.metadata (7.6 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.7670328Z Collecting pytest-asyncio>=0.21.0 (from -r requirements.txt (line 42))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.7706296Z   Downloading pytest_asyncio-1.3.0-py3-none-any.whl.metadata (4.1 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.7851133Z Collecting aiohappyeyeballs>=2.5.0 (from aiohttp>=3.9.0->-r requirements.txt (line 5))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.7889833Z   Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl.metadata (5.9 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.7989610Z Collecting aiosignal>=1.4.0 (from aiohttp>=3.9.0->-r requirements.txt (line 5))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.8023382Z   Downloading aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.8151252Z Collecting attrs>=17.3.0 (from aiohttp>=3.9.0->-r requirements.txt (line 5))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.8186097Z   Downloading attrs-25.4.0-py3-none-any.whl.metadata (10 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.8792887Z Collecting frozenlist>=1.1.1 (from aiohttp>=3.9.0->-r requirements.txt (line 5))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:01.8832320Z   Downloading frozenlist-1.8.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (20 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:02.1540340Z Collecting multidict<7.0,>=4.5 (from aiohttp>=3.9.0->-r requirements.txt (line 5))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:02.1580968Z   Downloading multidict-6.7.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.3 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:02.2078863Z Collecting propcache>=0.2.0 (from aiohttp>=3.9.0->-r requirements.txt (line 5))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:02.2119239Z   Downloading propcache-0.4.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (13 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:02.4306826Z Collecting yarl<2.0,>=1.17.0 (from aiohttp>=3.9.0->-r requirements.txt (line 5))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:02.4345143Z   Downloading yarl-1.22.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (75 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:02.4534653Z Collecting idna>=2.0 (from yarl<2.0,>=1.17.0->aiohttp>=3.9.0->-r requirements.txt (line 5))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:02.4567745Z   Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:02.4719233Z Collecting paho-mqtt>=1.6.0 (from asyncio-mqtt>=0.16.0->-r requirements.txt (line 7))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:02.4760645Z   Downloading paho_mqtt-2.1.0-py3-none-any.whl.metadata (23 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:02.4894361Z Collecting annotated-types>=0.6.0 (from pydantic>=2.5.0->-r requirements.txt (line 11))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:02.4930062Z   Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.1250040Z Collecting pydantic-core==2.41.5 (from pydantic>=2.5.0->-r requirements.txt (line 11))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.1290758Z   Downloading pydantic_core-2.41.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.3 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.1401481Z Collecting typing-inspection>=0.4.2 (from pydantic>=2.5.0->-r requirements.txt (line 11))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.1436125Z   Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.1619577Z Collecting anyio (from httpx>=0.25.0->-r requirements.txt (line 15))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.1652164Z   Downloading anyio-4.12.1-py3-none-any.whl.metadata (4.3 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.1831916Z Collecting certifi (from httpx>=0.25.0->-r requirements.txt (line 15))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.1868233Z   Downloading certifi-2026.1.4-py3-none-any.whl.metadata (2.5 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.2019818Z Collecting httpcore==1.* (from httpx>=0.25.0->-r requirements.txt (line 15))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.2055729Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.2181536Z Collecting h11>=0.16 (from httpcore==1.*->httpx>=0.25.0->-r requirements.txt (line 15))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.2228049Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.3832011Z Collecting charset_normalizer<4,>=2 (from requests>=2.31.0->-r requirements.txt (line 16))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.3878831Z   Downloading charset_normalizer-3.4.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (37 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.4174950Z Collecting urllib3<3,>=1.21.1 (from requests>=2.31.0->-r requirements.txt (line 16))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.4214356Z   Downloading urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.5178304Z Collecting cffi>=2.0.0 (from cryptography>=41.0.0->-r requirements.txt (line 19))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.5217398Z   Downloading cffi-2.0.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.5467679Z Collecting starlette<1.0.0,>=0.40.0 (from fastapi>=0.104.0->-r requirements.txt (line 23))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.5506652Z   Downloading starlette-0.52.1-py3-none-any.whl.metadata (6.3 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.5654133Z Collecting annotated-doc>=0.0.2 (from fastapi>=0.104.0->-r requirements.txt (line 23))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.5689546Z   Downloading annotated_doc-0.0.4-py3-none-any.whl.metadata (6.6 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.5914479Z Collecting click>=7.0 (from uvicorn>=0.24.0->-r requirements.txt (line 24))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.5950763Z   Downloading click-8.3.1-py3-none-any.whl.metadata (2.6 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.6101797Z Collecting six>=1.5 (from python-dateutil>=2.8.2->-r requirements.txt (line 34))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.6135801Z   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.6283623Z Collecting markdown-it-py>=2.2.0 (from rich>=13.7.0->-r requirements.txt (line 36))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.6317647Z   Downloading markdown_it_py-4.0.0-py3-none-any.whl.metadata (7.3 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.6511989Z Collecting pygments<3.0.0,>=2.13.0 (from rich>=13.7.0->-r requirements.txt (line 36))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.6546464Z   Downloading pygments-2.19.2-py3-none-any.whl.metadata (2.5 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.6687905Z Collecting shellingham>=1.3.0 (from typer>=0.9.0->-r requirements.txt (line 37))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.6722412Z   Downloading shellingham-1.5.4-py2.py3-none-any.whl.metadata (3.5 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.6855202Z Collecting iniconfig>=1.0.1 (from pytest>=7.4.0->-r requirements.txt (line 41))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.6891002Z   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.7047197Z Collecting packaging>=22 (from pytest>=7.4.0->-r requirements.txt (line 41))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.7083901Z   Downloading packaging-26.0-py3-none-any.whl.metadata (3.3 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.7199211Z Collecting pluggy<2,>=1.5 (from pytest>=7.4.0->-r requirements.txt (line 41))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.7236533Z   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.7469342Z Collecting pycparser (from cffi>=2.0.0->cryptography>=41.0.0->-r requirements.txt (line 19))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.7503371Z   Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.7630634Z Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.7.0->-r requirements.txt (line 36))
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.7664229Z   Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.7773143Z Downloading aiohttp-3.13.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.7 MB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.7906244Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 167.3 MB/s  0:00:00
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.7943585Z Downloading multidict-6.7.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (246 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8007702Z Downloading yarl-1.22.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (365 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8077891Z Downloading websockets-16.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (184 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8155879Z Downloading asyncio_mqtt-0.16.2-py3-none-any.whl (17 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8210072Z Downloading pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (806 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8277202Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 806.6/806.6 kB 130.2 MB/s  0:00:00
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8312180Z Downloading pydantic-2.12.5-py3-none-any.whl (463 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8384071Z Downloading pydantic_core-2.41.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8501615Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 198.6 MB/s  0:00:00
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8541075Z Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8599267Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8654472Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8709565Z Downloading requests-2.32.5-py3-none-any.whl (64 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8766488Z Downloading charset_normalizer-3.4.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (151 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8826824Z Downloading idna-3.11-py3-none-any.whl (71 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8885834Z Downloading urllib3-2.6.3-py3-none-any.whl (131 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.8943559Z Downloading cryptography-46.0.5-cp311-abi3-manylinux_2_34_x86_64.whl (4.5 MB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9142071Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 244.3 MB/s  0:00:00
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9182177Z Downloading pynacl-1.6.2-cp38-abi3-manylinux_2_34_x86_64.whl (1.4 MB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9277098Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 178.2 MB/s  0:00:00
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9317404Z Downloading fastapi-0.129.1-py3-none-any.whl (103 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9375066Z Downloading starlette-0.52.1-py3-none-any.whl (74 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9431911Z Downloading anyio-4.12.1-py3-none-any.whl (113 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9491833Z Downloading uvicorn-0.41.0-py3-none-any.whl (68 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9548467Z Downloading regex-2026.2.19-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (800 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9617110Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 800.6/800.6 kB 123.2 MB/s  0:00:00
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9654193Z Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl (155 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9713147Z Downloading platformdirs-4.9.2-py3-none-any.whl (21 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9765007Z Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9829303Z Downloading python_dotenv-1.2.1-py3-none-any.whl (21 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9891238Z Downloading rich-14.3.3-py3-none-any.whl (310 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:03.9967040Z Downloading pygments-2.19.2-py3-none-any.whl (1.2 MB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0047884Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 172.6 MB/s  0:00:00
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0088819Z Downloading typer-0.24.0-py3-none-any.whl (56 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0142791Z Downloading pytest-9.0.2-py3-none-any.whl (374 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0213981Z Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0270522Z Downloading pytest_asyncio-1.3.0-py3-none-any.whl (15 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0323166Z Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0377046Z Downloading aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0430498Z Downloading annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0486649Z Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0537412Z Downloading attrs-25.4.0-py3-none-any.whl (67 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0590779Z Downloading certifi-2026.1.4-py3-none-any.whl (152 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0649518Z Downloading cffi-2.0.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (215 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0708861Z Downloading click-8.3.1-py3-none-any.whl (108 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0766895Z Downloading frozenlist-1.8.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (231 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0832887Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.0904397Z Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.1052979Z Downloading markdown_it_py-4.0.0-py3-none-any.whl (87 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.1115253Z Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.1167550Z Downloading packaging-26.0-py3-none-any.whl (74 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.1236566Z Downloading paho_mqtt-2.1.0-py3-none-any.whl (67 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.1293654Z Downloading propcache-0.4.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (210 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.1354111Z Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.1404619Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.1454411Z Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.1505840Z Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:04.2993614Z Installing collected packages: websockets, urllib3, typing-extensions, six, shellingham, regex, pyyaml, python-dotenv, pygments, pycparser, psutil, propcache, pluggy, platformdirs, paho-mqtt, packaging, multidict, mdurl, iniconfig, idna, h11, frozenlist, click, charset_normalizer, certifi, attrs, annotated-types, annotated-doc, aiohappyeyeballs, yarl, uvicorn, typing-inspection, requests, python-dateutil, pytest, pydantic-core, markdown-it-py, httpcore, cffi, asyncio-mqtt, anyio, aiosignal, starlette, rich, pytest-asyncio, pynacl, pydantic, httpx, cryptography, aiohttp, typer, fastapi
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:07.4312373Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:07.4341536Z Successfully installed aiohappyeyeballs-2.6.1 aiohttp-3.13.3 aiosignal-1.4.0 annotated-doc-0.0.4 annotated-types-0.7.0 anyio-4.12.1 asyncio-mqtt-0.16.2 attrs-25.4.0 certifi-2026.1.4 cffi-2.0.0 charset_normalizer-3.4.4 click-8.3.1 cryptography-46.0.5 fastapi-0.129.1 frozenlist-1.8.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.11 iniconfig-2.3.0 markdown-it-py-4.0.0 mdurl-0.1.2 multidict-6.7.1 packaging-26.0 paho-mqtt-2.1.0 platformdirs-4.9.2 pluggy-1.6.0 propcache-0.4.1 psutil-7.2.2 pycparser-3.0 pydantic-2.12.5 pydantic-core-2.41.5 pygments-2.19.2 pynacl-1.6.2 pytest-9.0.2 pytest-asyncio-1.3.0 python-dateutil-2.9.0.post0 python-dotenv-1.2.1 pyyaml-6.0.3 regex-2026.2.19 requests-2.32.5 rich-14.3.3 shellingham-1.5.4 six-1.17.0 starlette-0.52.1 typer-0.24.0 typing-extensions-4.15.0 typing-inspection-0.4.2 urllib3-2.6.3 uvicorn-0.41.0 websockets-16.0 yarl-1.22.0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:07.5328845Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:07.5329558Z [notice] A new release of pip is available: 26.0 -> 26.0.1
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:07.5330381Z [notice] To update, run: pip install --upgrade pip
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1464343Z ##[group]Run npm run build
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1464836Z [36;1mnpm run build[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1503653Z shell: /usr/bin/bash -e {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1504277Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1504698Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1505421Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1506196Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1506846Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1507518Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1508205Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1508786Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1509199Z   CARGO_INCREMENTAL: 0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1509542Z   CARGO_TERM_COLOR: always
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.1509903Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.2759551Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.2760268Z > cell0-os@1.2.0 build
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.2760547Z > tsc
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:08.2760648Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:10.9979556Z ##[group]Run node -e "import('./dist/init/bootstrap.js').then(m => m.bootstrapSystem())"
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:10.9980158Z [36;1mnode -e "import('./dist/init/bootstrap.js').then(m => m.bootstrapSystem())"[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0011965Z shell: /usr/bin/bash -e {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0012196Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0012435Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0012869Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0013323Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0013893Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0014297Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0014668Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0014980Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0015200Z   CARGO_INCREMENTAL: 0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0015429Z   CARGO_TERM_COLOR: always
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0015625Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0423921Z   🔍 Verifying filesystem integrity...
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0544349Z ##[group]Run echo "Starting Python Intelligence Engine..."
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0544809Z [36;1mecho "Starting Python Intelligence Engine..."[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0545163Z [36;1mnohup python cell0/cell0d.py > python.log 2>&1 &[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0545465Z [36;1msleep 5[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0545635Z [36;1m[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0545842Z [36;1mecho "Starting Node WebSocket Gateway..."[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0546160Z [36;1mnohup npm run gateway > gateway.log 2>&1 &[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0546617Z [36;1msleep 5[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0546783Z [36;1m[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0546964Z [36;1mecho "Starting Node Portal UI..."[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0547313Z [36;1mnohup node dist/cli/index.js portal > portal.log 2>&1 &[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0547620Z [36;1msleep 10[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0580020Z shell: /usr/bin/bash -e {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0580254Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0580491Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0580960Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0581371Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0581730Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0582084Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0582445Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0582758Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0582981Z   CARGO_INCREMENTAL: 0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0583193Z   CARGO_TERM_COLOR: always
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0583384Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:11.0636537Z Starting Python Intelligence Engine...
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:16.0659770Z Starting Node WebSocket Gateway...
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:21.0677443Z Starting Node Portal UI...
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0721428Z ##[group]Run echo "Initiating Deep Architectural Scan..."
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0721851Z [36;1mecho "Initiating Deep Architectural Scan..."[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0722240Z [36;1m# The node script must exit 0 only if all 64 criteria return true[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0722594Z [36;1mnode scripts/audit.mjs[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0756435Z shell: /usr/bin/bash -e {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0756662Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0756899Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0757323Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0757732Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0758096Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0758491Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0758838Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0759184Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0759405Z   CARGO_INCREMENTAL: 0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0759598Z   CARGO_TERM_COLOR: always
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0759794Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.0812449Z Initiating Deep Architectural Scan...
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.1168949Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.1170284Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.1173514Z   PHASE 1: BUILD & COMPILATION
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:31.1174643Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9277136Z   ✅ TypeScript build — 0 errors
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9467926Z   ✅ Source/Dist parity — 58 src → 58 dist
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9481633Z   ✅ Package.json — cell0-os v1.2.0, type:module, bin:cell0, 16 deps
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9764256Z [eval]:1
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9764767Z import './dist/config/config.js'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9765206Z ^^^^^^
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9765394Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9765806Z SyntaxError: Cannot use import statement outside a module
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9766575Z     at makeContextifyScript (node:internal/vm:122:14)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9767164Z     at node:internal/process/execution:89:22
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9767630Z     at [eval]-wrapper:6:24
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9768161Z     at runScript (node:internal/process/execution:83:62)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9768847Z     at evalScript (node:internal/process/execution:114:10)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9769456Z     at node:internal/main/eval_string:30:3
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9769775Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9769915Z Node.js v18.20.8
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9770938Z   ❌ All modules importable — Command failed: node -e "import './dist/config/config.js'"
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9771645Z [eval]:1
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9772007Z import './dist/config/config.js'
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9772734Z ^^^^^^
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9772887Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9773289Z SyntaxError: Cannot use import statement outside a module
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9774290Z     at makeContextifyScript (node:internal/vm:122:14)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9774906Z     at node:internal/process/execution:89:22
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9775411Z     at [eval]-wrapper:6:24
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9775755Z     at runScript (node:internal/process/execution:83:62)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9776150Z     at evalScript (node:internal/process/execution:114:10)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9776507Z     at node:internal/main/eval_string:30:3
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9776693Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9776772Z Node.js v18.20.8
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:33.9776892Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0389353Z   ✅ CLI commands registered — 8/8: gateway, portal, doctor, onboard, configure, library, update, status
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0390213Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0390876Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0391634Z   PHASE 2: CONFIG SYSTEM — Provider Wiring
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0394118Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0416211Z   ✅ Config read (snapshot) — DEFAULT (pre-onboard)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0416881Z   ✅ resolveGatewayPort({}) — port=18789
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0417885Z   ✅ resolveGatewayPort(undefined) — port=18789
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0429149Z   ✅ Provider groups for wizard — 23 provider groups + skip option=true
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0430102Z   ✅ Critical providers available — openai, anthropic, google, ollama
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0431143Z   ✅ API key prompts wired — openai, anthropic, google
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0432278Z   ✅ Default models set — all critical providers have default models
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0433060Z   ✅ requiresApiKey logic — openai=true, ollama=false
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0434179Z   ✅ Config schema write/parse — provider + model + port + auth all survive JSON round-trip
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0436010Z   ✅ CELL0_PATHS complete — 11 top-level keys: home, config, identity, workspace, runtime, snapshots, library, workspaces, credentials, canvas, kernel
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0436914Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0437224Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0437579Z   PHASE 3: FILESYSTEM & BOOTSTRAP
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0438033Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0438634Z   ✅ Core directories (14) — 14/14
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0439265Z   ✅ Agent Library dirs (7) — 7/7
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0452661Z   ✅ Per-category dirs — 12/12
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0455542Z   ✅ Library manifest — 12 categories
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0458440Z   ✅ Default agent (consciousness.md) — 198 bytes
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0459085Z   ✅ Identity dir permissions — 0o700 (secure)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0460268Z   ✅ Memory vector stubs — 12/12
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0460533Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0461011Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0461477Z   PHASE 4: AGENT LIBRARY
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0462180Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0463054Z   ✅ Categories — 12 categories
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0463360Z   ✅ Specialists — 66 specialists
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.0465209Z   ✅ matchCategory routing — ['flight','hotel'] → Travel
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.1126648Z   ✅ cell0 library command — lists categories + specialists
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.1782834Z   ✅ cell0 library --category social — filters to social
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.1783309Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.1784112Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.1784660Z   PHASE 5: LIVE SERVICES
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.1785336Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.1884160Z   ✅ Gateway :18789 health — {"status":"healthy","version":"1.2.0","gateway":true,"python":false,"clients":0,
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.1911238Z   ✅ Python :18800 health — 1.2.0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.1978761Z   ✅ Portal :18790 responding — 56511 bytes HTML
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.2271445Z   ✅ Portal JS syntax — node --check PASS
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.2288560Z   ✅ Portal /api/config — providers=23, channels=0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.2595636Z   ✅ Gateway WebSocket — ws://127.0.0.1:18789
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6920694Z   ✅ cell0 doctor — 15✅ 2❌, new dirs: true
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6958558Z   ✅ Install script syntax — valid bash
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6959309Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6959879Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6960448Z   PHASE 6: CROSS-MODULE INTEGRATION
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6961204Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6962410Z   ✅ Config module exports — 14 exports: CELL0_HOME, CELL0_PATHS, CONFIG_PATH, DEFAULT_GATEWAY_PORT, DEFAULT_PORTAL_PORT...
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6964395Z   ✅ Providers module exports — 5 exports: buildProviderGroups, getApiKeyPrompt, getDefaultModelForProvider, getProviderLabel, requiresApiKey
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6966067Z   ✅ Manifest module exports — 4 exports: DEFAULT_CATEGORIES, buildManifest, getSpecialistCount, matchCategory
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6967392Z   ✅ Provider→Config flow — anthropic → model:anthropic/claude-opus-4-6 → port:18789
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6968120Z   ✅ Category→Specialist flow — suggestions: 4 specialists, dynamic=true
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6968427Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6968727Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6969035Z   PHASE 7: CHANNEL ADAPTERS
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6969437Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6969852Z   ✅ 11 Channel Adapters Compiled — 12/12 (+ Interface)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6993980Z   ✅ DomainRouter explicit parsing — /finance → finance (intent: explicit_command)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.6994970Z   ✅ DomainRouter implicit fallback — Fallback → productivity
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.7005970Z   ✅ SessionManager Domain Isolation — 3783cbc0-a2f7-4a8c-8a7a-f7c2b6b0ddc0 (social) !== eac5ae72-bda7-47e2-8ac5-05a7dd264be4 (finance)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8885120Z   ✅ Gateway Adapter Loading — Loaded 11 adapters: whatsapp, telegram, discord...
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8886007Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8886409Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8886801Z   PHASE 8: AGENT RUNTIME
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8887544Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8888325Z   ✅ 6 Agent Runtime Modules Compiled — 6/6 modules
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8888926Z   ✅ PythonBridge Instantiation — Bridge created from agents/ dir
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8953437Z [IntentRouter] Python backend not ready, falling back to heuristics
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8954929Z   ✅ IntentRouter Fallback Heuristics — Scored as: travel (confidence: 0.7)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8961706Z   ✅ VectorMemory File I/O Interface — Memory manager instantiated
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8968008Z   ✅ SkillLoader Instance — SkillLoader instantiated
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8978178Z   ✅ AgentRuntime & MetaAgent Interfaces — Runtime + COL Orchestrator active
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8978793Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8979374Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8979986Z   PHASE 9: TOOLS & AUTOMATION
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8980842Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8981750Z   ✅ 7 Tool Wrapper Modules Compiled — 7/7 modules
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.8990435Z   ✅ Sandbox & Workspace Initialization — Tools created securely
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9001193Z   ✅ Vault & Cron Allocation — Zero-Trust Vault & Scheduler active
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9012663Z   ✅ Web Search & UI Modules — Providers linked
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9013019Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9013505Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9014157Z   PHASE 10: INFRASTRUCTURE
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9014708Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9015208Z   ✅ 8 Infra Wrapper Modules Compiled — 8/8 modules
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9024761Z   ✅ Daemon & Monitoring Allocation — Telemetry tracking hooked
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9034060Z   ✅ Snapshot Persistence — Volume recovery enabled
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9049450Z   ✅ Mesh Networking & SecAudit — VPN & Audit traces wired
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9400620Z   ✅ Gateway /api/health Endpoint — Unified node/python components returned
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9401203Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9401791Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9402316Z   PHASE 11: COL & KERNEL
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9403061Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9403906Z   ✅ 10 Native COL & Swarm Modules Compiled — 10/10 modules
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9420858Z   ✅ Cognitive Governance Allocation — STOP → CLASSIFY → EXECUTE active
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9435090Z   ✅ Massive Swarm Collective Logic — Decentralized peer-election active
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9448817Z   ✅ Absolute Rust Kernel Constraints — Hash-signed limitations enforced
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9451490Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9452066Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9452616Z   FINAL REPORT
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9454011Z ════════════════════════════════════════════════════════════
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9454388Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9454537Z   Total: 64 checks
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9454888Z   Pass:  63 ✅
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9455214Z   Fail:  1 ❌
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9455388Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9455755Z   ⚠️  Some checks failed. System is unstable.
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:34.9456096Z 
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0087230Z ##[error]Process completed with exit code 1.
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0141409Z ##[group]Run # Clean exit of all architecture daemons
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0141795Z [36;1m# Clean exit of all architecture daemons[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0142083Z [36;1mpkill -f "cell0d.py" || true[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0142362Z [36;1mpkill -f "npm run gateway" || true[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0142664Z [36;1mpkill -f "dist/cli/index.js portal" || true[0m
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0174237Z shell: /usr/bin/bash -e {0}
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0174464Z env:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0174707Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0175135Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0175557Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0175911Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0176273Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0176686Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0177001Z   CARGO_HOME: /home/runner/.cargo
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0177231Z   CARGO_INCREMENTAL: 0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0177432Z   CARGO_TERM_COLOR: always
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0177638Z ##[endgroup]
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.0735222Z Post job cleanup.
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.1698528Z [command]/usr/bin/git version
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.1734588Z git version 2.52.0
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.1777893Z Temporarily overriding HOME='/home/runner/work/_temp/b7abf25a-2a60-4833-8696-0959a4a63a3e' before making global git config changes
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.1779138Z Adding repository directory to the temporary git global config as a safe directory
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.1790849Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/cell0-os/cell0-os
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.1825935Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.1859209Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.2118064Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.2144361Z http.https://github.com/.extraheader
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.2158918Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.2195612Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.2454252Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.2493979Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.2859207Z Cleaning up orphan processes
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.3174135Z Terminate orphan process: pid (2550) (node)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.3199167Z Terminate orphan process: pid (2561) (node)
+Architectural Audit (64/64 Checkpoint)	UNKNOWN STEP	2026-02-21T14:50:35.3235976Z Terminate orphan process: pid (2573) (esbuild)
