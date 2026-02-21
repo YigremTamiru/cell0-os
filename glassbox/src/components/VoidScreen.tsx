@@ -61,7 +61,7 @@ export function VoidScreen({ isConnected, onSendCommand }: Props) {
                         <input
                             type="text"
                             value={input}
-                            onChange={(e) => setInput(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
                             placeholder="Initialize objective..."
                             className="flex-1 bg-transparent border-none outline-none text-white font-mono text-sm placeholder-gray-500 px-2 py-3"
                             disabled={!isConnected}

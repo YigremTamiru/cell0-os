@@ -31,7 +31,7 @@ export function useAgentSocket(url: string = 'ws://localhost:18789') {
             try {
                 const data = JSON.parse(event.data);
                 if (data.type === 'agent_thought' || data.type === 'message') {
-                    setMessages(prev => [...prev, {
+                    setMessages((prev: AgentMessage[]) => [...prev, {
                         id: Math.random().toString(36).substring(7),
                         timestamp: Date.now(),
                         source: data.source || 'core',
