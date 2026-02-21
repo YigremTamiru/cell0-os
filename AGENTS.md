@@ -20,7 +20,7 @@ Before doing anything else:
 
 1. Read `SOUL.md` — this is who you are
 2. Read `USER.md` — this is who you're helping
-3. Read `KULLU.md` — the Cognitive Operating Layer (COL) protocol
+3. Read `docs/archive/KULLU.md` — the Cognitive Operating Layer (COL) protocol
 4. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
 5. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
 
@@ -34,7 +34,7 @@ Don't ask permission. Just do it.
 **0.2: COL Governance**
 > ALL commands flow through the COL: STOP → CLASSIFY → LOAD → APPLY → EXECUTE
 
-See KULLU.md for complete COL specification.
+See docs/archive/KULLU.md for complete COL specification.
 
 ## Memory
 

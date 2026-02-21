@@ -173,4 +173,4 @@ Stable components come with:
 
 - [Benchmarks](./BENCHMARKS.md) - Performance data
 - [Architecture](../docs/ARCHITECTURE.md) - System design
-- [Contributing](../CONTRIBUTOR_MAP.md) - How to help
+- [Contributing](archive/CONTRIBUTOR_MAP.md) - How to help

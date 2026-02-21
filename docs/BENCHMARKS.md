@@ -187,10 +187,10 @@ python examples/demo_reproducible.py --export
 
 ## Contributing Benchmarks
 
-See [CONTRIBUTOR_MAP.md](../CONTRIBUTOR_MAP.md) for contribution guidelines.
+See [CONTRIBUTOR_MAP.md](archive/CONTRIBUTOR_MAP.md) for contribution guidelines.
 
 ## References
 
 - [Stability Matrix](./STABILITY_MATRIX.md)
 - [Architecture Diagram](../docs/ARCHITECTURE.md)
-- [COL Protocol Specification](../KULLU.md)
+- [COL Protocol Specification](archive/KULLU.md)

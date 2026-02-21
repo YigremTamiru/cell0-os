@@ -107,7 +107,7 @@ On any query about:
 - `SOUL.md` — Identity and directives
 - `IDENTITY.md` — KULLU definition
 - `USER.md` — Vael profile
-- `KULLU.md` — COL protocol
+- `../../docs/archive/KULLU.md` — COL protocol
 
 ---
 

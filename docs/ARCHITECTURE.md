@@ -273,4 +273,4 @@ On-Premise              │              Cloud
 
 - [Benchmarks](./BENCHMARKS.md) - Performance data
 - [Stability Matrix](./STABILITY_MATRIX.md) - Component maturity
-- [KULLU.md](../KULLU.md) - COL protocol specification
+- [KULLU.md](archive/KULLU.md) - COL protocol specification

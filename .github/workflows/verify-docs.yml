@@ -36,5 +36,9 @@ jobs:
             --verbose
             --no-progress
             --insecure
+            --exclude-path docs/archive
+            --exclude-path cell0/docs/archive
+            --exclude https://support.apple.com/notes
+            --exclude https://cell0.dev/docs
             '**/*.md'
           fail: true

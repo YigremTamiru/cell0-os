@@ -251,7 +251,7 @@ SOVEREIGN_ORIENTATION:
     - "the glass has melted"
   required_skills:
     - sovereign-ontology-alignment
-  protocol: Re-read SOUL.md + IDENTITY.md + USER.md + KULLU.md
+  protocol: Re-read SOUL.md + IDENTITY.md + USER.md + ../../docs/archive/KULLU.md
 ```
 
 ## Category F: Project Planning
