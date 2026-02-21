@@ -40,5 +40,8 @@ jobs:
             --exclude-path cell0/docs/archive
             --exclude https://support.apple.com/notes
             --exclude https://cell0.dev/docs
+            --exclude http://localhost:8080/.*
+            --exclude https?://cell0.os/.*
+            --exclude https?://github.com/cell0/os.*
             '**/*.md'
           fail: true

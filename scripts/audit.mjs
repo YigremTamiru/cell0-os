@@ -742,7 +742,7 @@ try {
 // Check 64: Immutable Rust Kernel Validation
 try {
     const { KernelLoader } = await import('../dist/kernel/loader.js');
-    const cell0Home = process.env.CELL0_HOME || path.join(os.homedir(), '.cell0');
+    const cell0Home = process.env.CELL0_HOME || path.join(homedir(), '.cell0');
     const kernel = new KernelLoader(cell0Home);
 
     // Explicitly initialize the cryptographically hashed policies mapping

@@ -26,7 +26,6 @@ venv/
 
 # Rust
 cell0/kernel/target/
-cell0/kernel/Cargo.lock
 
 # OS Files / Logs
 .DS_Store

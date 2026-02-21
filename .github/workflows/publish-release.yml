@@ -21,7 +21,7 @@ jobs:
             artifact_name: cell0-os-macos-aarch64
             ext: dylib
           # 2. macOS (Intel)
-          - os: macos-13 # Standard intel runner
+          - os: macos-latest # Standard intel runner
             target: x86_64-apple-darwin
             artifact_name: cell0-os-macos-x86_64
             ext: dylib
