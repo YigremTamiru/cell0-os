@@ -52,15 +52,18 @@ jobs:
         run: pip install -r requirements.txt
 
       # ----------------------------------------------------------------------
-      # COMPILATION
+      # BUILD & COMPILE
       # ----------------------------------------------------------------------
-      - name: 🛠️ Build TypeScript OS Architecture
+      - name: 🛠️ Compile TypeScript Source
         run: npm run build
         
+      - name: 🟡 Initialize Civilization Environment (~/.cell0)
+        run: node -e "import('./dist/init/bootstrap.js').then(m => m.bootstrap())"
+
       # ----------------------------------------------------------------------
-      # SERVICE ORCHESTRATION (THE LIVE OS)
+      # LAUNCH DAEMONS & SERVICES (Background)
       # ----------------------------------------------------------------------
-      - name: 🚀 Boot Cell 0 Architecture
+      - name: 🟢 Extract Gateway & Core Services
         run: |
           echo "Starting Python Intelligence Engine..."
           nohup python cell0/cell0d.py > python.log 2>&1 &

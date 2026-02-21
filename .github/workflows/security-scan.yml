@@ -60,13 +60,8 @@ jobs:
           toolchain: nightly
           
       - name: 🔒 Install cargo-audit
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: cargo-audit
+        run: cargo install cargo-audit
 
       - name: 🔒 Run Rust Dependency Security Scan
-        uses: actions-rs/cargo@v1
-        with:
-          command: audit
-          args: --ignore RUSTSEC-2023-0071 # Example ignore rule for legacy sub-dependencies if needed
+        working-directory: ./cell0/kernel
+        run: cargo audit --ignore RUSTSEC-2023-0071
