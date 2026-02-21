@@ -732,7 +732,7 @@ try {
     const bridge = new PythonBridge();
     const swarmCoord = new SwarmCoordinator(bridge);
     const swarmConsens = new ConsensusProtocol(bridge);
-    ffconst swarmDetect = new DiscoveryService(bridge);
+    const swarmDetect = new DiscoveryService(bridge);
 
     check('Massive Swarm Collective Logic', swarmCoord !== undefined && swarmConsens !== undefined && swarmDetect !== undefined, 'Decentralized peer-election active');
 } catch (e) {
