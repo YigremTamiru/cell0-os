@@ -58,7 +58,7 @@ jobs:
         run: npm run build
         
       - name: 🟡 Initialize Civilization Environment (~/.cell0)
-        run: node -e "import('./dist/init/bootstrap.js').then(m => m.bootstrap())"
+        run: node -e "import('./dist/init/bootstrap.js').then(m => m.bootstrapSystem())"
 
       # ----------------------------------------------------------------------
       # LAUNCH DAEMONS & SERVICES (Background)

@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*.*.*' # Trigger when a version tag like v1.2.0 is pushed
 
+permissions:
+  contents: write
+
 jobs:
   build-and-release:
     name: "Compile & Publish Architecture (${{ matrix.target }})"
