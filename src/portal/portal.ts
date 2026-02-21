@@ -507,7 +507,7 @@ body { font-family:var(--font-sans); background:var(--bg-primary); color:var(--t
     <span style="cursor:pointer;color:var(--text-muted)" id="glassbox-close">✕</span>
   </div>
   <div class="glassbox-body" id="glassbox-body">
-    <iframe src="/glassbox/" style="width:100%; height:100%; border:none; display:block;"></iframe>
+    <iframe id="glassbox-iframe" src="" style="width:100%; height:100%; border:none; display:block; background:#000;"></iframe>
   </div>
 </div>
 
@@ -993,6 +993,11 @@ function renderUfaBar() {
 function initGlassbox() {
   const bubble = document.getElementById('glassbox-bubble');
   const panel = document.getElementById('glassbox-panel');
+
+  // Inject the dynamically mapped host and Gateway port for the static React asset hosting
+  const iframe = document.getElementById('glassbox-iframe');
+  iframe.src = 'http://' + window.location.hostname + ':' + GW_PORT + '/glassbox/';
+
   bubble.addEventListener('click', () => panel.classList.toggle('open'));
   document.getElementById('glassbox-close').addEventListener('click', () => panel.classList.remove('open'));
 
