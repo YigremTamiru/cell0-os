@@ -87,12 +87,12 @@ check('Package.json',
 
 // Check 4: All entry points importable
 try {
-    execSync('node -e "import \'./dist/config/config.js\'"', { timeout: 5000 });
-    execSync('node -e "import \'./dist/config/providers.js\'"', { timeout: 5000 });
-    execSync('node -e "import \'./dist/library/manifest.js\'"', { timeout: 5000 });
-    execSync('node -e "import \'./dist/init/bootstrap.js\'"', { timeout: 5000 });
-    execSync('node -e "import \'./dist/wizard/wizard.js\'"', { timeout: 5000 });
-    execSync('node -e "import \'./dist/agents/python-bridge.js\'"', { timeout: 5000 });
+    execSync('node --input-type=module -e "import \'./dist/config/config.js\'"', { timeout: 5000 });
+    execSync('node --input-type=module -e "import \'./dist/config/providers.js\'"', { timeout: 5000 });
+    execSync('node --input-type=module -e "import \'./dist/library/manifest.js\'"', { timeout: 5000 });
+    execSync('node --input-type=module -e "import \'./dist/init/bootstrap.js\'"', { timeout: 5000 });
+    execSync('node --input-type=module -e "import \'./dist/wizard/wizard.js\'"', { timeout: 5000 });
+    execSync('node --input-type=module -e "import \'./dist/agents/python-bridge.js\'"', { timeout: 5000 });
     check('All modules importable', true, '6/6 (config, providers, manifest, bootstrap, wizard, python-bridge)');
 } catch (e) {
     check('All modules importable', false, e.message);
