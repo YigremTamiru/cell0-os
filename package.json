@@ -13,7 +13,7 @@
         "glassbox"
     ],
     "scripts": {
-        "prepare": "tsc && npm run build --prefix glassbox",
+        "prepare": "[ -d dist ] || (tsc && npm run build --prefix glassbox)",
         "build": "tsc && npm run build --prefix glassbox",
         "dev": "tsx watch src/gateway/index.ts",
         "start": "node dist/gateway/index.js",

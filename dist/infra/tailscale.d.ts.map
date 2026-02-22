@@ -1,0 +1,1 @@
+{"version":3,"file":"tailscale.d.ts","sourceRoot":"","sources":["../../src/infra/tailscale.ts"],"names":[],"mappings":"AAAA;;;;;GAKG;AAIH,qBAAa,gBAAgB;IAEzB;;;OAGG;IACG,MAAM,CAAC,IAAI,EAAE,MAAM,EAAE,SAAS,GAAE,OAAe,GAAG,OAAO,CAAC,MAAM,CAAC;CA+B1E"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"wizard.d.ts","sourceRoot":"","sources":["../../src/wizard/wizard.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;GAUG;AAoCH,wBAAsB,mBAAmB,CAAC,IAAI,EAAE;IAC5C,aAAa,CAAC,EAAE,OAAO,CAAC;IACxB,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,YAAY,CAAC,EAAE,OAAO,CAAC;IACvB,UAAU,CAAC,EAAE,OAAO,CAAC;IACrB,UAAU,CAAC,EAAE,OAAO,CAAC;CACxB,GAAG,OAAO,CAAC,IAAI,CAAC,CAqWhB"}
