@@ -26,8 +26,11 @@
         "SECURITY.md"
     ],
     "scripts": {
-        "prepare": "[ -d dist ] || (tsc && npm run build --prefix glassbox)",
-        "build": "tsc && npm run build --prefix glassbox",
+        "prepare": "[ -d dist ] || npm run build:ts",
+        "build": "npm run build:ts && npm run build:ui",
+        "build:ts": "tsc",
+        "build:ui": "cd glassbox && npm install --legacy-peer-deps && npm run build",
+        "prepack": "[ -d dist ] || npm run build:ts",
         "dev": "tsx watch src/gateway/index.ts",
         "start": "node dist/gateway/index.js",
         "gateway": "tsx src/gateway/index.ts",
@@ -79,7 +82,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/cell0-os/cell0"
+        "url": "https://github.com/YigremTamiru/cell0-os"
     },
     "homepage": "https://cell0.io"
 }

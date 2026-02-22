@@ -1,4 +1,11 @@
-# Source files (dist/ is pre-built and committed)
+# NOTE: npm 11+ ignores this file when `files` field is present in package.json.
+# The `files` field in package.json is the authoritative whitelist for published content.
+# This file remains as documentation and for compatibility with older npm versions.
+#
+# dist/ and glassbox/dist/ are pre-built and committed — never exclude them.
+# See package.json `files` array for the full include list.
+
+# Source TypeScript (compiled output is in dist/ — already in files whitelist)
 src/
 glassbox/src/
 glassbox/node_modules/
@@ -8,8 +15,11 @@ glassbox/vite.config.*
 glassbox/eslint.config.*
 glassbox/index.html
 tsconfig.json
+
+# Exclude raw .ts source but keep compiled declaration files
 *.ts
 !*.d.ts
+!*.d.ts.map
 
 # Dev / CI config
 .github/
@@ -21,3 +31,4 @@ vitest.config.*
 # Misc
 *.log
 .DS_Store
+node_modules/

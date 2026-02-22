@@ -1,0 +1,56 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - 'v*'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Build TypeScript → dist/
+        run: npx tsc
+
+      - name: Install Glassbox UI dependencies
+        run: cd glassbox && npm install --legacy-peer-deps
+
+      - name: Build Glassbox UI → glassbox/dist/
+        run: cd glassbox && npm run build
+
+      - name: Verify dist/cli/index.js exists
+        run: |
+          test -f dist/cli/index.js || (echo "❌ dist/cli/index.js MISSING — aborting publish" && exit 1)
+          echo "✅ dist/cli/index.js confirmed ($(wc -c < dist/cli/index.js) bytes)"
+
+      - name: Verify glassbox/dist/ exists
+        run: |
+          test -f glassbox/dist/index.html || (echo "❌ glassbox/dist/index.html MISSING — aborting publish" && exit 1)
+          echo "✅ glassbox/dist/ confirmed"
+
+      - name: npm pack dry-run (audit what gets published)
+        run: npm pack --dry-run 2>&1
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
