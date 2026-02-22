@@ -1,0 +1,23 @@
+# Source files (dist/ is pre-built and committed)
+src/
+glassbox/src/
+glassbox/node_modules/
+glassbox/.gitignore
+glassbox/tsconfig.json
+glassbox/vite.config.*
+glassbox/eslint.config.*
+glassbox/index.html
+tsconfig.json
+*.ts
+!*.d.ts
+
+# Dev / CI config
+.github/
+.vscode/
+.eslintrc*
+eslint.config.*
+vitest.config.*
+
+# Misc
+*.log
+.DS_Store
