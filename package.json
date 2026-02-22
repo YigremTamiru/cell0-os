@@ -13,8 +13,8 @@
         "glassbox"
     ],
     "scripts": {
-        "prepare": "npx -y tsc && npm run build --prefix glassbox",
-        "build": "npx -y tsc && npm run build --prefix glassbox",
+        "prepare": "node ./node_modules/typescript/bin/tsc && npm run build --prefix glassbox",
+        "build": "node ./node_modules/typescript/bin/tsc && npm run build --prefix glassbox",
         "dev": "tsx watch src/gateway/index.ts",
         "start": "node dist/gateway/index.js",
         "gateway": "tsx src/gateway/index.ts",
