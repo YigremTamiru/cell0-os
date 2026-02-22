@@ -27,7 +27,7 @@ jobs:
       - name: 🟢 Setup Node.js (Gateway & Portal)
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'npm'
 
       - name: 🐍 Setup Python (Intelligence Engine)
@@ -47,9 +47,6 @@ jobs:
       # ----------------------------------------------------------------------
       - name: 📦 Install Node Dependencies
         run: npm ci
-
-      - name: 📦 Install Glassbox Dependencies
-        run: npm ci --prefix glassbox
 
       - name: 📦 Install Python Dependencies
         run: pip install -r requirements.txt
