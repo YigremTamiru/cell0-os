@@ -33,23 +33,26 @@
 ### 1. Identify Your Environment
 Cell 0 OS natively compiles and executes on **macOS (Apple Silicon & Intel)**, **Linux (x86_64 & ARM64)**, and **Windows (x64)**. It bridges a Node.js frontend gateway with a secure Python cognitive engine and a strict Rust Kernel limit-layer.
 
-### 2. Install (Recommended)
-Ensure you have `node`, `python3`, and `rustc` installed.
+### 2. Global Installation (Recommended)
+You can install Cell 0 OS globally directly from GitHub. This naturally establishes the `cell0` CLI command everywhere on your machine.
 
 ```bash
-git clone https://github.com/YigremTamiru/cell0-os.git
-cd cell0-os
-npm install
-npm run build
+npm install -g git+https://github.com/YigremTamiru/cell0-os.git
 ```
-
-*(For detailed dependencies, see [Native Installation](docs/install/native.md) or [Docker Setup](docs/install/docker.md))*
+*(This automatically compiles the Neural Glassbox UI and the Node TypeScript engine during installation).*
 
 ### 3. Ignite the Core
-Start the Node.js API Gateway. If this is your first boot, the system will recognize a missing `~/.cell0/cell0.json` config and launch the Initialization Modal:
+Once installed, initialize your Sovereign Environment anywhere via the OpenClaw-style visual wizard:
 
 ```bash
-npm start
+cell0 onboard
+```
+
+Then, boot the 3-Tier Architecture in the background:
+
+```bash
+cell0 gateway
+cell0 portal
 ```
 
 Open your browser to the Nerve Portal:
@@ -88,6 +91,11 @@ When initialized, the OS writes an immutable, `0o700`-permission locked structur
 For absolute depth on how data streams through the system, read the **[Core Architecture Guide](docs/concepts/architecture.md)**.
 
 ---
+
+### ⌾ Conceptual
+- [The Sovereign Architecture Comparison](docs/architecture-comparison.md) *(Cell 0 OS vs. OpenClaw)*
+- [Core Architecture & Python Bridge](docs/concepts/architecture.md)
+- [Agents & Swarm Intelligence](docs/concepts/agents-and-swarms.md)
 
 ## 🛡️ Security Model (Important)
 
