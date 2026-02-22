@@ -26,7 +26,7 @@
         "SECURITY.md"
     ],
     "scripts": {
-        "prepare": "tsc",
+        "prepare": "node_modules/.bin/tsc",
         "build": "tsc && npm run build --prefix glassbox",
         "dev": "tsx watch src/gateway/index.ts",
         "start": "node dist/gateway/index.js",
