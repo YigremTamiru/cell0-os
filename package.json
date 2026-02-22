@@ -9,6 +9,22 @@
         "cell0": "./dist/cli/index.js"
     },
     "main": "./dist/gateway/index.js",
+    "files": [
+        "dist/",
+        "glassbox/dist/",
+        "cell0/",
+        "cell0d/",
+        "skills/",
+        "scripts/",
+        "packaging/",
+        "docker-compose.yml",
+        "requirements.txt",
+        "requirements-test.txt",
+        "README.md",
+        "LICENSE",
+        "AGENTS.md",
+        "SECURITY.md"
+    ],
     "scripts": {
         "prepare": "[ -d dist ] || (tsc && npm run build --prefix glassbox)",
         "build": "tsc && npm run build --prefix glassbox",
