@@ -5,14 +5,16 @@
  * Counterpart to backup.ts. Rollbacks filesystem states.
  */
 
-import { spawn } from "node:child_process";
+import fs from "node:fs";
 import path from "node:path";
+import { exec, spawn } from "node:child_process";
+import { promisify } from "node:util";
+import { CELL0_PATHS, CELL0_PROJECT_ROOT } from "../config/config.js";
+
+const execAsync = promisify(exec);
 
 export class RestoreManager {
-    private projectRoot: string;
-
-    constructor(projectRoot: string = process.cwd()) {
-        this.projectRoot = projectRoot;
+    constructor(private projectRoot: string = CELL0_PROJECT_ROOT) {
     }
 
     /**

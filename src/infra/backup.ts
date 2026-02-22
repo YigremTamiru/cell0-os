@@ -8,12 +8,12 @@
 import { spawn } from "node:child_process";
 import path from "node:path";
 import os from "node:os";
-import { CELL0_PATHS } from "../config/config.js";
+import { CELL0_PATHS, CELL0_PROJECT_ROOT } from "../config/config.js";
 
 export class BackupManager {
     private projectRoot: string;
 
-    constructor(projectRoot: string = process.cwd()) {
+    constructor(projectRoot: string = CELL0_PROJECT_ROOT) {
         this.projectRoot = projectRoot;
     }
 

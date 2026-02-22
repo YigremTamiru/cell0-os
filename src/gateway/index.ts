@@ -47,6 +47,7 @@ import { IMessageAdapter } from "../channels/imessage.js";
 import { BlueBubblesAdapter } from "../channels/bluebubbles.js";
 import { MatrixAdapter } from "../channels/matrix.js";
 import { WebChatAdapter } from "../channels/webchat.js";
+import { CELL0_PROJECT_ROOT } from "../config/config.js";
 
 // ─── Configuration ──────────────────────────────────────────────────────────
 

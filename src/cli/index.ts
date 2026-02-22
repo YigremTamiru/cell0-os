@@ -42,13 +42,14 @@ program
     .option("--no-python", "Don't auto-start Python daemon")
     .option("-v, --verbose", "Verbose logging")
     .action(async (opts) => {
+        const { CELL0_PROJECT_ROOT } = await import("../config/config.js");
         const { Gateway } = await import("../gateway/index.js");
         const gateway = new Gateway({
             port: parseInt(opts.port, 10),
             host: opts.host,
             pythonPort: parseInt(opts.pythonPort, 10),
             autoStartPython: opts.python !== false,
-            projectRoot: process.cwd(),
+            projectRoot: CELL0_PROJECT_ROOT,
             verbose: opts.verbose ?? false,
         });
 
@@ -175,9 +176,10 @@ program
         }
 
         // Check daemon script
+        const { CELL0_PROJECT_ROOT } = await import("../config/config.js");
         const daemonPaths = [
-            join(process.cwd(), "cell0", "cell0d.py"),
-            join(process.cwd(), "service", "cell0d.py"),
+            join(CELL0_PROJECT_ROOT, "cell0", "cell0d.py"),
+            join(CELL0_PROJECT_ROOT, "service", "cell0d.py"),
         ];
         let daemonPath = "";
         for (const dp of daemonPaths) {
@@ -289,7 +291,7 @@ program
 
         // Check workspace files (AGENTS.md etc)
         const workspaceDirs = [
-            process.cwd(),
+            CELL0_PROJECT_ROOT,
             CELL0_PATHS.workspace.root,
         ];
 

@@ -10,13 +10,14 @@ import { spawn, type ChildProcess } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
+import { CELL0_PROJECT_ROOT } from "../config/config.js";
 
 export class DaemonManager {
     private daemonProcess: ChildProcess | null = null;
     private pythonExecutable: string;
     private daemonScriptPath: string;
 
-    constructor(projectRoot: string = process.cwd()) {
+    constructor(private projectRoot: string = CELL0_PROJECT_ROOT) {
         const venvPaths = [
             path.join(os.homedir(), ".cell0", "venv", "bin", "python3"),
             path.join(os.homedir(), ".cell0", ".venv", "bin", "python3"),
@@ -98,7 +99,7 @@ export class DaemonManager {
     <key>ProgramArguments</key>
     <array>
         <string>${process.execPath}</string>
-        <string>${path.join(process.cwd(), "dist", "cli", "index.js")}</string>
+        <string>${path.join(this.projectRoot, "dist", "cli", "index.js")}</string>
         <string>gateway</string>
     </array>
     <key>RunAtLoad</key>
