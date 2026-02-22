@@ -34,12 +34,12 @@
 Cell 0 OS natively compiles and executes on **macOS (Apple Silicon & Intel)**, **Linux (x86_64 & ARM64)**, and **Windows (x64)**. It bridges a Node.js frontend gateway with a secure Python cognitive engine and a strict Rust Kernel limit-layer.
 
 ### 2. Global Installation (Recommended)
-You can install Cell 0 OS globally directly from GitHub. This naturally establishes the `cell0` CLI command everywhere on your machine.
+You can install Cell 0 OS globally directly from GitHub. This establishes the `cell0` CLI command everywhere on your machine.
 
 ```bash
 npm install -g git+https://github.com/YigremTamiru/cell0-os.git
 ```
-*(This automatically compiles the Neural Glassbox UI and the Node TypeScript engine during installation).*
+*(This command natively pulls the repository, executes the headless `npx -y` compilation hooks, builds the React-based Glassbox UI, and links the local Gateway daemon—fully bypassing MacOS interactive terminal constraints).*
 
 ### 3. Ignite the Core
 Once installed, initialize your Sovereign Environment anywhere via the OpenClaw-style visual wizard:
