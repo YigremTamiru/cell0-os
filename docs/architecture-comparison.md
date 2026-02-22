@@ -6,6 +6,8 @@ Cell 0 OS is not just an application; it is a **Three-Tier Decentralized Operati
 
 ### 1.1 The Three-Tier Architecture
 
+![Cell 0 OS Ecosystem Flow](assets/cell0_ecosystem_diagram.png)
+
 ```mermaid
 graph TB
     %% Core Styling
