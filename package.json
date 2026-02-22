@@ -9,9 +9,6 @@
         "cell0": "./dist/cli/index.js"
     },
     "main": "./dist/gateway/index.js",
-    "workspaces": [
-        "glassbox"
-    ],
     "scripts": {
         "prepare": "[ -d dist ] || (tsc && npm run build --prefix glassbox)",
         "build": "tsc && npm run build --prefix glassbox",
