@@ -26,7 +26,7 @@
         "SECURITY.md"
     ],
     "scripts": {
-        "prepare": "[ -d dist ] || (tsc && npm run build --prefix glassbox)",
+        "prepare": "tsc",
         "build": "tsc && npm run build --prefix glassbox",
         "dev": "tsx watch src/gateway/index.ts",
         "start": "node dist/gateway/index.js",
