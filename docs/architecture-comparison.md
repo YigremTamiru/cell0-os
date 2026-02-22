@@ -7,41 +7,131 @@ Cell 0 OS is not just an application; it is a **Three-Tier Decentralized Operati
 ### 1.1 The Three-Tier Architecture
 
 ```mermaid
-graph TD
-    %% User Interface Layer
-    subgraph UI ["User Interface Layer (The Frontal Lobe)"]
-        NG[Neural Glassbox UI<br/>React / Vite / Tailwind]
-        CP[Nerve Portal<br/>Node.js CLI Dashboard]
-        CA[Channel Adapters<br/>WhatsApp, Slack, Discord, Signal, etc.]
+graph TB
+    %% Core Styling
+    classDef ui fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#fff
+    classDef gateway fill:#1e1b4b,stroke:#8b5cf6,stroke-width:2px,color:#fff
+    classDef python fill:#052e16,stroke:#10b981,stroke-width:2px,color:#fff
+    classDef rust fill:#451a03,stroke:#f59e0b,stroke-width:2px,color:#fff
+    classDef external fill:#171717,stroke:#666,stroke-dasharray: 5 5,color:#ccc
+    classDef memory fill:#312e81,stroke:#6366f1,stroke-width:1px,color:#fff
+
+    %% --------------------------------------------------------
+    %% LAYER 1: THE FRONTAL LOBE (User Interfaces & Channels)
+    %% --------------------------------------------------------
+    subgraph UI_Layer ["LAYER 1: The Frontal Lobe (Visual & Inbound)"]
+        direction TB
+        
+        subgraph Web_UI ["Spatial Interfaces"]
+            NG["🧠 Neural Glassbox (React/Vite)<br/>Live Visualization of Thoughts"]
+            CP["🎛️ Nerve Portal (Node CLI)<br/>System Control Panel"]
+        end
+
+        subgraph Inbound_Channels ["The 11 Native Senses (Channel Adapters)"]
+            direction LR
+            WA["WhatsApp"]
+            TG["Telegram"]
+            DS["Discord"]
+            SL["Slack"]
+            SI["Signal"]
+            MS["Matrix / others"]
+        end
     end
 
-    %% Gateway Layer
-    subgraph Gateway ["Gateway Layer (Node.js / Fastify)"]
-        WS[WebSocket & HTTP Server<br/>Port 18789]
-        SM[Session Manager<br/>Domain Isolation]
-        DR[Intent Router<br/>Command & Heuristic Routing]
-        SR[Static File Server<br/>Serves Neural Glassbox]
+    %% --------------------------------------------------------
+    %% LAYER 2: THE NERVOUS SYSTEM (Node.js Gateway)
+    %% --------------------------------------------------------
+    subgraph Gateway_Layer ["LAYER 2: The Nervous System (Node.js Gateway :18789)"]
+        direction TB
+        
+        WS["⚡ WebSocket Server (Real-time Sync)"]
+        HTTP["🌐 Fastify HTTP & Static Server"]
+        
+        subgraph Routing_Engine ["Cognitive Routing"]
+            SM["🔐 Session Manager<br/>(Domain Isolated Contexts)"]
+            DR["🗺️ Intent Router<br/>(Classifies Input to Domain)"]
+        end
+        
+        HTTP --> |"Serves UI"| NG
+        WS <--> |"JSON-RPC Stream"| NG
+        Inbound_Channels --> |"Webhooks / Polling"| HTTP
+        HTTP --> SM
+        WS --> SM
+        SM --> DR
     end
 
-    %% Cognitive Intelligence Engine
-    subgraph CIE ["Cognitive Intelligence Engine (Python 3.11)"]
-        OB[Orchestrator Bridge<br/>Node ↔ Python IPC]
-        AL[Agent Library<br/>12 Domains, 66 Specialists]
-        MM[Vector Memory<br/>~/.cell0/runtime/memory/*.vec]
-        COL[Civilization of Light (COL)<br/>Ethics, Consensus, Synthesis]
+    %% --------------------------------------------------------
+    %% LAYER 3: THE BRAIN (Python Intelligence Engine)
+    %% --------------------------------------------------------
+    subgraph Python_Layer ["LAYER 3: The Brain (Python 3.11 Engine :18800)"]
+        direction TB
+        
+        OB["🌉 Orchestrator Bridge (IPC)"]
+        MA["👑 Meta-Agent (The Sovereign)<br/>Cross-Domain Coordinator"]
+        
+        subgraph COL ["Civilization of Light (COL)"]
+            PE["⚖️ Philosophy Engine<br/>(Ethical Governance)"]
+            TE["🪙 Token Economy<br/>(Rate Limits & Value)"]
+            CS["✨ Consensus Synthesizer<br/>(Swarm Voting)"]
+        end
+
+        subgraph Agent_Library ["The 66-Agent Mesh (12 Domains)"]
+            direction LR
+            A_Soc["💬 Social Agents<br/>(WhatsApp Mind, etc.)"]
+            A_Pro["📈 Productivity Agents<br/>(Task Oracle, etc.)"]
+            A_Trav["✈️ Travel Agents<br/>(Flight Oracle, etc.)"]
+            A_Fin["💰 Finance Agents<br/>(Bank Vault, etc.)"]
+            A_Oth["...8 Other Domains"]
+            
+            A_Soc ~~~ A_Pro ~~~ A_Trav ~~~ A_Fin ~~~ A_Oth
+        end
+
+        OB <--> MA
+        MA <--> COL
+        MA <--> Agent_Library
     end
 
-    %% Immutable Storage & Security
-    subgraph Core ["Immutable Core (Rust boundary & File System)"]
-        FS[Filesystem<br/>~/.cell0/ workspace, identity, kernel]
-        SA[Security Audit<br/>Zero-Trust Sandbox]
+    %% --------------------------------------------------------
+    %% LAYER 4: THE DNA (File System & Rust Kernel)
+    %% --------------------------------------------------------
+    subgraph Core_Layer ["LAYER 4: The DNA (Immutable Storage & Kernel)"]
+        direction TB
+        
+        subgraph Fractured_Memory ["Fractured Vector Memory (~/.cell0/runtime/memory/)"]
+            M_Soc[("social.vec")]
+            M_Pro[("productivity.vec")]
+            M_Trav[("travel.vec")]
+            M_Fin[("finance.vec")]
+        end
+        
+        subgraph Zero_Trust ["Sovereign Infrastructure"]
+            SB["🛑 Secure Sandbox (Tool Execution)"]
+            ID["🔑 Cryptographic Identity (/identity)"]
+            RK["🦀 Rust Kernel Boundaries (Limits)"]
+        end
     end
 
-    %% Data Flow
-    UI -->|JSON-RPC via WS| Gateway
-    CA -->|Webhooks/Polling| Gateway
-    Gateway -->|ZMQ / HTTP IPC| CIE
-    CIE <-->|Read/Write| Core
+    %% --------------------------------------------------------
+    %% SYSTEM CONNECTIONS
+    %% --------------------------------------------------------
+    DR ===>|"Dispatches Intent"| OB
+    
+    %% Mappings from Domains to Memory
+    A_Soc -.->|"Isolated Read/Write"| M_Soc
+    A_Pro -.->|"Isolated Read/Write"| M_Pro
+    A_Trav -.->|"Isolated Read/Write"| M_Trav
+    A_Fin -.->|"Isolated Read/Write"| M_Fin
+    
+    Agent_Library ==>|"Executes Tools"| SB
+    COL -.->|"Verifies constraints"| RK
+
+    %% Class Assigns
+    class UI_Layer,Web_UI,Inbound_Channels ui;
+    class Gateway_Layer,Routing_Engine gateway;
+    class Python_Layer,COL,Agent_Library python;
+    class Core_Layer,Zero_Trust rust;
+    class Fractured_Memory memory;
+    class WA,TG,DS,SL,SI,MS external;
 ```
 
 ### 1.2 Core Components Breakdown
