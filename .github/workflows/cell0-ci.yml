@@ -48,6 +48,9 @@ jobs:
       - name: 📦 Install Node Dependencies
         run: npm ci
 
+      - name: 📦 Install Glassbox UI Dependencies
+        run: npm ci --prefix glassbox
+
       - name: 📦 Install Python Dependencies
         run: pip install -r requirements.txt
 
