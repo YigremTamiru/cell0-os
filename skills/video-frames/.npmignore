@@ -1,3 +1,51 @@
-# Intentionally empty — all files in this directory are included in the npm package.
-# Without this file, npm falls back to .gitignore (which has Python/output patterns
-# that could accidentally exclude future tracked files).
+# Intentionally present — prevents npm from falling back to .gitignore for this directory.
+# Excludes runtime output and media files that should never be in an npm package.
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# Runtime output directories (not source files)
+output/
+data/
+frames/
+thumbnails/
+clips/
+summaries/
+logs/
+tmp/
+temp/
+
+# Media files (not source)
+*.mp4
+*.avi
+*.mkv
+*.mov
+*.webm
+*.mp3
+*.wav
+*.aac
+*.flac
+*.jpg
+*.jpeg
+*.png
+*.webp
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/

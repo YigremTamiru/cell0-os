@@ -1,34 +1,128 @@
-# NOTE: npm 11+ ignores this file when `files` field is present in package.json.
-# The `files` field in package.json is the authoritative whitelist for published content.
-# This file remains as documentation and for compatibility with older npm versions.
+# =============================================================================
+# .npmignore — authoritative file exclusion list for npm publish
+# =============================================================================
+# The `files` field has been removed from package.json so that npm 11+
+# reads this file unconditionally (npm 11 ignores .npmignore when `files`
+# is present, emitting the gitignore-fallback warning).
 #
-# dist/ and glassbox/dist/ are pre-built and committed — never exclude them.
-# See package.json `files` array for the full include list.
+# INCLUDE philosophy: ship only what is needed to run cell0-os after install.
+#   dist/          - compiled TypeScript (JS + .d.ts + sourcemaps)
+#   glassbox/dist/ - compiled UI bundle
+#   cell0/         - Python runtime package (engine, service, kernel ...)
+#                    with infra/devops subtrees explicitly excluded below
+#   cell0d/        - daemon launcher scripts
+#   skills/        - top-level JS skills
+#   scripts/       - post-install / helper scripts
+#   packaging/     - packaging helpers
+#   docker-compose.yml, requirements*.txt, README.md, LICENSE, AGENTS.md, SECURITY.md
+#
+# Everything else is excluded.
+# =============================================================================
 
-# Source TypeScript (compiled output is in dist/ — already in files whitelist)
+# ---------------------------------------------------------------------------
+# Source TypeScript -- compiled output lives in dist/; no need to ship .ts
+# ---------------------------------------------------------------------------
 src/
+*.ts
+!*.d.ts
+!*.d.ts.map
+
+# ---------------------------------------------------------------------------
+# glassbox -- only ship the built bundle, not source or deps
+# ---------------------------------------------------------------------------
 glassbox/src/
 glassbox/node_modules/
+glassbox/public/
 glassbox/.gitignore
 glassbox/tsconfig.json
 glassbox/vite.config.*
 glassbox/eslint.config.*
 glassbox/index.html
-tsconfig.json
+glassbox/package-lock.json
 
-# Exclude raw .ts source but keep compiled declaration files
-*.ts
-!*.d.ts
-!*.d.ts.map
+# ---------------------------------------------------------------------------
+# cell0/ -- devops / infra subtrees that do NOT belong in an npm package
+# ---------------------------------------------------------------------------
 
-# Dev / CI config
+# Monitoring stack (Grafana, Prometheus, Loki, Promtail, Alertmanager)
+# Excluded because: pure devops infra config, triggers node-tar TAR_ENTRY_ERROR
+# ENOENT warning on npm install -g (node-tar lstat()s the dir before creating it)
+cell0/monitoring/
+
+# Kubernetes manifests
+cell0/k8s/
+
+# Docker configs (individual service docker-compose files inside cell0/)
+cell0/docker/
+
+# Rust kernel build artifacts (can be hundreds of MB; excluded by .gitignore too)
+cell0/kernel/target/
+
+# Test suite
+cell0/tests/
+
+# Benchmarks
+cell0/benchmarks/
+
+# Internal docs
+cell0/docs/
+
+# Continuous improvement logs
+cell0/continuous_improvement/
+
+# Agent message logs
+cell0/.agent-messages/
+cell0/system/.agent-messages/
+
+# Dev-only scripts inside cell0/
+cell0/setup.sh
+cell0/setup_voice.sh
+cell0/start.sh
+cell0/stop.sh
+
+# Dev requirements (production requirements*.txt shipped at repo root)
+cell0/requirements-dev.txt
+
+# Runtime state file -- not static content
+cell0/daemon-status.json
+
+# ---------------------------------------------------------------------------
+# Top-level dev / CI config
+# ---------------------------------------------------------------------------
 .github/
 .vscode/
+.idea/
 .eslintrc*
 eslint.config.*
 vitest.config.*
+tsconfig.json
 
+# ---------------------------------------------------------------------------
+# Test artefacts
+# ---------------------------------------------------------------------------
+test/
+tests/
+__tests__/
+*.test.ts
+*.spec.ts
+*.test.js
+*.spec.js
+coverage/
+
+# ---------------------------------------------------------------------------
+# Build intermediates
+# ---------------------------------------------------------------------------
+node_modules/
+.cache/
+
+# ---------------------------------------------------------------------------
 # Misc
+# ---------------------------------------------------------------------------
 *.log
 .DS_Store
-node_modules/
+.env
+.env.*
+!.env.*.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
