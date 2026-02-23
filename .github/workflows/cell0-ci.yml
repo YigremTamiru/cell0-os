@@ -58,7 +58,7 @@ jobs:
       # BUILD & COMPILE
       # ----------------------------------------------------------------------
       - name: 🛠️ Compile TypeScript Source
-        run: npm run build
+        run: npm run build:all
         
       - name: 🟡 Initialize Civilization Environment (~/.cell0)
         run: node -e "import('./dist/init/bootstrap.js').then(m => m.bootstrapSystem())"

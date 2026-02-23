@@ -910,7 +910,7 @@ class Cell0CTL:
         console.print("[green]Starting Cell 0 daemon...[/green]")
         
         venv_python = self._get_venv_python()
-        daemon_path = self.cell0_home / "cell0d.py"
+        daemon_path = self.cell0_home / "cell0" / "cell0d.py"
         
         if not daemon_path.exists():
             console.print(f"[red]Daemon not found at {daemon_path}[/red]")
@@ -1021,7 +1021,7 @@ class Cell0CTL:
         checks.append(("Virtual Environment", str(venv_python), venv_ok))
         
         # Check daemon file
-        daemon_exists = (self.cell0_home / "cell0d.py").exists()
+        daemon_exists = (self.cell0_home / "cell0" / "cell0d.py").exists()
         checks.append(("Daemon File", "cell0d.py", daemon_exists))
         all_passed = all_passed and daemon_exists
         
