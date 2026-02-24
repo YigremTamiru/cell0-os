@@ -89,28 +89,46 @@ export class DaemonManager {
     }
 
     private async installLaunchd(): Promise<boolean> {
-        const plistPath = path.join(os.homedir(), "Library", "LaunchAgents", "com.cell0.gateway.plist");
+        const plistPath = path.join(os.homedir(), "Library", "LaunchAgents", "io.cell0.gateway.plist");
         const plistContent = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.cell0.gateway</string>
+    <string>io.cell0.gateway</string>
     <key>ProgramArguments</key>
     <array>
         <string>${process.execPath}</string>
         <string>${path.join(this.projectRoot, "dist", "cli", "index.js")}</string>
         <string>gateway</string>
+        <string>--port</string>
+        <string>18789</string>
     </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>HOME</key>
+        <string>${os.homedir()}</string>
+        <key>PATH</key>
+        <string>${process.env.PATH ?? "/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin"}</string>
+        <key>CELL0_SERVICE_MARKER</key>
+        <string>cell0</string>
+        <key>CELL0_SERVICE_KIND</key>
+        <string>gateway</string>
+    </dict>
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
     <true/>
+    <key>StandardOutPath</key>
+    <string>${path.join(os.homedir(), ".cell0", "logs", "gateway.log")}</string>
+    <key>StandardErrorPath</key>
+    <string>${path.join(os.homedir(), ".cell0", "logs", "gateway.err.log")}</string>
 </dict>
 </plist>`;
 
         try {
             await fs.mkdir(path.dirname(plistPath), { recursive: true });
+            await fs.mkdir(path.join(os.homedir(), ".cell0", "logs"), { recursive: true });
             await fs.writeFile(plistPath, plistContent, "utf-8");
             console.log(`[DaemonManager] Installed launchd agent at ${plistPath}`);
             return true;

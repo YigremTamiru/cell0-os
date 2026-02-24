@@ -14,6 +14,7 @@ import * as p from "@clack/prompts";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import net from "node:net";
+import os from "node:os";
 import path from "node:path";
 
 import { emitBannerArt } from "../cli/banner.js";
@@ -367,6 +368,12 @@ export async function runOnboardingWizard(opts: {
     // 10. Ensure workspace
     await ensureWorkspace(workspaceDir);
 
+    // 10.5. Optional channel setup
+    if (!opts.skipChannels) {
+        nextConfig = await runChannelSetup(nextConfig);
+        writeConfig(nextConfig);
+    }
+
     // 11. Daemon install
     const installDaemon =
         opts.installDaemon ??
@@ -389,12 +396,18 @@ export async function runOnboardingWizard(opts: {
     // 13. Show final info
     const port = resolveGatewayPort(nextConfig);
     const portalPort = DEFAULT_PORTAL_PORT;
+    const authCfg = nextConfig.gateway?.auth;
+    const tokenLine =
+        authCfg?.mode === "token" && authCfg.token
+            ? `Token:     ${authCfg.token}`
+            : "";
 
     p.note(
         [
-            `Gateway:  ws://127.0.0.1:${port}`,
-            `Portal:   http://127.0.0.1:${portalPort}`,
-            `Config:   ${CONFIG_PATH}`,
+            `Gateway:   ws://127.0.0.1:${port}`,
+            `Portal:    http://127.0.0.1:${portalPort}`,
+            tokenLine,
+            `Config:    ${CONFIG_PATH}`,
             `Workspace: ${workspaceDir}`,
             "",
             "Next steps:",
@@ -402,7 +415,9 @@ export async function runOnboardingWizard(opts: {
             `  ${theme.command("cell0 doctor")}      — Run diagnostics`,
             `  ${theme.command("cell0 configure")}   — Change settings`,
             `  ${theme.command("cell0 portal")}      — Open web dashboard`,
-        ].join("\n"),
+        ]
+            .filter(Boolean)
+            .join("\n"),
         "🧬 Cell 0 OS Ready"
     );
 
@@ -448,6 +463,54 @@ async function requireRiskAcknowledgement(
         p.cancel("Risk not accepted. Onboarding cancelled.");
         process.exit(0);
     }
+}
+
+// ─── Channel Setup ────────────────────────────────────────────────────────
+
+async function runChannelSetup(config: Cell0Config): Promise<Cell0Config> {
+    const channel = await p.select({
+        message: "Connect a messaging channel? (optional)",
+        options: [
+            { value: "skip", label: "Skip — configure later with `cell0 configure`" },
+            { value: "whatsapp", label: "WhatsApp" },
+            { value: "telegram", label: "Telegram" },
+        ],
+        initialValue: "skip",
+    });
+    if (p.isCancel(channel) || channel === "skip") return config;
+
+    if (channel === "whatsapp") {
+        const phone = await p.text({
+            message: "Your WhatsApp number (E.164, e.g. +1234567890)",
+            placeholder: "+1234567890",
+            validate: (v) => (!v?.trim() ? "Required" : undefined),
+        });
+        if (!p.isCancel(phone) && phone) {
+            config = {
+                ...config,
+                channels: {
+                    ...config.channels,
+                    whatsapp: { enabled: true, dmPolicy: "allowlist", allowFrom: [(phone as string).trim()] } as any,
+                },
+            };
+        }
+    } else if (channel === "telegram") {
+        const tok = await p.text({
+            message: "Telegram Bot Token (from @BotFather)",
+            placeholder: "123456789:ABCdef...",
+            validate: (v) => (!v?.trim() ? "Required" : undefined),
+        });
+        if (!p.isCancel(tok) && tok) {
+            config = {
+                ...config,
+                channels: {
+                    ...config.channels,
+                    telegram: { enabled: true, dmPolicy: "open", token: (tok as string).trim() } as any,
+                },
+            };
+        }
+    }
+    return config;
 }
 
 // ─── Workspace Setup ──────────────────────────────────────────────────────
@@ -552,12 +615,12 @@ async function installLaunchAgent(
     port: number,
     token: string
 ): Promise<void> {
-    const plistDir = path.join(
-        process.env.HOME ?? "~",
-        "Library",
-        "LaunchAgents"
-    );
-    const plistPath = path.join(plistDir, "com.cell0.gateway.plist");
+    const plistDir = path.join(os.homedir(), "Library", "LaunchAgents");
+    const plistPath = path.join(plistDir, "io.cell0.gateway.plist");
+    const logsDir = path.join(os.homedir(), ".cell0", "logs");
+
+    // Ensure logs directory exists
+    fs.mkdirSync(logsDir, { recursive: true });
 
     // Find cell0 binary
     const binPath = process.argv[1] ?? "cell0";
@@ -567,7 +630,9 @@ async function installLaunchAgent(
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.cell0.gateway</string>
+    <string>io.cell0.gateway</string>
+    <key>Comment</key>
+    <string>Cell 0 OS Gateway (v${VERSION})</string>
     <key>ProgramArguments</key>
     <array>
         <string>${process.execPath}</string>
@@ -578,29 +643,63 @@ async function installLaunchAgent(
     </array>
     <key>EnvironmentVariables</key>
     <dict>
+        <key>HOME</key>
+        <string>${os.homedir()}</string>
+        <key>PATH</key>
+        <string>${process.env.PATH ?? "/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin"}</string>
+        <key>CELL0_GATEWAY_PORT</key>
+        <string>${port}</string>
         <key>CELL0_GATEWAY_TOKEN</key>
         <string>${token}</string>
-        <key>PATH</key>
-        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
+        <key>CELL0_LAUNCHD_LABEL</key>
+        <string>io.cell0.gateway</string>
+        <key>CELL0_SERVICE_MARKER</key>
+        <string>cell0</string>
+        <key>CELL0_SERVICE_KIND</key>
+        <string>gateway</string>
+        <key>CELL0_SERVICE_VERSION</key>
+        <string>${VERSION}</string>
     </dict>
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>${path.join(process.env.HOME ?? "~", ".cell0", "gateway.log")}</string>
+    <string>${path.join(os.homedir(), ".cell0", "logs", "gateway.log")}</string>
     <key>StandardErrorPath</key>
-    <string>${path.join(process.env.HOME ?? "~", ".cell0", "gateway.err")}</string>
+    <string>${path.join(os.homedir(), ".cell0", "logs", "gateway.err.log")}</string>
 </dict>
 </plist>`;
 
     if (!fs.existsSync(plistDir)) {
         fs.mkdirSync(plistDir, { recursive: true });
     }
+
+    // Unload + delete stale plists before installing new one
+    const { execSync } = await import("node:child_process");
+    const stalePlists = [
+        "com.cell0.gateway.plist",
+        "com.cell0.daemon.plist",
+        "io.cell0.daemon.plist",
+        "com.kulluai.cell0.plist",
+    ];
+    for (const stale of stalePlists) {
+        const stalePath = path.join(plistDir, stale);
+        if (fs.existsSync(stalePath)) {
+            try {
+                execSync(`launchctl unload "${stalePath}" 2>/dev/null`, {
+                    stdio: "ignore",
+                });
+            } catch {
+                // Ignore unload errors
+            }
+            fs.unlinkSync(stalePath);
+        }
+    }
+
     fs.writeFileSync(plistPath, plist, "utf-8");
 
     // Load the service
-    const { execSync } = await import("node:child_process");
     try {
         execSync(`launchctl unload "${plistPath}" 2>/dev/null`, {
             stdio: "ignore",
