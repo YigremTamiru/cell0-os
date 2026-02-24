@@ -43,5 +43,9 @@ jobs:
             --exclude http://localhost:8080/.*
             --exclude https?://cell0.os/.*
             --exclude https?://github.com/cell0/os.*
+            --exclude https://helm.sh/.*
+            --exclude https://chat.googleapis.com/.*
+            --exclude https://hooks.slack.com/.*
+            --exclude https://discord.com/api/.*
             '**/*.md'
           fail: true
