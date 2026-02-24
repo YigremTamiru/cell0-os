@@ -80,7 +80,7 @@ export class SlackAdapter extends EventEmitter implements ChannelAdapter {
                 "Content-Type": "application/x-www-form-urlencoded",
             },
         });
-        const data = await resp.json();
+        const data = await resp.json() as any;
         if (!data.ok) {
             this.emit("error", new Error(`[Slack] Cannot open connection: ${data.error}`));
             return;

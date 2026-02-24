@@ -13,6 +13,7 @@
  * Architecture:
  *   Client ←→ [WS Gateway :18789] ←→ [Python Bridge] ←→ [cell0d :18800]
  */
+import { type GatewayAuthConfig } from "../config/config.js";
 export interface GatewayConfig {
     port: number;
     host: string;
@@ -21,6 +22,7 @@ export interface GatewayConfig {
     autoStartPython: boolean;
     logLevel: string;
     verbose: boolean;
+    auth?: GatewayAuthConfig;
 }
 export declare class Gateway {
     private config;

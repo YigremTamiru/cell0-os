@@ -30,6 +30,10 @@ export declare class SessionManager {
     private sessions;
     private mainSessionId;
     constructor();
+    private get sessionsDir();
+    private ensureSessionsDir;
+    private writeSnapshot;
+    private loadSnapshots;
     createSession(type?: "main" | "group" | "domain", options?: {
         channelId?: string;
         domain?: string;
