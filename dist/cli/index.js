@@ -88,7 +88,8 @@ program
 program
     .command("doctor")
     .description("Run diagnostic checks")
-    .action(async () => {
+    .option("--repair", "Auto-fix detected issues")
+    .action(async (opts) => {
     console.log("\n🩺 Cell 0 Doctor\n");
     let allGood = true;
     // Check Node.js version
@@ -240,12 +241,17 @@ program
     }
     // Check daemon service
     if (process.platform === "darwin") {
-        const plistPath = join(os.homedir(), "Library", "LaunchAgents", "com.cell0.gateway.plist");
+        const plistPath = join(os.homedir(), "Library", "LaunchAgents", "io.cell0.gateway.plist");
+        const legacyPlistPath = join(os.homedir(), "Library", "LaunchAgents", "com.cell0.gateway.plist");
         if (existsSync(plistPath)) {
-            console.log(formatCheck(true, "Gateway service (launchd)"));
+            console.log(formatCheck(true, "Gateway service (launchd io.cell0.gateway)"));
+        }
+        else if (existsSync(legacyPlistPath)) {
+            console.log(`  ⚠️  Gateway service: legacy plist found (run cell0 doctor --repair to upgrade)`);
+            allGood = false;
         }
         else {
-            console.log(`  ⚪ Gateway service: not installed`);
+            console.log(`  ⚪ Gateway service: not installed (run cell0 onboard --install-daemon)`);
         }
     }
     // Summary
@@ -255,6 +261,81 @@ program
     }
     else {
         console.log("  ⚠️  Some checks failed. Run cell0 onboard to fix.\n");
+    }
+    // Repair mode
+    if (opts.repair) {
+        console.log("\n🔧 Running auto-repair…\n");
+        const repairedItems = [];
+        // 1. Ensure all required directories exist
+        const { CELL0_PATHS, CELL0_HOME } = await import("../config/config.js");
+        const requiredDirs = [
+            CELL0_HOME,
+            CELL0_PATHS.identity.root,
+            CELL0_PATHS.identity.keys,
+            CELL0_PATHS.identity.certs,
+            CELL0_PATHS.workspace.root,
+            CELL0_PATHS.workspace.agents,
+            CELL0_PATHS.workspace.skills,
+            CELL0_PATHS.workspace.data,
+            CELL0_PATHS.runtime.root,
+            CELL0_PATHS.runtime.sessions,
+            CELL0_PATHS.runtime.logs,
+            CELL0_PATHS.runtime.pids,
+            CELL0_PATHS.runtime.memory,
+            join(CELL0_HOME, "logs"),
+            CELL0_PATHS.library.root,
+            CELL0_PATHS.library.categories,
+            CELL0_PATHS.credentials,
+            CELL0_PATHS.kernel.root,
+            CELL0_PATHS.kernel.policies,
+            CELL0_PATHS.snapshots,
+        ];
+        for (const dir of requiredDirs) {
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+                repairedItems.push(`Created directory: ${dir}`);
+            }
+        }
+        // 2. Remove stale plists on macOS
+        if (process.platform === "darwin") {
+            const plistDir = join(os.homedir(), "Library", "LaunchAgents");
+            const stalePlists = [
+                "com.cell0.gateway.plist",
+                "com.cell0.daemon.plist",
+                "io.cell0.daemon.plist",
+                "com.kulluai.cell0.plist",
+            ];
+            const { execSync } = await import("node:child_process");
+            for (const stale of stalePlists) {
+                const stalePath = join(plistDir, stale);
+                if (fs.existsSync(stalePath)) {
+                    try {
+                        execSync(`launchctl unload "${stalePath}" 2>/dev/null`, { stdio: "ignore" });
+                    }
+                    catch { }
+                    fs.unlinkSync(stalePath);
+                    repairedItems.push(`Removed stale plist: ${stale}`);
+                }
+            }
+        }
+        // 3. Re-bootstrap system (creates missing identity/config files)
+        try {
+            const { bootstrapSystem } = await import("../init/bootstrap.js");
+            await bootstrapSystem();
+            repairedItems.push("Re-ran bootstrap (identity/soul/agent files ensured)");
+        }
+        catch (e) {
+            console.log(`  ⚠️  Bootstrap re-run failed: ${e instanceof Error ? e.message : String(e)}`);
+        }
+        if (repairedItems.length === 0) {
+            console.log("  ✅ Nothing needed repair.");
+        }
+        else {
+            for (const item of repairedItems) {
+                console.log(`  ✅ ${item}`);
+            }
+            console.log(`\n  ${repairedItems.length} item(s) repaired. Run cell0 doctor to verify.`);
+        }
     }
 });
 // ─── cell0 message ──────────────────────────────────────────────────────────
@@ -451,6 +532,190 @@ program
         process.exit(1);
     }
 });
+// ─── cell0 completions ──────────────────────────────────────────────────────
+program
+    .command("completions")
+    .description("Manage shell completions")
+    .argument("[action]", "install | uninstall | show", "install")
+    .action(async (action) => {
+    const { installCompletions, uninstallCompletions, generateZshCompletion } = await import("./completions.js");
+    switch (action) {
+        case "install":
+            await installCompletions();
+            break;
+        case "uninstall":
+            await uninstallCompletions();
+            break;
+        case "show":
+            console.log(generateZshCompletion());
+            break;
+        default:
+            console.error(`Unknown action: ${action}. Use install, uninstall, or show.`);
+            process.exit(1);
+    }
+});
+// ─── cell0 daemon ───────────────────────────────────────────────────────────
+program
+    .command("daemon")
+    .description("Manage the Cell 0 gateway service")
+    .argument("[action]", "start | stop | restart | status | install | uninstall", "status")
+    .action(async (action) => {
+    const { getServiceStatus, startService, stopService, restartService, uninstallService } = await import("../infra/daemon-ctl.js");
+    switch (action) {
+        case "status": {
+            const s = getServiceStatus();
+            console.log("\n🔧 Cell 0 Daemon Status\n");
+            console.log(`  Platform:  ${s.platform}`);
+            console.log(`  Label:     ${s.label ?? "—"}`);
+            console.log(`  Installed: ${s.installed ? "✅ yes" : "❌ no"}`);
+            console.log(`  Running:   ${s.running ? `✅ yes${s.pid ? ` (PID ${s.pid})` : ""}` : "❌ no"}`);
+            if (s.detail)
+                console.log(`\n  Detail:\n${s.detail.split("\n").map((l) => "    " + l).join("\n")}`);
+            if (!s.installed)
+                console.log("\n  → Run: cell0 daemon install  (or: cell0 onboard)");
+            if (s.installed && !s.running)
+                console.log("\n  → Run: cell0 daemon start");
+            console.log();
+            break;
+        }
+        case "start": {
+            console.log("Starting Cell 0 gateway service…");
+            try {
+                startService();
+                console.log("✅ Service started.");
+            }
+            catch (err) {
+                console.error(`❌ ${err instanceof Error ? err.message : String(err)}`);
+                process.exit(1);
+            }
+            break;
+        }
+        case "stop": {
+            console.log("Stopping Cell 0 gateway service…");
+            try {
+                stopService();
+                console.log("✅ Service stopped.");
+            }
+            catch (err) {
+                console.error(`❌ ${err instanceof Error ? err.message : String(err)}`);
+                process.exit(1);
+            }
+            break;
+        }
+        case "restart": {
+            console.log("Restarting Cell 0 gateway service…");
+            try {
+                restartService();
+                console.log("✅ Service restarted.");
+            }
+            catch (err) {
+                console.error(`❌ ${err instanceof Error ? err.message : String(err)}`);
+                process.exit(1);
+            }
+            break;
+        }
+        case "install": {
+            console.log("Installing Cell 0 gateway service…");
+            const { DaemonManager } = await import("../infra/daemon.js");
+            const { CELL0_PROJECT_ROOT } = await import("../config/config.js");
+            const mgr = new DaemonManager(CELL0_PROJECT_ROOT);
+            const ok = await mgr.installService();
+            if (ok) {
+                console.log("✅ Service installed. Starting…");
+                try {
+                    startService();
+                    console.log("✅ Service started.");
+                }
+                catch { /* ignore */ }
+            }
+            else {
+                console.error("❌ Service installation failed. Run: cell0 onboard --install-daemon");
+                process.exit(1);
+            }
+            break;
+        }
+        case "uninstall": {
+            console.log("Uninstalling Cell 0 gateway service…");
+            try {
+                uninstallService();
+                console.log("✅ Service uninstalled.");
+            }
+            catch (err) {
+                console.error(`❌ ${err instanceof Error ? err.message : String(err)}`);
+                process.exit(1);
+            }
+            break;
+        }
+        default:
+            console.error(`Unknown action: ${action}. Use start, stop, restart, status, install, or uninstall.`);
+            process.exit(1);
+    }
+});
+// ─── cell0 logs ─────────────────────────────────────────────────────────────
+program
+    .command("logs")
+    .description("Tail Cell 0 gateway logs")
+    .option("-f, --follow", "Follow log output (like tail -f)")
+    .option("-n, --lines <n>", "Number of lines to show", "50")
+    .option("--error", "Show error log instead of stdout log")
+    .action(async (opts) => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const os = await import("node:os");
+    const logsDir = path.join(os.homedir(), ".cell0", "logs");
+    const logFile = opts.error
+        ? path.join(logsDir, "gateway.err.log")
+        : path.join(logsDir, "gateway.log");
+    if (!fs.existsSync(logFile)) {
+        const legacy = opts.error
+            ? path.join(os.homedir(), ".cell0", "gateway.err")
+            : path.join(os.homedir(), ".cell0", "gateway.log");
+        if (!fs.existsSync(legacy)) {
+            console.log(`No log file found at:\n  ${logFile}\n\nStart the gateway first: cell0 gateway`);
+            process.exit(0);
+        }
+        console.log(`[Using legacy log path: ${legacy}]`);
+    }
+    const target = fs.existsSync(logFile)
+        ? logFile
+        : opts.error
+            ? path.join(os.homedir(), ".cell0", "gateway.err")
+            : path.join(os.homedir(), ".cell0", "gateway.log");
+    const lines = parseInt(opts.lines, 10) || 50;
+    console.log(`\n📋 ${opts.error ? "Error" : "Gateway"} Log${opts.follow ? " (following…)" : ""}`);
+    console.log(`   ${target}\n`);
+    if (!opts.follow) {
+        const content = fs.readFileSync(target, "utf-8");
+        const allLines = content.split("\n").filter(Boolean);
+        console.log(allLines.slice(-lines).join("\n"));
+        return;
+    }
+    // Follow mode
+    let position = fs.statSync(target).size;
+    const printNew = () => {
+        const stat = fs.statSync(target);
+        if (stat.size < position)
+            position = 0;
+        if (stat.size === position)
+            return;
+        const stream = fs.createReadStream(target, {
+            start: position,
+            end: stat.size,
+            encoding: "utf-8",
+        });
+        stream.on("data", (chunk) => process.stdout.write(chunk));
+        stream.on("end", () => { position = stat.size; });
+    };
+    const content = fs.readFileSync(target, "utf-8");
+    const allLines = content.split("\n").filter(Boolean);
+    console.log(allLines.slice(-lines).join("\n"));
+    console.log("\n--- following (Ctrl+C to stop) ---\n");
+    fs.watch(target, () => { printNew(); });
+    await new Promise((resolve) => {
+        process.on("SIGINT", () => { console.log("\nStopped."); resolve(); });
+        process.on("SIGTERM", () => resolve());
+    });
+});
 // ─── cell0 library ──────────────────────────────────────────────────────────
 program
     .command("library")
@@ -492,6 +757,93 @@ program
             console.log(`     └─ 🤖 ${spec.name}${binding}`);
         }
         console.log('');
+    }
+});
+// ─── cell0 config ───────────────────────────────────────────────────────────
+program
+    .command("config")
+    .description("Manage Cell 0 configuration")
+    .argument("[action]", "show | backup | history | restore", "show")
+    .argument("[target]", "Backup file path for restore")
+    .action(async (action, target) => {
+    const { readConfigFileSnapshot, listConfigBackups, restoreConfigBackup, CONFIG_PATH, } = await import("../config/config.js");
+    switch (action) {
+        case "show": {
+            const snap = readConfigFileSnapshot();
+            if (!snap.exists) {
+                console.log("No config found. Run: cell0 onboard");
+                break;
+            }
+            if (!snap.valid) {
+                console.log("⚠️  Config exists but is invalid. Run: cell0 doctor --repair");
+                break;
+            }
+            // Pretty-print config (redact sensitive values)
+            const cfg = JSON.parse(JSON.stringify(snap.config));
+            if (cfg.agent?.apiKey)
+                cfg.agent.apiKey = "***";
+            if (cfg.gateway?.auth?.token)
+                cfg.gateway.auth.token = "***";
+            if (cfg.gateway?.auth?.password)
+                cfg.gateway.auth.password = "***";
+            console.log("\n📋 Cell 0 Configuration\n");
+            console.log(`   Path: ${CONFIG_PATH}\n`);
+            console.log(JSON.stringify(cfg, null, 2));
+            break;
+        }
+        case "backup": {
+            const snap2 = readConfigFileSnapshot();
+            if (!snap2.valid) {
+                console.error("Cannot backup: config is invalid or missing.");
+                process.exit(1);
+            }
+            const { writeConfig } = await import("../config/config.js");
+            writeConfig(snap2.config);
+            const backups = listConfigBackups();
+            if (backups.length > 0) {
+                console.log(`✅ Backup created: ${backups[0].file}`);
+            }
+            else {
+                console.log("✅ Config written (backup created if previous config existed).");
+            }
+            break;
+        }
+        case "history": {
+            const backups = listConfigBackups();
+            if (backups.length === 0) {
+                console.log("No config backups found.");
+                break;
+            }
+            console.log("\n📂 Config Backups\n");
+            for (const b of backups) {
+                console.log(`  ${b.file}  (${b.mtime.toLocaleString()}, ${Math.round(b.size / 1024 * 10) / 10} KB)`);
+            }
+            console.log(`\n  Restore with: cell0 config restore <filename>`);
+            break;
+        }
+        case "restore": {
+            if (!target) {
+                const backups = listConfigBackups();
+                if (backups.length === 0) {
+                    console.error("No backups found.");
+                    process.exit(1);
+                }
+                target = backups[0].path;
+                console.log(`Restoring latest backup: ${backups[0].file}`);
+            }
+            try {
+                restoreConfigBackup(target);
+                console.log("✅ Config restored successfully.");
+            }
+            catch (err) {
+                console.error(`Failed: ${err instanceof Error ? err.message : String(err)}`);
+                process.exit(1);
+            }
+            break;
+        }
+        default:
+            console.error(`Unknown action: ${action}. Use show, backup, history, or restore.`);
+            process.exit(1);
     }
 });
 // ─── Parse ──────────────────────────────────────────────────────────────────

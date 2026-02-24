@@ -148,6 +148,13 @@ export interface ConfigSnapshot {
     raw?: string;
 }
 export declare function ensureConfigDir(): void;
+export declare function listConfigBackups(): Array<{
+    file: string;
+    path: string;
+    mtime: Date;
+    size: number;
+}>;
+export declare function restoreConfigBackup(backupPath: string): void;
 export declare function readConfigFileSnapshot(): ConfigSnapshot;
 export declare function writeConfig(config: Cell0Config): void;
 export declare function resolveGatewayPort(config?: Cell0Config | null): number;
