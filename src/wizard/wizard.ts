@@ -368,6 +368,14 @@ export async function runOnboardingWizard(opts: {
     // 10. Ensure workspace
     await ensureWorkspace(workspaceDir);
 
+    // 10.2. Install shell completions
+    try {
+        const { installCompletions } = await import("../cli/completions.js");
+        await installCompletions();
+    } catch {
+        // Non-fatal — user can run `cell0 completions install` manually
+    }
+
     // 10.5. Optional channel setup
     if (!opts.skipChannels) {
         nextConfig = await runChannelSetup(nextConfig);

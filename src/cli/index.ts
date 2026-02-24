@@ -625,6 +625,30 @@ program
         }
     });
 
+// ─── cell0 completions ──────────────────────────────────────────────────────
+
+program
+    .command("completions")
+    .description("Manage shell completions")
+    .argument("[action]", "install | uninstall | show", "install")
+    .action(async (action: string) => {
+        const { installCompletions, uninstallCompletions, generateZshCompletion } = await import("./completions.js");
+        switch (action) {
+            case "install":
+                await installCompletions();
+                break;
+            case "uninstall":
+                await uninstallCompletions();
+                break;
+            case "show":
+                console.log(generateZshCompletion());
+                break;
+            default:
+                console.error(`Unknown action: ${action}. Use install, uninstall, or show.`);
+                process.exit(1);
+        }
+    });
+
 // ─── cell0 library ──────────────────────────────────────────────────────────
 
 program
