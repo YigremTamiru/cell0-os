@@ -1,22 +1,41 @@
-import { EventEmitter } from 'node:events';
-import { ChannelAdapter, InboundMessage, OutboundMessage, ChannelDomain } from './adapter.js';
+/**
+ * Cell 0 OS — iMessage Adapter
+ *
+ * Delegates to BlueBubblesAdapter — the only viable cross-platform iMessage bridge.
+ * BlueBubbles runs on a Mac and proxies iMessage to Cell 0 OS over LAN.
+ *
+ * Setup: cell0 configure channels bluebubbles (configures both bluebubbles and imessage)
+ */
+
+import { EventEmitter } from "node:events";
+import {
+    type ChannelAdapter,
+    type InboundMessage,
+    type OutboundMessage,
+    type ChannelDomain,
+} from "./adapter.js";
+import { BlueBubblesAdapter } from "./bluebubbles.js";
 
 export class IMessageAdapter extends EventEmitter implements ChannelAdapter {
-    public readonly id = 'imessage';
-    public readonly defaultDomain: ChannelDomain = 'social';
-    private connected = false;
+    public readonly id = "imessage";
+    public readonly defaultDomain: ChannelDomain = "social";
+    private proxy: BlueBubblesAdapter;
 
-    async connect(): Promise<void> {
-        this.connected = true;
-        this.emit('connected');
+    constructor() {
+        super();
+        this.proxy = new BlueBubblesAdapter();
+        this.proxy.on("message", (msg: InboundMessage) =>
+            this.emit("message", { ...msg, channelId: "imessage" })
+        );
+        this.proxy.on("connected", () => this.emit("connected"));
+        this.proxy.on("disconnected", () => this.emit("disconnected"));
+        this.proxy.on("error", (err: Error) => this.emit("error", err));
     }
 
-    async disconnect(): Promise<void> {
-        this.connected = false;
-        this.emit('disconnected');
-    }
-
+    async connect(): Promise<void> { return this.proxy.connect(); }
+    async disconnect(): Promise<void> { return this.proxy.disconnect(); }
     async send(message: OutboundMessage): Promise<void> {
-        if (!this.connected) throw new Error('iMessage adapter not connected');
+        return this.proxy.send({ ...message, channelId: "bluebubbles" });
     }
+    isConnected(): boolean { return this.proxy.connected; }
 }

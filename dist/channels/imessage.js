@@ -1,19 +1,30 @@
-import { EventEmitter } from 'node:events';
+/**
+ * Cell 0 OS — iMessage Adapter
+ *
+ * Delegates to BlueBubblesAdapter — the only viable cross-platform iMessage bridge.
+ * BlueBubbles runs on a Mac and proxies iMessage to Cell 0 OS over LAN.
+ *
+ * Setup: cell0 configure channels bluebubbles (configures both bluebubbles and imessage)
+ */
+import { EventEmitter } from "node:events";
+import { BlueBubblesAdapter } from "./bluebubbles.js";
 export class IMessageAdapter extends EventEmitter {
-    id = 'imessage';
-    defaultDomain = 'social';
-    connected = false;
-    async connect() {
-        this.connected = true;
-        this.emit('connected');
+    id = "imessage";
+    defaultDomain = "social";
+    proxy;
+    constructor() {
+        super();
+        this.proxy = new BlueBubblesAdapter();
+        this.proxy.on("message", (msg) => this.emit("message", { ...msg, channelId: "imessage" }));
+        this.proxy.on("connected", () => this.emit("connected"));
+        this.proxy.on("disconnected", () => this.emit("disconnected"));
+        this.proxy.on("error", (err) => this.emit("error", err));
     }
-    async disconnect() {
-        this.connected = false;
-        this.emit('disconnected');
-    }
+    async connect() { return this.proxy.connect(); }
+    async disconnect() { return this.proxy.disconnect(); }
     async send(message) {
-        if (!this.connected)
-            throw new Error('iMessage adapter not connected');
+        return this.proxy.send({ ...message, channelId: "bluebubbles" });
     }
+    isConnected() { return this.proxy.connected; }
 }
 //# sourceMappingURL=imessage.js.map
