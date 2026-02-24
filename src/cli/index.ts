@@ -117,7 +117,8 @@ program
 program
     .command("doctor")
     .description("Run diagnostic checks")
-    .action(async () => {
+    .option("--repair", "Auto-fix detected issues")
+    .action(async (opts) => {
         console.log("\n🩺 Cell 0 Doctor\n");
         let allGood = true;
 
@@ -335,6 +336,81 @@ program
             console.log(
                 "  ⚠️  Some checks failed. Run cell0 onboard to fix.\n"
             );
+        }
+
+        // Repair mode
+        if (opts.repair) {
+            console.log("\n🔧 Running auto-repair…\n");
+            const repairedItems: string[] = [];
+
+            // 1. Ensure all required directories exist
+            const { CELL0_PATHS, CELL0_HOME } = await import("../config/config.js");
+            const requiredDirs = [
+                CELL0_HOME,
+                CELL0_PATHS.identity.root,
+                CELL0_PATHS.identity.keys,
+                CELL0_PATHS.identity.certs,
+                CELL0_PATHS.workspace.root,
+                CELL0_PATHS.workspace.agents,
+                CELL0_PATHS.workspace.skills,
+                CELL0_PATHS.workspace.data,
+                CELL0_PATHS.runtime.root,
+                CELL0_PATHS.runtime.sessions,
+                CELL0_PATHS.runtime.logs,
+                CELL0_PATHS.runtime.pids,
+                CELL0_PATHS.runtime.memory,
+                join(CELL0_HOME, "logs"),
+                CELL0_PATHS.library.root,
+                CELL0_PATHS.library.categories,
+                CELL0_PATHS.credentials,
+                CELL0_PATHS.kernel.root,
+                CELL0_PATHS.kernel.policies,
+                CELL0_PATHS.snapshots,
+            ];
+            for (const dir of requiredDirs) {
+                if (!fs.existsSync(dir)) {
+                    fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+                    repairedItems.push(`Created directory: ${dir}`);
+                }
+            }
+
+            // 2. Remove stale plists on macOS
+            if (process.platform === "darwin") {
+                const plistDir = join(os.homedir(), "Library", "LaunchAgents");
+                const stalePlists = [
+                    "com.cell0.gateway.plist",
+                    "com.cell0.daemon.plist",
+                    "io.cell0.daemon.plist",
+                    "com.kulluai.cell0.plist",
+                ];
+                const { execSync } = await import("node:child_process");
+                for (const stale of stalePlists) {
+                    const stalePath = join(plistDir, stale);
+                    if (fs.existsSync(stalePath)) {
+                        try { execSync(`launchctl unload "${stalePath}" 2>/dev/null`, { stdio: "ignore" }); } catch {}
+                        fs.unlinkSync(stalePath);
+                        repairedItems.push(`Removed stale plist: ${stale}`);
+                    }
+                }
+            }
+
+            // 3. Re-bootstrap system (creates missing identity/config files)
+            try {
+                const { bootstrapSystem } = await import("../init/bootstrap.js");
+                await bootstrapSystem();
+                repairedItems.push("Re-ran bootstrap (identity/soul/agent files ensured)");
+            } catch (e) {
+                console.log(`  ⚠️  Bootstrap re-run failed: ${e instanceof Error ? e.message : String(e)}`);
+            }
+
+            if (repairedItems.length === 0) {
+                console.log("  ✅ Nothing needed repair.");
+            } else {
+                for (const item of repairedItems) {
+                    console.log(`  ✅ ${item}`);
+                }
+                console.log(`\n  ${repairedItems.length} item(s) repaired. Run cell0 doctor to verify.`);
+            }
         }
     });
 
@@ -736,6 +812,82 @@ program
                 console.error(`Unknown action: ${action}. Use start, stop, restart, status, install, or uninstall.`);
                 process.exit(1);
         }
+    });
+
+// ─── cell0 logs ─────────────────────────────────────────────────────────────
+
+program
+    .command("logs")
+    .description("Tail Cell 0 gateway logs")
+    .option("-f, --follow", "Follow log output (like tail -f)")
+    .option("-n, --lines <n>", "Number of lines to show", "50")
+    .option("--error", "Show error log instead of stdout log")
+    .action(async (opts) => {
+        const fs = await import("node:fs");
+        const path = await import("node:path");
+        const os = await import("node:os");
+
+        const logsDir = path.join(os.homedir(), ".cell0", "logs");
+        const logFile = opts.error
+            ? path.join(logsDir, "gateway.err.log")
+            : path.join(logsDir, "gateway.log");
+
+        if (!fs.existsSync(logFile)) {
+            const legacy = opts.error
+                ? path.join(os.homedir(), ".cell0", "gateway.err")
+                : path.join(os.homedir(), ".cell0", "gateway.log");
+            if (!fs.existsSync(legacy)) {
+                console.log(`No log file found at:\n  ${logFile}\n\nStart the gateway first: cell0 gateway`);
+                process.exit(0);
+            }
+            console.log(`[Using legacy log path: ${legacy}]`);
+        }
+
+        const target = fs.existsSync(logFile)
+            ? logFile
+            : opts.error
+                ? path.join(os.homedir(), ".cell0", "gateway.err")
+                : path.join(os.homedir(), ".cell0", "gateway.log");
+
+        const lines = parseInt(opts.lines, 10) || 50;
+
+        console.log(`\n📋 ${opts.error ? "Error" : "Gateway"} Log${opts.follow ? " (following…)" : ""}`);
+        console.log(`   ${target}\n`);
+
+        if (!opts.follow) {
+            const content = fs.readFileSync(target, "utf-8");
+            const allLines = content.split("\n").filter(Boolean);
+            console.log(allLines.slice(-lines).join("\n"));
+            return;
+        }
+
+        // Follow mode
+        let position = fs.statSync(target).size;
+
+        const printNew = () => {
+            const stat = fs.statSync(target);
+            if (stat.size < position) position = 0;
+            if (stat.size === position) return;
+            const stream = fs.createReadStream(target, {
+                start: position,
+                end: stat.size,
+                encoding: "utf-8",
+            });
+            stream.on("data", (chunk) => process.stdout.write(chunk as string));
+            stream.on("end", () => { position = stat.size; });
+        };
+
+        const content = fs.readFileSync(target, "utf-8");
+        const allLines = content.split("\n").filter(Boolean);
+        console.log(allLines.slice(-lines).join("\n"));
+
+        console.log("\n--- following (Ctrl+C to stop) ---\n");
+        fs.watch(target, () => { printNew(); });
+
+        await new Promise<void>((resolve) => {
+            process.on("SIGINT", () => { console.log("\nStopped."); resolve(); });
+            process.on("SIGTERM", () => resolve());
+        });
     });
 
 // ─── cell0 library ──────────────────────────────────────────────────────────
