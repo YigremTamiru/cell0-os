@@ -44,6 +44,7 @@ export declare class Gateway {
     private handleRequest;
     private routeMethod;
     private proxyToPython;
+    private findAvailablePort;
     private sendToClient;
     private broadcastEvent;
     stop(): Promise<void>;

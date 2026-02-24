@@ -22,7 +22,7 @@ export async function startPortal(config) {
         gatewayPort: config?.gatewayPort ?? resolveGatewayPort(cell0Config),
         gatewayToken: config?.gatewayToken ?? cell0Config.gateway?.auth?.token,
     };
-    const server = http.createServer((req, res) => {
+    const server = http.createServer(async (req, res) => {
         const url = new URL(req.url ?? "/", `http://${req.headers.host}`);
         // CORS
         res.setHeader("Access-Control-Allow-Origin", "*");
@@ -31,6 +31,20 @@ export async function startPortal(config) {
         if (req.method === "OPTIONS") {
             res.writeHead(204);
             res.end();
+            return;
+        }
+        // Live status proxy — fetches real data from gateway health endpoint
+        if (url.pathname === "/api/live-status") {
+            try {
+                const gwResp = await fetch(`http://127.0.0.1:${portalConfig.gatewayPort}/api/health`);
+                const gwData = await gwResp.json();
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(gwData));
+            }
+            catch {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ status: "gateway-offline", components: {} }));
+            }
             return;
         }
         // API routes

@@ -234,11 +234,13 @@ export class Gateway {
             }
         }
 
-        // Start listening
-        await this.fastify.listen({
-            port: this.config.port,
-            host: this.config.host,
-        });
+        // Auto-select port if configured port is in use
+        const boundPort = await this.findAvailablePort(this.config.port, this.config.host);
+        if (boundPort !== this.config.port) {
+            console.log(`[Gateway] Port ${this.config.port} in use — using ${boundPort}`);
+            this.config.port = boundPort;
+        }
+        await this.fastify.listen({ port: this.config.port, host: this.config.host });
 
         console.log(`\n✅ Gateway ready`);
         console.log(`   WebSocket: ws://${this.config.host}:${this.config.port}`);
@@ -648,6 +650,20 @@ export class Gateway {
     }
 
     // ─── Event Broadcasting ─────────────────────────────────────────────────
+
+    private async findAvailablePort(startPort: number, host: string): Promise<number> {
+        const { createServer } = await import("node:net");
+        for (let port = startPort; port <= startPort + 4; port++) {
+            const available = await new Promise<boolean>((resolve) => {
+                const srv = createServer();
+                srv.once("error", () => resolve(false));
+                srv.once("listening", () => { srv.close(); resolve(true); });
+                srv.listen(port, host);
+            });
+            if (available) return port;
+        }
+        return startPort;
+    }
 
     private sendToClient(client: ClientConnection, frame: ResponseFrame | EventFrame): void {
         try {
