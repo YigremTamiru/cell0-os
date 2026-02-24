@@ -182,6 +182,53 @@ export function ensureConfigDir(): void {
     }
 }
 
+// ─── Backup ───────────────────────────────────────────────────────────────
+
+const SNAPSHOTS_DIR = CELL0_PATHS.snapshots;
+
+function backupConfig(): void {
+    if (!fs.existsSync(CONFIG_PATH)) return;
+    if (!fs.existsSync(SNAPSHOTS_DIR)) {
+        fs.mkdirSync(SNAPSHOTS_DIR, { recursive: true });
+    }
+    const ts = new Date().toISOString().replace(/:/g, "-").replace(/\./g, "-");
+    const backupPath = path.join(SNAPSHOTS_DIR, `cell0.json.bak.${ts}`);
+    fs.copyFileSync(CONFIG_PATH, backupPath);
+
+    // Prune: keep only the 5 most recent backups
+    const backups = fs
+        .readdirSync(SNAPSHOTS_DIR)
+        .filter((f) => f.startsWith("cell0.json.bak."))
+        .sort()
+        .reverse();
+    for (const old of backups.slice(5)) {
+        fs.unlinkSync(path.join(SNAPSHOTS_DIR, old));
+    }
+}
+
+export function listConfigBackups(): Array<{ file: string; path: string; mtime: Date; size: number }> {
+    if (!fs.existsSync(SNAPSHOTS_DIR)) return [];
+    return fs
+        .readdirSync(SNAPSHOTS_DIR)
+        .filter((f) => f.startsWith("cell0.json.bak."))
+        .sort()
+        .reverse()
+        .map((f) => {
+            const p = path.join(SNAPSHOTS_DIR, f);
+            const stat = fs.statSync(p);
+            return { file: f, path: p, mtime: stat.mtime, size: stat.size };
+        });
+}
+
+export function restoreConfigBackup(backupPath: string): void {
+    if (!fs.existsSync(backupPath)) {
+        throw new Error(`Backup not found: ${backupPath}`);
+    }
+    // Backup current before restoring
+    backupConfig();
+    fs.copyFileSync(backupPath, CONFIG_PATH);
+}
+
 export function readConfigFileSnapshot(): ConfigSnapshot {
     ensureConfigDir();
 
@@ -220,6 +267,7 @@ export function readConfigFileSnapshot(): ConfigSnapshot {
 
 export function writeConfig(config: Cell0Config): void {
     ensureConfigDir();
+    backupConfig();
 
     // Update metadata
     config.meta = {

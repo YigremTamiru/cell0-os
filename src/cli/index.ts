@@ -698,6 +698,98 @@ program
         }
     });
 
+// ─── cell0 config ───────────────────────────────────────────────────────────
+
+program
+    .command("config")
+    .description("Manage Cell 0 configuration")
+    .argument("[action]", "show | backup | history | restore", "show")
+    .argument("[target]", "Backup file path for restore")
+    .action(async (action: string, target?: string) => {
+        const {
+            readConfigFileSnapshot,
+            listConfigBackups,
+            restoreConfigBackup,
+            CONFIG_PATH,
+        } = await import("../config/config.js");
+
+        switch (action) {
+            case "show": {
+                const snap = readConfigFileSnapshot();
+                if (!snap.exists) {
+                    console.log("No config found. Run: cell0 onboard");
+                    break;
+                }
+                if (!snap.valid) {
+                    console.log("⚠️  Config exists but is invalid. Run: cell0 doctor --repair");
+                    break;
+                }
+                // Pretty-print config (redact sensitive values)
+                const cfg = JSON.parse(JSON.stringify(snap.config));
+                if (cfg.agent?.apiKey) cfg.agent.apiKey = "***";
+                if (cfg.gateway?.auth?.token) cfg.gateway.auth.token = "***";
+                if (cfg.gateway?.auth?.password) cfg.gateway.auth.password = "***";
+                console.log("\n📋 Cell 0 Configuration\n");
+                console.log(`   Path: ${CONFIG_PATH}\n`);
+                console.log(JSON.stringify(cfg, null, 2));
+                break;
+            }
+            case "backup": {
+                const snap2 = readConfigFileSnapshot();
+                if (!snap2.valid) {
+                    console.error("Cannot backup: config is invalid or missing.");
+                    process.exit(1);
+                }
+                const { writeConfig } = await import("../config/config.js");
+                writeConfig(snap2.config);
+                const backups = listConfigBackups();
+                if (backups.length > 0) {
+                    console.log(`✅ Backup created: ${backups[0].file}`);
+                } else {
+                    console.log("✅ Config written (backup created if previous config existed).");
+                }
+                break;
+            }
+            case "history": {
+                const backups = listConfigBackups();
+                if (backups.length === 0) {
+                    console.log("No config backups found.");
+                    break;
+                }
+                console.log("\n📂 Config Backups\n");
+                for (const b of backups) {
+                    console.log(
+                        `  ${b.file}  (${b.mtime.toLocaleString()}, ${Math.round(b.size / 1024 * 10) / 10} KB)`
+                    );
+                }
+                console.log(`\n  Restore with: cell0 config restore <filename>`);
+                break;
+            }
+            case "restore": {
+                if (!target) {
+                    const backups = listConfigBackups();
+                    if (backups.length === 0) {
+                        console.error("No backups found.");
+                        process.exit(1);
+                    }
+                    target = backups[0].path;
+                    console.log(`Restoring latest backup: ${backups[0].file}`);
+                }
+                try {
+                    restoreConfigBackup(target);
+                    console.log("✅ Config restored successfully.");
+                } catch (err) {
+                    console.error(`Failed: ${err instanceof Error ? err.message : String(err)}`);
+                    process.exit(1);
+                }
+                break;
+            }
+            default:
+                console.error(`Unknown action: ${action}. Use show, backup, history, or restore.`);
+                process.exit(1);
+        }
+    });
+
 // ─── Parse ──────────────────────────────────────────────────────────────────
 
 program.parse();
