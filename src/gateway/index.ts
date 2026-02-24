@@ -255,6 +255,16 @@ export class Gateway {
             clients: this.clients.size,
             sessions: this.sessions.listSessions().length,
         }), 30_000);
+
+        // Start recursive self-improvement loop
+        try {
+            const { SelfImprovementEngine } = await import("../agents/meta-agent.js");
+            const selfImprovement = new SelfImprovementEngine();
+            selfImprovement.start();
+            console.log("   [OK] Self-improvement loop started (5-min reflection cycle)");
+        } catch (err) {
+            console.warn(`   [WARN] Self-improvement engine failed to start: ${err}`);
+        }
     }
 
     // ─── HTTP Routes ────────────────────────────────────────────────────────

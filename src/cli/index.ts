@@ -529,6 +529,39 @@ program
         });
     });
 
+// ─── cell0 channels ─────────────────────────────────────────────────────────
+
+program
+    .command("channels [channel]")
+    .description("Connect or reconfigure a messaging channel (QR-based pairing)")
+    .option("--list", "List all channels and their pairing status")
+    .action(async (channel?: string, opts?: { list?: boolean }) => {
+        const { readConfigFileSnapshot, writeConfig } = await import("../config/config.js");
+        const snap = readConfigFileSnapshot();
+        const config = snap?.config ?? {} as any;
+
+        if (opts?.list || !channel) {
+            // Show status of all channels
+            const channels = config.channels ?? {};
+            const all = ["whatsapp","telegram","discord","slack","signal","matrix","googleChat","msTeams","blueBubbles","imessage","webChat"];
+            console.log("\n📡 Channel Pairing Status\n");
+            for (const ch of all) {
+                const cfg = channels[ch];
+                const enabled = cfg?.enabled ?? false;
+                const icon = enabled ? "✅" : "⚪";
+                console.log(`  ${icon} ${ch.padEnd(14)} ${enabled ? "paired" : "not configured"}`);
+            }
+            console.log("\n  Run: cell0 channels <name>  to connect a channel\n");
+            if (!channel) return;
+        }
+
+        // Wire up a single channel
+        const { setupSingleChannel } = await import("../wizard/wizard.js");
+        const updated = await setupSingleChannel(channel!, config);
+        writeConfig(updated);
+        console.log(`\n✅ Channel '${channel}' configured. Restart gateway to activate.\n`);
+    });
+
 // ─── cell0 portal ───────────────────────────────────────────────────────────
 
 program

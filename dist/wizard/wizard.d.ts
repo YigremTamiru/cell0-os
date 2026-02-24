@@ -9,6 +9,7 @@
  * 4. Model provider → 5. API key → 6. Workspace → 7. Gateway config →
  * 8. Daemon install → 9. Health check → 10. Portal URL
  */
+import { type Cell0Config } from "../config/config.js";
 export declare function runOnboardingWizard(opts: {
     installDaemon?: boolean;
     flow?: string;
@@ -16,4 +17,5 @@ export declare function runOnboardingWizard(opts: {
     skipHealth?: boolean;
     acceptRisk?: boolean;
 }): Promise<void>;
+export declare function setupSingleChannel(channel: string, config: Cell0Config): Promise<Cell0Config>;
 //# sourceMappingURL=wizard.d.ts.map

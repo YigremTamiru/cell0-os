@@ -585,6 +585,22 @@ function initApp() {
   renderUfaBar();
   connectGateway();
   setInterval(renderHtop, 2000);
+  setInterval(pollLiveStatus, 5000);
+}
+
+function pollLiveStatus() {
+  fetch('/api/live-status').then(r => r.json()).then(status => {
+    const dot = document.getElementById('status-dot');
+    const label = document.getElementById('status-label');
+    if (status.status === 'gateway-offline') {
+      dot?.classList.add('offline');
+      if (label) label.textContent = 'Gateway offline';
+    } else if (status.status === 'healthy') {
+      dot?.classList.remove('offline');
+      if (label && label.textContent === 'Gateway offline') label.textContent = 'Connected';
+    }
+    if (status.components?.channels) renderNerveMap();
+  }).catch(() => {});
 }
 
 // ═══════════════════════ TABS ═══════════════════════

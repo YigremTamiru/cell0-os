@@ -476,49 +476,171 @@ async function requireRiskAcknowledgement(
 // ─── Channel Setup ────────────────────────────────────────────────────────
 
 async function runChannelSetup(config: Cell0Config): Promise<Cell0Config> {
-    const channel = await p.select({
-        message: "Connect a messaging channel? (optional)",
-        options: [
-            { value: "skip", label: "Skip — configure later with `cell0 configure`" },
-            { value: "whatsapp", label: "WhatsApp" },
-            { value: "telegram", label: "Telegram" },
-        ],
-        initialValue: "skip",
-    });
-    if (p.isCancel(channel) || channel === "skip") return config;
+    p.log.info("QR-based channel pairing — no cloud API registration required");
+
+    const channelOptions = [
+        { value: "done",        label: "Done — continue setup" },
+        { value: "whatsapp",    label: "WhatsApp  (QR scan via WhatsApp Web)" },
+        { value: "telegram",    label: "Telegram  (bot token from @BotFather)" },
+        { value: "discord",     label: "Discord   (bot token + Gateway WebSocket)" },
+        { value: "slack",       label: "Slack     (Socket Mode — no public URL needed)" },
+        { value: "signal",      label: "Signal    (via signal-cli binary)" },
+        { value: "matrix",      label: "Matrix    (homeserver URL + access token)" },
+        { value: "googlechat",  label: "Google Chat  (incoming webhook URL)" },
+        { value: "msteams",     label: "Microsoft Teams  (incoming webhook URL)" },
+        { value: "bluebubbles", label: "BlueBubbles/iMessage  (local server + password)" },
+        { value: "webchat",     label: "WebChat   (always enabled — browser native)" },
+    ];
+
+    // Loop: allow user to add multiple channels in one pass
+    while (true) {
+        const channel = await p.select({
+            message: "Add a messaging channel?",
+            options: channelOptions,
+            initialValue: "done",
+        });
+        if (p.isCancel(channel) || channel === "done") break;
+        config = await setupSingleChannel(channel as string, config);
+        // After first add, relabel first option
+        channelOptions[0].label = "Done — add more later with `cell0 configure`";
+    }
+
+    return config;
+}
+
+export async function setupSingleChannel(channel: string, config: Cell0Config): Promise<Cell0Config> {
+    const channels = { ...(config.channels ?? {}) } as any;
 
     if (channel === "whatsapp") {
-        const phone = await p.text({
-            message: "Your WhatsApp number (E.164, e.g. +1234567890)",
-            placeholder: "+1234567890",
-            validate: (v) => (!v?.trim() ? "Required" : undefined),
-        });
-        if (!p.isCancel(phone) && phone) {
-            config = {
-                ...config,
-                channels: {
-                    ...config.channels,
-                    whatsapp: { enabled: true, dmPolicy: "pairing", allowFrom: [(phone as string).trim()] } as any,
-                },
-            };
+        p.log.info("Open WhatsApp → Linked Devices → Link a Device, then scan the QR below");
+        try {
+            const { WhatsAppAdapter } = await import("../channels/whatsapp.js");
+            const adapter = new WhatsAppAdapter({} as any);
+            await adapter.showSetupQR();
+            channels.whatsapp = { enabled: true, dmPolicy: "pairing" };
+            p.log.success("WhatsApp paired");
+        } catch (e) {
+            p.log.warn(`WhatsApp: ${e}\n  Install: npm i @whiskeysockets/baileys`);
         }
+
     } else if (channel === "telegram") {
         const tok = await p.text({
-            message: "Telegram Bot Token (from @BotFather)",
+            message: "Telegram Bot Token (from @BotFather → /newbot)",
             placeholder: "123456789:ABCdef...",
             validate: (v) => (!v?.trim() ? "Required" : undefined),
         });
         if (!p.isCancel(tok) && tok) {
-            config = {
-                ...config,
-                channels: {
-                    ...config.channels,
-                    telegram: { enabled: true, dmPolicy: "open", token: (tok as string).trim() } as any,
-                },
-            };
+            const { TelegramAdapter } = await import("../channels/telegram.js");
+            const adapter = new TelegramAdapter();
+            await adapter.setup((tok as string).trim());
+            channels.telegram = { enabled: true, dmPolicy: "open", token: (tok as string).trim() };
         }
+
+    } else if (channel === "discord") {
+        const tok = await p.text({
+            message: "Discord Bot Token (Discord Dev Portal → Bot → Token)",
+            placeholder: "MTIzNDU2...",
+            validate: (v) => (!v?.trim() ? "Required" : undefined),
+        });
+        if (!p.isCancel(tok) && tok) {
+            const { DiscordAdapter } = await import("../channels/discord.js");
+            const adapter = new DiscordAdapter({} as any);
+            await adapter.setup((tok as string).trim());
+            channels.discord = { enabled: true, dmPolicy: "open", token: (tok as string).trim() };
+        }
+
+    } else if (channel === "slack") {
+        const appTok = await p.text({
+            message: "Slack App-Level Token (xapp-...)",
+            placeholder: "xapp-1-...",
+            validate: (v) => (!v?.trim() ? "Required" : undefined),
+        });
+        const botTok = await p.text({
+            message: "Slack Bot Token (xoxb-...)",
+            placeholder: "xoxb-...",
+            validate: (v) => (!v?.trim() ? "Required" : undefined),
+        });
+        if (!p.isCancel(appTok) && !p.isCancel(botTok) && appTok && botTok) {
+            const { SlackAdapter } = await import("../channels/slack.js");
+            const adapter = new SlackAdapter({} as any);
+            await adapter.setup((appTok as string).trim(), (botTok as string).trim());
+            channels.slack = { enabled: true, dmPolicy: "open", appToken: (appTok as string).trim(), botToken: (botTok as string).trim() };
+        }
+
+    } else if (channel === "signal") {
+        p.log.info("Requires signal-cli: https://github.com/AsamK/signal-cli/releases");
+        const phone = await p.text({
+            message: "Your Signal phone number (E.164)",
+            placeholder: "+1234567890",
+            validate: (v) => (!v?.trim() ? "Required" : undefined),
+        });
+        if (!p.isCancel(phone) && phone) {
+            const num = (phone as string).trim();
+            p.note(
+                `signal-cli -u ${num} register\nsignal-cli -u ${num} verify <code>`,
+                "Run to register Signal"
+            );
+            channels.signal = { enabled: true, dmPolicy: "open", phoneNumber: num };
+        }
+
+    } else if (channel === "matrix") {
+        const homeserver = await p.text({
+            message: "Matrix homeserver URL",
+            placeholder: "https://matrix.example.com",
+            validate: (v) => (!v?.trim() ? "Required" : undefined),
+        });
+        const accessToken = await p.text({
+            message: "Access token (Settings → Help & About → Advanced → Access Token)",
+            placeholder: "syt_...",
+            validate: (v) => (!v?.trim() ? "Required" : undefined),
+        });
+        if (!p.isCancel(homeserver) && !p.isCancel(accessToken) && homeserver && accessToken) {
+            channels.matrix = { enabled: true, dmPolicy: "open", homeserverUrl: (homeserver as string).trim(), accessToken: (accessToken as string).trim() };
+        }
+
+    } else if (channel === "googlechat") {
+        const webhook = await p.text({
+            message: "Google Chat incoming webhook URL",
+            placeholder: "https://chat.googleapis.com/v1/spaces/...",
+            validate: (v) => (!v?.trim() ? "Required" : undefined),
+        });
+        if (!p.isCancel(webhook) && webhook) {
+            channels.googleChat = { enabled: true, webhookUrl: (webhook as string).trim() };
+        }
+
+    } else if (channel === "msteams") {
+        const webhook = await p.text({
+            message: "MS Teams incoming webhook URL",
+            placeholder: "https://...webhook.office.com/...",
+            validate: (v) => (!v?.trim() ? "Required" : undefined),
+        });
+        if (!p.isCancel(webhook) && webhook) {
+            channels.msTeams = { enabled: true, webhookUrl: (webhook as string).trim() };
+        }
+
+    } else if (channel === "bluebubbles") {
+        const serverUrl = await p.text({
+            message: "BlueBubbles server URL",
+            placeholder: "http://your-mac:1234",
+            validate: (v) => (!v?.trim() ? "Required" : undefined),
+        });
+        const serverPass = await p.text({
+            message: "Server password",
+            placeholder: "password",
+            validate: (v) => (!v?.trim() ? "Required" : undefined),
+        });
+        if (!p.isCancel(serverUrl) && !p.isCancel(serverPass) && serverUrl && serverPass) {
+            channels.blueBubbles = { enabled: true, serverUrl: (serverUrl as string).trim(), serverPass: (serverPass as string).trim() };
+            channels.imessage = { enabled: true };
+            p.log.success("BlueBubbles + iMessage configured");
+        }
+
+    } else if (channel === "webchat") {
+        p.log.success("WebChat is always enabled — accessible via your portal URL");
+        channels.webChat = { enabled: true, dmPolicy: "open" };
     }
-    return config;
+
+    return { ...config, channels };
 }
 
 // ─── Workspace Setup ──────────────────────────────────────────────────────
