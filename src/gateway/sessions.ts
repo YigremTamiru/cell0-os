@@ -8,6 +8,9 @@
  */
 
 import { randomUUID } from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
+import { CELL0_PATHS } from "../config/config.js";
 
 export interface Session {
     id: string;
@@ -36,8 +39,55 @@ export class SessionManager {
     private mainSessionId: string;
 
     constructor() {
+        // Load existing snapshots from disk before creating main session
+        this.loadSnapshots();
         // Always create the main session
         this.mainSessionId = this.createSession("main").id;
+    }
+
+    private get sessionsDir(): string {
+        return CELL0_PATHS.runtime.sessions;
+    }
+
+    private ensureSessionsDir(): void {
+        try {
+            if (!fs.existsSync(this.sessionsDir)) {
+                fs.mkdirSync(this.sessionsDir, { recursive: true, mode: 0o700 });
+            }
+        } catch {
+            // Ignore errors — snapshots are best-effort
+        }
+    }
+
+    private writeSnapshot(session: Session): void {
+        try {
+            this.ensureSessionsDir();
+            const filePath = path.join(this.sessionsDir, `${session.id}.json`);
+            fs.writeFileSync(filePath, JSON.stringify(session, null, 2), { encoding: "utf-8", mode: 0o600 });
+        } catch {
+            // Snapshot failures must not break session logic
+        }
+    }
+
+    private loadSnapshots(): void {
+        try {
+            if (!fs.existsSync(this.sessionsDir)) return;
+            const files = fs.readdirSync(this.sessionsDir).filter(f => f.endsWith(".json"));
+            for (const file of files) {
+                try {
+                    const filePath = path.join(this.sessionsDir, file);
+                    const raw = fs.readFileSync(filePath, "utf-8");
+                    const session = JSON.parse(raw) as Session;
+                    if (session.id && session.type) {
+                        this.sessions.set(session.id, session);
+                    }
+                } catch {
+                    // Skip malformed snapshot files
+                }
+            }
+        } catch {
+            // Ignore errors — snapshots are best-effort
+        }
     }
 
     createSession(
@@ -61,6 +111,7 @@ export class SessionManager {
             metadata: options?.metadata ?? {},
         };
         this.sessions.set(session.id, session);
+        this.writeSnapshot(session);
         return session;
     }
 
@@ -114,6 +165,7 @@ export class SessionManager {
             session.history = session.history.slice(-500);
         }
 
+        this.writeSnapshot(session);
         return msg;
     }
 

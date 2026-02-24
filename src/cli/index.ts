@@ -533,20 +533,21 @@ program
 
 program
     .command("portal")
-    .description("Start the web-based Control Panel")
+    .description("Open the Cell 0 web dashboard")
     .option("-p, --port <port>", "Portal port", "18790")
     .option("--gateway-port <port>", "Gateway port", "18789")
-    .option("--open", "Open browser automatically")
+    .option("--no-open", "Do not open browser automatically")
     .action(async (opts) => {
         const { startPortal } = await import("../portal/portal.js");
 
         const portalPort = parseInt(opts.port, 10);
         const gatewayPort = parseInt(opts.gatewayPort, 10);
+        const url = `http://127.0.0.1:${portalPort}`;
 
         console.log(
             `\n${theme.heading("🧬 Cell 0 OS Control Panel")}`
         );
-        console.log(`   ${theme.muted("Portal:")}\t${theme.url(`http://127.0.0.1:${portalPort}`)}`);
+        console.log(`   ${theme.muted("Portal:")}\t${theme.url(url)}`);
         console.log(`   ${theme.muted("Gateway:")}\t${theme.url(`ws://127.0.0.1:${gatewayPort}`)}`);
         console.log("");
 
@@ -556,18 +557,20 @@ program
         });
 
         console.log(
-            `${theme.success("✅")} Portal ready at ${theme.url(`http://127.0.0.1:${portalPort}`)}\n`
+            `${theme.success("✅")} Portal ready at ${theme.url(url)}\n`
         );
 
-        if (opts.open) {
-            const { exec } = await import("node:child_process");
-            const openCmd =
-                process.platform === "darwin"
-                    ? "open"
-                    : process.platform === "win32"
-                        ? "start"
-                        : "xdg-open";
-            exec(`${openCmd} http://127.0.0.1:${portalPort}`);
+        // Open browser by default unless --no-open is passed
+        if (opts.open !== false) {
+            const opener = process.platform === "darwin" ? "open"
+                : process.platform === "win32" ? "start"
+                : "xdg-open";
+            try {
+                const { execSync } = await import("node:child_process");
+                execSync(`${opener} "${url}"`, { stdio: "ignore" });
+            } catch {
+                console.log(`Could not auto-open browser. Visit: ${url}`);
+            }
         }
 
         // Keep running
