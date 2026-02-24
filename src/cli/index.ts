@@ -649,6 +649,95 @@ program
         }
     });
 
+// ─── cell0 daemon ───────────────────────────────────────────────────────────
+
+program
+    .command("daemon")
+    .description("Manage the Cell 0 gateway service")
+    .argument("[action]", "start | stop | restart | status | install | uninstall", "status")
+    .action(async (action: string) => {
+        const { getServiceStatus, startService, stopService, restartService, uninstallService } =
+            await import("../infra/daemon-ctl.js");
+
+        switch (action) {
+            case "status": {
+                const s = getServiceStatus();
+                console.log("\n🔧 Cell 0 Daemon Status\n");
+                console.log(`  Platform:  ${s.platform}`);
+                console.log(`  Label:     ${s.label ?? "—"}`);
+                console.log(`  Installed: ${s.installed ? "✅ yes" : "❌ no"}`);
+                console.log(`  Running:   ${s.running ? `✅ yes${s.pid ? ` (PID ${s.pid})` : ""}` : "❌ no"}`);
+                if (s.detail) console.log(`\n  Detail:\n${s.detail.split("\n").map((l) => "    " + l).join("\n")}`);
+                if (!s.installed) console.log("\n  → Run: cell0 daemon install  (or: cell0 onboard)");
+                if (s.installed && !s.running) console.log("\n  → Run: cell0 daemon start");
+                console.log();
+                break;
+            }
+            case "start": {
+                console.log("Starting Cell 0 gateway service…");
+                try {
+                    startService();
+                    console.log("✅ Service started.");
+                } catch (err) {
+                    console.error(`❌ ${err instanceof Error ? err.message : String(err)}`);
+                    process.exit(1);
+                }
+                break;
+            }
+            case "stop": {
+                console.log("Stopping Cell 0 gateway service…");
+                try {
+                    stopService();
+                    console.log("✅ Service stopped.");
+                } catch (err) {
+                    console.error(`❌ ${err instanceof Error ? err.message : String(err)}`);
+                    process.exit(1);
+                }
+                break;
+            }
+            case "restart": {
+                console.log("Restarting Cell 0 gateway service…");
+                try {
+                    restartService();
+                    console.log("✅ Service restarted.");
+                } catch (err) {
+                    console.error(`❌ ${err instanceof Error ? err.message : String(err)}`);
+                    process.exit(1);
+                }
+                break;
+            }
+            case "install": {
+                console.log("Installing Cell 0 gateway service…");
+                const { DaemonManager } = await import("../infra/daemon.js");
+                const { CELL0_PROJECT_ROOT } = await import("../config/config.js");
+                const mgr = new DaemonManager(CELL0_PROJECT_ROOT);
+                const ok = await mgr.installService();
+                if (ok) {
+                    console.log("✅ Service installed. Starting…");
+                    try { startService(); console.log("✅ Service started."); } catch { /* ignore */ }
+                } else {
+                    console.error("❌ Service installation failed. Run: cell0 onboard --install-daemon");
+                    process.exit(1);
+                }
+                break;
+            }
+            case "uninstall": {
+                console.log("Uninstalling Cell 0 gateway service…");
+                try {
+                    uninstallService();
+                    console.log("✅ Service uninstalled.");
+                } catch (err) {
+                    console.error(`❌ ${err instanceof Error ? err.message : String(err)}`);
+                    process.exit(1);
+                }
+                break;
+            }
+            default:
+                console.error(`Unknown action: ${action}. Use start, stop, restart, status, install, or uninstall.`);
+                process.exit(1);
+        }
+    });
+
 // ─── cell0 library ──────────────────────────────────────────────────────────
 
 program
