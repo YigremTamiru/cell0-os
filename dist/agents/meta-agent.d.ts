@@ -39,4 +39,36 @@ export declare class MetaAgentCoordinator {
      */
     synthesizeResults(planId: string, taskResults: Record<string, string>): Promise<SynthesisResult>;
 }
+import { GoalManager, type Goal } from "./goals.js";
+import { EthicsConsensus } from "./ethics.js";
+export interface ReflectionReport {
+    timestamp: string;
+    goalCount: number;
+    patterns: string[];
+    newGoals: Goal[];
+    systemHealth: "optimal" | "degraded" | "critical";
+}
+/**
+ * SelfImprovementEngine — The recursive improvement kernel (Layer 3: The Brain)
+ *
+ * Loop: OBSERVE → REFLECT → GOAL-SET → ACT (with ethics gate) → EVALUATE
+ * Runs every 5 minutes. Ethics consensus checked before any autonomous action.
+ */
+export declare class SelfImprovementEngine {
+    private goals;
+    private ethics;
+    private reflectionInterval;
+    private readonly INTERVAL_MS;
+    constructor();
+    start(): void;
+    stop(): void;
+    reflect(): Promise<ReflectionReport>;
+    /** Gate all autonomous actions through ethics consensus */
+    executeWithEthics(actionType: string, action: string, executor: () => Promise<void>): Promise<{
+        executed: boolean;
+        verdict: string;
+    }>;
+    getGoalManager(): GoalManager;
+    getEthicsConsensus(): EthicsConsensus;
+}
 //# sourceMappingURL=meta-agent.d.ts.map
