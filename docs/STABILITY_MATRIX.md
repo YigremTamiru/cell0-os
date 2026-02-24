@@ -1,6 +1,6 @@
 # Cell 0 OS Stability Matrix
 
-> **Component stability classifications for safe adoption**
+> **Component stability classifications for safe adoption — v1.3.0**
 
 This matrix categorizes Cell 0 OS components by stability level, helping contributors and users understand what's safe to use vs. what's experimental.
 
@@ -23,7 +23,8 @@ This matrix categorizes Cell 0 OS components by stability level, helping contrib
 | Agent Lifecycle | 🟢 Stable | v1.0.0 | Spawn, heartbeat, terminate |
 | Skill Registry | 🟢 Stable | v1.1.0 | Plugin system |
 | Memory System | 🟡 Beta | v1.2.0 | Daily notes stable, long-term in beta |
-| Gateway | 🟢 Stable | v1.0.0 | HTTP/WebSocket gateway |
+| Gateway | 🟢 Stable | v1.0.0 | HTTP/WebSocket gateway; port auto-selection (default :18789), session persistence added in v1.3.0 |
+| Channel Router | 🟢 Stable | v1.3.0 | All 10 channels fully implemented; `cell0 channels` CLI |
 
 ### Skills
 
@@ -71,7 +72,15 @@ This matrix categorizes Cell 0 OS components by stability level, helping contrib
 | Credential Isolation | 🟢 Stable | v1.0.0 | 1Password integration |
 | Sub-Agent Sandbox | 🟢 Stable | v1.1.0 | Docker isolation |
 | Skill Scanner | 🟡 Beta | v1.2.0 | Pre-install validation |
-| Audit Logging | 🟡 Beta | v1.2.0 | Operation logging |
+| Audit Logging | 🟢 Stable | v1.3.0 | Operation logging; JSONL ethics audit via EthicsConsensus |
+
+### Meta-Agent (v1.3.0)
+
+| Component | Status | Since | Notes |
+|-----------|--------|-------|-------|
+| SelfImprovementEngine | 🟡 Beta | v1.3.0 | 5-min OBSERVE→REFLECT→GOAL-SET→ACT→EVALUATE loop |
+| GoalManager | 🟡 Beta | v1.3.0 | 17 domains, JSON persistence |
+| EthicsConsensus | 🟡 Beta | v1.3.0 | 6 rules, JSONL audit log |
 
 ### Integrations
 
@@ -81,9 +90,16 @@ This matrix categorizes Cell 0 OS components by stability level, helping contrib
 | Anthropic | 🟢 Stable | v1.0.0 | Claude models |
 | Moonshot | 🟢 Stable | v1.1.0 | Kimi models |
 | 1Password | 🟢 Stable | v1.0.0 | Credential management |
-| Discord | 🟡 Beta | v1.2.0 | Bot integration |
-| Telegram | 🟡 Beta | v1.2.0 | Bot integration |
-| WhatsApp | 🟠 Experimental | v1.3.0 | Limited availability |
+| Telegram | 🟢 Stable | v1.3.0 | Native fetch, Bot API |
+| Discord | 🟢 Stable | v1.3.0 | WebSocket Gateway v10 |
+| Slack | 🟢 Stable | v1.3.0 | Socket Mode |
+| WhatsApp | 🟢 Stable | v1.3.0 | Baileys Web QR, fully implemented |
+| Signal | 🟢 Stable | v1.3.0 | signal-cli bridge |
+| Matrix | 🟢 Stable | v1.3.0 | Client-Server API |
+| Google Chat | 🟢 Stable | v1.3.0 | Webhook |
+| MS Teams | 🟢 Stable | v1.3.0 | Webhook |
+| BlueBubbles/iMessage | 🟢 Stable | v1.3.0 | Local REST + WebSocket |
+| WebChat | 🟢 Stable | v1.3.0 | Browser-native, Nerve Portal |
 | Chrome Extension | 🟠 Experimental | v1.3.0 | Browser relay |
 
 ## Stability Transition Process
@@ -138,17 +154,25 @@ Stable components come with:
 
 ## Current Development Focus
 
-**Q1 2024:**
+**v1.3.0 (completed):**
+- All 10 channel adapters fully implemented — CI passing, all green
+- Meta-Agent subsystem added: SelfImprovementEngine, GoalManager (17 domains), EthicsConsensus (6 rules)
+- Gateway: port auto-selection and session persistence
+- `cell0 channels` CLI command shipped
+- QR pairing utility (`src/channels/setup/qr.ts`) for WhatsApp and future QR-based channels
+
+**Q1 2026:**
 - Promoting Memory System to Stable
 - Browser skill → Beta
 - Canvas API → Beta
+- Meta-Agent (GoalManager, EthicsConsensus, SelfImprovementEngine) → Stable
 
-**Q2 2024:**
+**Q2 2026:**
 - Reasoning mode → Beta
 - Memory Search → Beta
-- WhatsApp integration → Beta
+- Chrome Extension → Beta
 
-**Q3 2024:**
+**Q3 2026:**
 - All Beta features → Stable (target)
 - New experimental: Multi-agent coordination
 
