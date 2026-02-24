@@ -498,7 +498,7 @@ async function runChannelSetup(config: Cell0Config): Promise<Cell0Config> {
                 ...config,
                 channels: {
                     ...config.channels,
-                    whatsapp: { enabled: true, dmPolicy: "allowlist", allowFrom: [(phone as string).trim()] } as any,
+                    whatsapp: { enabled: true, dmPolicy: "pairing", allowFrom: [(phone as string).trim()] } as any,
                 },
             };
         }
@@ -600,10 +600,12 @@ async function installDaemonService(
         const port = resolveGatewayPort(config);
 
         if (process.platform === "darwin") {
-            await installLaunchAgent(port, token);
+            const authToken = config.gateway?.auth?.mode === "token" ? token : "";
+            await installLaunchAgent(port, authToken);
             s.stop("Gateway service installed (launchd).");
         } else if (process.platform === "linux") {
-            await installSystemdService(port, token);
+            const authToken = config.gateway?.auth?.mode === "token" ? token : "";
+            await installSystemdService(port, authToken);
             s.stop("Gateway service installed (systemd).");
         } else {
             s.stop(
@@ -657,8 +659,8 @@ async function installLaunchAgent(
         <string>${process.env.PATH ?? "/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin"}</string>
         <key>CELL0_GATEWAY_PORT</key>
         <string>${port}</string>
-        <key>CELL0_GATEWAY_TOKEN</key>
-        <string>${token}</string>
+        ${token ? `<key>CELL0_GATEWAY_TOKEN</key>
+        <string>${token}</string>` : ""}
         <key>CELL0_LAUNCHD_LABEL</key>
         <string>io.cell0.gateway</string>
         <key>CELL0_SERVICE_MARKER</key>

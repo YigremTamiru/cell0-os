@@ -221,6 +221,16 @@ export function getDefaultModelForProvider(provider) {
         ollama: "ollama/llama3.3",
         vllm: "vllm/custom",
         custom: "custom/custom",
+        qianfan: "qianfan/ernie-4.0",
+        "ai-gateway": "openai/gpt-4o",
+        "opencode-zen": "anthropic/claude-opus-4-6",
+        xiaomi: "xiaomi/minicpm-4b",
+        synthetic: "synthetic/claude-3-5-sonnet",
+        together: "together/meta-llama/Llama-3.3-70B-Instruct-Turbo",
+        huggingface: "huggingface/meta-llama/Meta-Llama-3.1-70B-Instruct",
+        venice: "venice/llama-3.3-70b",
+        litellm: "litellm/gpt-4o",
+        "cloudflare-ai-gateway": "cloudflare-ai-gateway/llama-3.3-70b-instruct-fp8-fast",
     };
     return defaults[provider] ?? "anthropic/claude-opus-4-6";
 }

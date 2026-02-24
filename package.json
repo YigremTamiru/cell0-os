@@ -67,5 +67,11 @@
         "type": "git",
         "url": "https://github.com/YigremTamiru/cell0-os"
     },
+    "files": [
+        "dist/",
+        "glassbox/dist/",
+        "README.md",
+        "LICENSE"
+    ],
     "homepage": "https://cell0.io"
 }
