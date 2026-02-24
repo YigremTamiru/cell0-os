@@ -8,6 +8,7 @@
  */
 
 import fs from "node:fs";
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { CELL0_PATHS, CELL0_HOME } from "../config/config.js";
 import { logger } from "../utils/logger.js";
@@ -70,6 +71,9 @@ export async function bootstrapSystem(): Promise<void> {
 
     // 8. Seed default agent
     seedDefaultAgent();
+
+    // 9. Python venv (for MLX tools — non-fatal)
+    await ensurePythonVenv();
 
     logger.info("System bootstrap completed successfully");
 }
@@ -152,4 +156,22 @@ function seedIdentityFiles() {
         fs.writeFileSync(userPath, content, "utf-8");
         logger.info("Seeded user.json");
     }
+}
+
+async function ensurePythonVenv(): Promise<void> {
+    const venvDir = path.join(CELL0_HOME, ".venv");
+    if (fs.existsSync(path.join(venvDir, "bin", "python"))) {
+        return; // Already exists
+    }
+    for (const py of ["python3", "python"]) {
+        try {
+            execFileSync(py, ["--version"], { stdio: "ignore" });
+            execFileSync(py, ["-m", "venv", venvDir], { stdio: "ignore" });
+            logger.info(`Python venv created at ${venvDir}`);
+            return;
+        } catch {
+            // Try next candidate
+        }
+    }
+    logger.warn("Python not found — MLX tools unavailable. Install Python 3.10+.");
 }

@@ -1042,6 +1042,42 @@ program
         }
     });
 
+// ─── Reset ──────────────────────────────────────────────────────────────────
+
+program
+    .command("reset")
+    .description("Wipe all Cell 0 data and remove the daemon service")
+    .option("--yes", "Skip confirmation prompt")
+    .action(async (opts) => {
+        const p = await import("@clack/prompts");
+        p.intro("cell0 reset");
+        if (!opts.yes) {
+            const confirmed = await p.confirm({
+                message: "This will delete ~/.cell0/ and uninstall the daemon. Continue?",
+                initialValue: false,
+            });
+            if (!confirmed || p.isCancel(confirmed)) {
+                p.cancel("Reset cancelled.");
+                return;
+            }
+        }
+        const s = p.spinner();
+        s.start("Resetting Cell 0…");
+        try {
+            const { uninstallService } = await import("../infra/daemon-ctl.js");
+            uninstallService();
+        } catch { /* daemon may not be installed */ }
+        const { default: fs } = await import("node:fs");
+        const { default: os } = await import("node:os");
+        const { default: path } = await import("node:path");
+        const cell0Home = path.join(os.homedir(), ".cell0");
+        if (fs.existsSync(cell0Home)) {
+            fs.rmSync(cell0Home, { recursive: true, force: true });
+        }
+        s.stop("Cell 0 data removed.");
+        p.outro("Reset complete. Run `cell0 onboard` to start fresh.");
+    });
+
 // ─── Parse ──────────────────────────────────────────────────────────────────
 
 program.parse();
