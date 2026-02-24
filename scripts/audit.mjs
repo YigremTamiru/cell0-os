@@ -74,7 +74,8 @@ try {
 }
 
 // Check 2: Source and dist file counts match
-const srcCount = parseInt(execSync('find src -name "*.ts" | wc -l').toString().trim());
+// Exclude .d.ts declaration files — they never produce .js output
+const srcCount = parseInt(execSync("find src -name '*.ts' ! -name '*.d.ts' | wc -l").toString().trim());
 const distCount = parseInt(execSync('find dist -name "*.js" | wc -l').toString().trim());
 check('Source/Dist parity', srcCount === distCount, `${srcCount} src → ${distCount} dist`);
 
