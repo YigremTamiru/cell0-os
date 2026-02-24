@@ -315,15 +315,26 @@ program
                 os.homedir(),
                 "Library",
                 "LaunchAgents",
+                "io.cell0.gateway.plist"
+            );
+            const legacyPlistPath = join(
+                os.homedir(),
+                "Library",
+                "LaunchAgents",
                 "com.cell0.gateway.plist"
             );
             if (existsSync(plistPath)) {
                 console.log(
-                    formatCheck(true, "Gateway service (launchd)")
+                    formatCheck(true, "Gateway service (launchd io.cell0.gateway)")
                 );
+            } else if (existsSync(legacyPlistPath)) {
+                console.log(
+                    `  ⚠️  Gateway service: legacy plist found (run cell0 doctor --repair to upgrade)`
+                );
+                allGood = false;
             } else {
                 console.log(
-                    `  ⚪ Gateway service: not installed`
+                    `  ⚪ Gateway service: not installed (run cell0 onboard --install-daemon)`
                 );
             }
         }
