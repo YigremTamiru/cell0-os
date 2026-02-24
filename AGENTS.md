@@ -262,6 +262,42 @@ Think of it like a human reviewing their journal and updating their mental model
 
 The goal: Be helpful without being annoying. Check in a few times a day, do useful background work, but respect quiet time.
 
+## 🤖 Meta-Agent Self-Improvement System (Layer 3 — The Brain)
+
+Cell 0 OS includes an autonomous self-improvement engine that runs alongside the gateway. This is not a stub — it is fully operational in v1.3.0.
+
+### Components
+
+**`GoalManager`**
+- Persists all goals to `~/.cell0/runtime/goals.json`.
+- Supports 17 domain types (productivity, security, knowledge, creativity, communication, health, finance, engineering, research, social, infrastructure, ethics, learning, optimization, integration, monitoring, autonomy).
+- Goals survive gateway restarts and are loaded on every boot.
+
+**`EthicsConsensus`**
+- A 6-rule consensus gate that evaluates every autonomous action *before* it is executed.
+- Rules cover: non-harm, privacy preservation, truthfulness, resource proportionality, reversibility preference, and human oversight priority.
+- No meta-agent action — including goal creation, file writes, or external calls — bypasses this gate.
+
+**`SelfImprovementEngine`**
+- Runs a continuous loop every 5 minutes: **OBSERVE → REFLECT → GOAL-SET → ACT → EVALUATE**.
+- Starts automatically when `cell0 gateway` starts; no manual invocation needed.
+- OBSERVE: gathers system telemetry, channel status, and recent interaction patterns.
+- REFLECT: evaluates current goals against observed state; surfaces gaps or drift.
+- GOAL-SET: proposes new or updated goals, passed through `EthicsConsensus` before acceptance.
+- ACT: executes approved goal-aligned actions within the agent's sandboxed workspace.
+- EVALUATE: scores outcomes and feeds results back into the next OBSERVE cycle.
+
+### For Agents Running Inside Cell 0
+
+If you are an agent receiving tasks via the Cell 0 gateway, be aware:
+
+- The self-improvement engine may autonomously modify `goals.json` between your sessions.
+- All actions you take that touch shared runtime state are subject to the same `EthicsConsensus` gate.
+- You can read `~/.cell0/runtime/goals.json` to understand the system's current goal state and align your work accordingly.
+- Do not bypass or overwrite active goals without going through the consensus layer.
+
+---
+
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
