@@ -1,0 +1,72 @@
+/**
+ * Cell 0 OS — Channel QR Setup Utility
+ *
+ * Displays QR codes in the terminal for channel pairing flows.
+ * Used by the onboarding wizard and `cell0 configure channels` command.
+ */
+
+import os from "node:os";
+import path from "node:path";
+import fs from "node:fs";
+
+export interface ChannelCredentials {
+    channelId: string;
+    paired: boolean;
+    pairedAt?: string;
+    metadata?: Record<string, unknown>;
+}
+
+export const CREDS_BASE = path.join(os.homedir(), ".cell0", "credentials");
+
+export function isChannelPaired(channelId: string): boolean {
+    const credPath = path.join(CREDS_BASE, channelId);
+    // Check for a credentials marker file
+    return (
+        fs.existsSync(path.join(credPath, "creds.json")) ||
+        fs.existsSync(path.join(credPath, "paired.json")) ||
+        fs.existsSync(path.join(credPath, ".paired"))
+    );
+}
+
+export async function showQRInTerminal(data: string, label: string): Promise<void> {
+    let qrcode: any;
+    try {
+        qrcode = await import("qrcode-terminal");
+        console.log(`\n  ${label}:`);
+        qrcode.default?.generate(data, { small: true }) ??
+            (qrcode as any).generate(data, { small: true });
+        console.log(`\n  Data: ${data}\n`);
+    } catch {
+        // Fallback: print the raw data
+        console.log(`\n  ${label}: ${data}\n`);
+        console.log("  (Install qrcode-terminal for QR display: npm install qrcode-terminal)\n");
+    }
+}
+
+export async function showOAuthQR(channelId: string, authUrl: string): Promise<void> {
+    await showQRInTerminal(
+        authUrl,
+        `Scan to authorize ${channelId}`
+    );
+    console.log(`  Or open manually: ${authUrl}\n`);
+}
+
+export function saveChannelCreds(channelId: string, data: Record<string, unknown>): void {
+    const dir = path.join(CREDS_BASE, channelId);
+    fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+    fs.writeFileSync(
+        path.join(dir, "creds.json"),
+        JSON.stringify({ ...data, savedAt: new Date().toISOString() }, null, 2),
+        { encoding: "utf-8", mode: 0o600 }
+    );
+}
+
+export function loadChannelCreds(channelId: string): Record<string, unknown> | null {
+    const credPath = path.join(CREDS_BASE, channelId, "creds.json");
+    if (!fs.existsSync(credPath)) return null;
+    try {
+        return JSON.parse(fs.readFileSync(credPath, "utf-8"));
+    } catch {
+        return null;
+    }
+}
