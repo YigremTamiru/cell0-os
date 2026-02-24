@@ -47,7 +47,7 @@ import { IMessageAdapter } from "../channels/imessage.js";
 import { BlueBubblesAdapter } from "../channels/bluebubbles.js";
 import { MatrixAdapter } from "../channels/matrix.js";
 import { WebChatAdapter } from "../channels/webchat.js";
-import { CELL0_PROJECT_ROOT } from "../config/config.js";
+import { CELL0_PROJECT_ROOT, readConfigFileSnapshot, type GatewayAuthConfig } from "../config/config.js";
 
 // ─── Configuration ──────────────────────────────────────────────────────────
 
@@ -59,6 +59,7 @@ export interface GatewayConfig {
     autoStartPython: boolean;
     logLevel: string;
     verbose: boolean;
+    auth?: GatewayAuthConfig;
 }
 
 const DEFAULT_GATEWAY_CONFIG: GatewayConfig = {
@@ -164,6 +165,21 @@ export class Gateway {
     }
 
     async start(): Promise<void> {
+        // Merge persisted config
+        try {
+            const saved = readConfigFileSnapshot();
+            if (saved?.config?.gateway) {
+                this.config = {
+                    ...this.config,
+                    port: saved.config.gateway.port ?? this.config.port,
+                    host: saved.config.gateway.bind === "lan" ? "0.0.0.0"
+                        : saved.config.gateway.bind === "loopback" ? "127.0.0.1"
+                        : this.config.host,
+                    auth: saved.config.gateway.auth ?? this.config.auth,
+                };
+            }
+        } catch { /* If config file missing, use defaults */ }
+
         console.log(`\n🧬 Cell 0 OS Gateway v1.2.0`);
         console.log(`   Port: ${this.config.port}`);
         console.log(`   Host: ${this.config.host}`);
@@ -384,10 +400,33 @@ export class Gateway {
         client: ClientConnection,
         frame: ConnectFrame
     ): Promise<void> {
-        // For loopback connections, auto-authenticate
-        client.authenticated = true;
+        const authCfg = this.config.auth;
+
+        if (!authCfg || authCfg.mode === "none") {
+            client.authenticated = true;
+        } else if (authCfg.mode === "token") {
+            client.authenticated = !authCfg.token || frame.token === authCfg.token;
+        } else if (authCfg.mode === "password") {
+            // Password auth: client must supply token = sha256(password) or the password itself
+            client.authenticated = !authCfg.password || frame.token === authCfg.password;
+        } else {
+            client.authenticated = true;
+        }
+
         client.deviceId = frame.deviceId;
         client.deviceName = frame.deviceName;
+
+        if (!client.authenticated) {
+            // Reject immediately
+            this.sendToClient(client, {
+                type: "res",
+                id: "connect",
+                ok: false,
+                error: { code: "AUTH_FAILED", message: "Invalid credentials" },
+            });
+            client.ws.close(4001, "Unauthorized");
+            return;
+        }
 
         this.sendToClient(client, makeEvent("gateway.ready", {
             authenticated: true,
